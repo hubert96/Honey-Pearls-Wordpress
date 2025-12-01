@@ -8,9 +8,7 @@ deploy_production:
   tags:
     - local
   script:
-    # Tworzenie pliku .env z wartościami z GitLaba
-    - |
-      cat > /var/www/honey-pearls-wordpress/.env <<EOL DB_NAME='$DB_NAME' DB_USER='$DB_USER' DB_PASSWORD='$DB_PASSWORD' DB_HOST='$DB_HOST' WP_ENV='production' WP_HOME='https://honeypearls.co.uk' WP_SITEURL='https://honeypearls.co.uk/wp' EOL
+    - cho -e "DB_NAME='$DB_NAME'\nDB_USER='$DB_USER'\nDB_PASSWORD='$DB_PASSWORD'\nDB_HOST='$DB_HOST'\nWP_ENV='production'\nWP_HOME='https://honeypearls.co.uk'\nWP_SITEURL='https://honeypearls.co.uk/wp'" > /var/www/honey-pearls-wordpress/.env
 
     # Kopiowanie plików projektu
     - rsync -av --exclude='.git' ./web/ /var/www/honey-pearls-wordpress/web/

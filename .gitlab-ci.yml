@@ -11,15 +11,13 @@ deploy_production:
     # Tworzenie pliku .env z wartościami z GitLaba
     - echo -e "DB_NAME='$DB_NAME'\nDB_USER='$DB_USER'\nDB_PASSWORD='$DB_PASSWORD'\nDB_HOST='$DB_HOST'\nWP_ENV='production'\nWP_HOME='https://honeypearls.co.uk'\nWP_SITEURL='https://honeypearls.co.uk/wp'" > /var/www/honey-pearls-wordpress/.env
 
-    # Kopiowanie plików projektu dla Bedrock
-    - rsync -av --exclude='.git' ./web/ /var/www/honey-pearls-wordpress/web/
-    - rsync -av --exclude='.git' ./app/ /var/www/honey-pearls-wordpress/web/app/
-    - rsync -av --exclude='.git' ./config/ /var/www/honey-pearls-wordpress/config/
-    - rsync -av --exclude='.git' ./vendor/ /var/www/honey-pearls-wordpress/vendor/
+    # skopiuj repo do katalogu docelowego
+    - rsync -av --exclude='.git' ./ /var/www/honey-pearls-wordpress/
+    # wejdź do katalogu głównego Bedrock i zainstaluj zależności
+    - cd /var/www/honey-pearls-wordpress/ && composer install --no-dev --optimize-autoloader
 
-    # Instalacja zależności composer
-    - cd /var/www/honey-pearls-wordpress/
-    - composer install --no-dev --optimize-autoloader
+    # Zainstaluj zależności Composer w katalogu produkcyjnym
+    - cd /var/www/honey-pearls-wordpress && composer install --no-dev --optimize-autoloader
 
   after_script:
     - echo "Deploy zakończony"

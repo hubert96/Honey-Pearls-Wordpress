@@ -9,7 +9,7 @@ deploy_production:
     - local
   script:
     # Skopiuj pliki do katalogu produkcyjnego
-    - rsync -av --no-perms --no-owner --no-group --exclude='.git' ./ /var/www/honey-pearls-wordpress/web
+    - rsync -av --exclude='.git' ./ /var/www/honey-pearls-wordpress/web
 
     # Zainstaluj zależności Composer w katalogu produkcyjnym
     - cd /var/www/honey-pearls-wordpress && composer install --no-dev --optimize-autoloader

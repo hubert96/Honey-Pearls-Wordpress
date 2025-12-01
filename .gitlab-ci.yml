@@ -8,8 +8,10 @@ deploy_production:
   tags:
     - local
   script:
-    # Skopiuj pliki do katalogu produkcyjnego
-    - rsync -av --exclude='.git' ./ /var/www/honey-pearls-wordpress/web
+    # skopiuj repo do katalogu docelowego
+    - rsync -av --exclude='.git' ./ /var/www/honey-pearls-wordpress/
+    # wejdź do katalogu głównego Bedrock i zainstaluj zależności
+    - cd /var/www/honey-pearls-wordpress/ && composer install --no-dev --optimize-autoloader
 
     # Zainstaluj zależności Composer w katalogu produkcyjnym
     - cd /var/www/honey-pearls-wordpress && composer install --no-dev --optimize-autoloader

@@ -10,25 +10,17 @@ deploy_production:
   script:
     # Tworzenie pliku .env z wartościami z GitLaba
     - |
-      cat > /var/www/honey-pearls-wordpress/.env <<EOL
-  DB_NAME='$DB_NAME'
-  DB_USER='$DB_USER'
-  DB_PASSWORD='$DB_PASSWORD'
-  DB_HOST='$DB_HOST'
-  WP_ENV='production'
-  WP_HOME='https://honeypearls.co.uk'
-  WP_SITEURL='https://honeypearls.co.uk/wp'
-  EOL
+      cat > /var/www/honey-pearls-wordpress/.env <<EOL DB_NAME='$DB_NAME' DB_USER='$DB_USER' DB_PASSWORD='$DB_PASSWORD' DB_HOST='$DB_HOST' WP_ENV='production' WP_HOME='https://honeypearls.co.uk' WP_SITEURL='https://honeypearls.co.uk/wp' EOL
 
-# Kopiowanie plików projektu
-- rsync -av --exclude='.git' ./web/ /var/www/honey-pearls-wordpress/web/
-- rsync -av --exclude='.git' ./wp-content/ /var/www/honey-pearls-wordpress/web/wp-content/
-- rsync -av --exclude='.git' ./vendor/ /var/www/honey-pearls-wordpress/vendor/
-- cp ./config/application.php /var/www/honey-pearls-wordpress/config/
+    # Kopiowanie plików projektu
+    - rsync -av --exclude='.git' ./web/ /var/www/honey-pearls-wordpress/web/
+    - rsync -av --exclude='.git' ./wp-content/ /var/www/honey-pearls-wordpress/web/wp-content/
+    - rsync -av --exclude='.git' ./vendor/ /var/www/honey-pearls-wordpress/vendor/
+    - cp ./config/application.php /var/www/honey-pearls-wordpress/config/
 
-# Instalacja zależności composer
-- cd /var/www/honey-pearls-wordpress/
-- composer install --no-dev --optimize-autoloader
+    # Instalacja zależności composer
+    - cd /var/www/honey-pearls-wordpress/
+    - composer install --no-dev --optimize-autoloader
 
-after_script:
-  - echo "Deploy zakończony."
+  after_script:
+    - echo "Deploy zakończony."

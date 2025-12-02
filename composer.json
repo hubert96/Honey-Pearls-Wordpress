@@ -42,7 +42,8 @@
     "wpackagist-theme/twentytwentyfive": "^1.0",
     "wpackagist-plugin/cloudflare": "^4.13",
     "wpackagist-plugin/amazon-s3-and-cloudfront": "^3.2",
-    "wpackagist-plugin/wordfence": "^8.1"
+    "wpackagist-plugin/wordfence": "^8.1",
+    "wpackagist-plugin/wp-mail-smtp": "^4.7"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",

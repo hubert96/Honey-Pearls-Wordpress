@@ -12,6 +12,7 @@ deploy_production:
     - apt update
     - apt install -y rsync
     - mkdir -p /var/www/honey-pearls-wordpress
+
     - cp "$ENV_FILE" /var/www/honey-pearls-wordpress/.env
 
     # skopiuj repo do katalogu docelowego

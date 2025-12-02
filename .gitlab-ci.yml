@@ -24,6 +24,8 @@ set_privileges:
   stage: privileges
   only:
     - main
+  tags:
+    - shell
   script:
     - mkdir -p /var/www/honey-pearls-wordpress/web/wp-content
     - chown -R www-data:www-data /var/www/honey-pearls-wordpress

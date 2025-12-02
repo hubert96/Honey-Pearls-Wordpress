@@ -11,7 +11,6 @@ deploy_production:
     # Tworzenie pliku .env z wartościami z GitLaba
     - apk add --no-cache rsync git unzip curl bash
     - mkdir -p /var/www/honey-pearls-wordpress
-    - mkdir /var/www/honey-pearls-wordpress/web/wp-content
     - cp "$ENV_FILE" /var/www/honey-pearls-wordpress/.env
   script:
     # skopiuj repo do katalogu docelowego
@@ -23,6 +22,7 @@ deploy_production:
     - cd /var/www/honey-pearls-wordpress && composer install --no-dev --optimize-autoloader
 
     # Opcjonalnie ustaw właściwe uprawnienia
+    - mkdir /var/www/honey-pearls-wordpress/web/wp-content
     - chown -R www-data:www-data /var/www/honey-pearls-wordpress
 
     - find /var/www/honey-pearls-wordpress/web/wp-content -type d -exec chmod 755 {} \;

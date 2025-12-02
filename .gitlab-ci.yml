@@ -24,11 +24,11 @@ deploy_production:
     - cd /var/www/honey-pearls-wordpress && composer install --no-dev --optimize-autoloader
 
     # Opcjonalnie ustaw właściwe uprawnienia
-#    - mkdir /var/www/honey-pearls-wordpress/web/wp-content
-#    - chown -R www-data:www-data /var/www/honey-pearls-wordpress
-#
-#    - find /var/www/honey-pearls-wordpress/web/wp-content -type d -exec chmod 755 {} \;
-#    - find /var/www/honey-pearls-wordpress/web/wp-content -type f -exec chmod 644 {} \;
+    - mkdir /var/www/honey-pearls-wordpress/web/wp-content
+    - chown -R www-data:www-data /var/www/honey-pearls-wordpress
+
+    - find /var/www/honey-pearls-wordpress/web/wp-content -type d -exec chmod 755 {} \;
+    - find /var/www/honey-pearls-wordpress/web/wp-content -type f -exec chmod 644 {} \;
 
   after_script:
     - echo "Deploy zakończony"

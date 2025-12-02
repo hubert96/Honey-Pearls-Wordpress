@@ -9,7 +9,7 @@ deploy_production:
     - local
   script:
     # Tworzenie pliku .env z wartościami z GitLaba
-    - apt-get update && apt-get install -y rsync unzip git curl
+    - apk add --no-cache rsync git unzip curl bash
     - mkdir -p /var/www/honey-pearls-wordpress
 
     - cp "$ENV_FILE" /var/www/honey-pearls-wordpress/.env

@@ -22,6 +22,7 @@ deploy_production:
     # Opcjonalnie ustaw właściwe uprawnienia
     - mkdir -p /var/www/honey-pearls-wordpress/web/wp-content
     - chown -R www-data:www-data /var/www/honey-pearls-wordpress
+    - chown www-data:www-data /var/www/honey-pearls-wordpress/.env
 
     - find /var/www/honey-pearls-wordpress/web/wp-content -type d -exec chmod 755 {} \;
     - find /var/www/honey-pearls-wordpress/web/wp-content -type f -exec chmod 644 {} \;

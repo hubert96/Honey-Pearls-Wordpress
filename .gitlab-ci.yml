@@ -12,6 +12,7 @@ deploy_production:
     - apk add --no-cache rsync git unzip curl bash
     - mkdir -p /var/www/honey-pearls-wordpress
     - cp "$ENV_FILE" /var/www/honey-pearls-wordpress/.env
+    - echo /var/www/honey-pearls-wordpress/.env
   script:
     # skopiuj repo do katalogu docelowego
     - rsync -av --exclude='.git' ./ /var/www/honey-pearls-wordpress/

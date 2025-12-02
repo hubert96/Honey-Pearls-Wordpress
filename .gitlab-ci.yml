@@ -1,6 +1,5 @@
 stages:
   - deploy
-  - privileges
 
 deploy_production:
   stage: deploy
@@ -18,19 +17,9 @@ deploy_production:
     - rsync -av --exclude='.git' ./ /var/www/honey-pearls-wordpress/
     # wejdź do katalogu głównego Bedrock i zainstaluj zależności
     - cd /var/www/honey-pearls-wordpress && composer install --no-dev --optimize-autoloader
+    - mkdir -p /var/www/honey-pearls-wordpress/web/wp-content
+    - find /var/www/honey-pearls-wordpress/web/wp-content -type d -exec chmod 755 {} \;
+    - find /var/www/honey-pearls-wordpress/web/wp-content -type f -exec chmod 644 {} \;
 
   after_script:
     - echo "Deploy zakończony"
-
-set_privileges:
-  stage: privileges
-  only:
-    - main
-  tags:
-    - shell
-  script:
-    - chmod 644 /var/www/honey-pearls-wordpress/.env
-    - find /var/www/honey-pearls-wordpress/web/wp-content -type d -exec chmod 755 {} \;
-    - find /var/www/honey-pearls-wordpress/web/wp-content -type f -exec chmod 644 {} \;
-  after_script:
-    - echo "Zmiana uprawnień zakończona"

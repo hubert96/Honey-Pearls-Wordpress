@@ -9,6 +9,7 @@ deploy_production:
     - local
   script:
     # Tworzenie pliku .env z wartościami z GitLaba
+    - mkdir -p /var/www/honey-pearls-wordpress
     - cp "$ENV_FILE" /var/www/honey-pearls-wordpress/.env
 
     # skopiuj repo do katalogu docelowego

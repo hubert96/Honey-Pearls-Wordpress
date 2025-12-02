@@ -8,7 +8,7 @@ deploy_production:
   tags:
     - local
   before_script:
-    # Tworzenie pliku .env z wartościami z GitLaba
+    - chown -R www-data:www-data /var/www/honey-pearls-wordpress
     - apk add --no-cache rsync git unzip curl bash
 
   script:
@@ -19,10 +19,10 @@ deploy_production:
     - cd /var/www/honey-pearls-wordpress && composer install --no-dev --optimize-autoloader
 
 
-    # Opcjonalnie ustaw właściwe uprawnienia
-    - mkdir -p /var/www/honey-pearls-wordpress/web/wp-content
-    - chown -R www-data:www-data /var/www/honey-pearls-wordpress
-    - chown www-data:www-data /var/www/honey-pearls-wordpress/.env
+#    # Opcjonalnie ustaw właściwe uprawnienia
+#    - mkdir -p /var/www/honey-pearls-wordpress/web/wp-content
+#    - chown -R www-data:www-data /var/www/honey-pearls-wordpress
+#    - chown www-data:www-data /var/www/honey-pearls-wordpress/.env
 
     - find /var/www/honey-pearls-wordpress/web/wp-content -type d -exec chmod 755 {} \;
     - find /var/www/honey-pearls-wordpress/web/wp-content -type f -exec chmod 644 {} \;

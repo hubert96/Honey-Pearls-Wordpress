@@ -19,5 +19,10 @@ deploy_production:
     # Zainstaluj zależności Composer w katalogu produkcyjnym
     - cd /var/www/honey-pearls-wordpress && composer install --no-dev --optimize-autoloader
 
+    # Opcjonalnie ustaw właściwe uprawnienia
+    - chown -R www-data:www-data /var/www/honey-pearls-wordpress
+    - find /var/www/honey-pearls-wordpress/web/wp-content -type d -exec chmod 755 {} \;
+    - find /var/www/honey-pearls-wordpress/web/wp-content -type f -exec chmod 644 {} \;
+
   after_script:
     - echo "Deploy zakończony"

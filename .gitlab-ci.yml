@@ -10,7 +10,7 @@ deploy_production:
     - docker
   before_script:
     - apk add --no-cache rsync git unzip curl bash
-    - chown -chown -R :www-editors /var/www/honey-pearls-wordpress
+    - chown -R :www-editors /var/www/honey-pearls-wordpress
   script:
     - cp "$ENV_FILE" /var/www/honey-pearls-wordpress/.env
     # skopiuj repo do katalogu docelowego

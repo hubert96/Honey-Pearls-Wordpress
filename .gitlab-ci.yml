@@ -9,7 +9,7 @@ deploy_production:
     - local
   script:
     # Tworzenie pliku .env z wartościami z GitLaba
-    - echo -e "DB_NAME='$DB_NAME'\nDB_USER='$DB_USER'\nDB_PASSWORD='$DB_PASSWORD'\nDB_HOST='$DB_HOST'\nWP_ENV='production'\nWP_HOME='https://honeypearls.co.uk'\nWP_SITEURL='https://honeypearls.co.uk/wp'" > /var/www/honey-pearls-wordpress/.env
+    - cp "$ENV_FILE" /var/www/honey-pearls-wordpress/.env
 
     # skopiuj repo do katalogu docelowego
     - rsync -av --exclude='.git' ./ /var/www/honey-pearls-wordpress/

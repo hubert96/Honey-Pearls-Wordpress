@@ -11,12 +11,12 @@ deploy_production:
     # Tworzenie pliku .env z wartościami z GitLaba
     - apk add --no-cache rsync git unzip curl bash
     - mkdir -p /var/www/honey-pearls-wordpress
-    - cp "$ENV_FILE" .env
-    - cat .env
 
   script:
     # skopiuj repo do katalogu docelowego
     - rsync -av --exclude='.git' ./ /var/www/honey-pearls-wordpress/
+    - cp "$ENV_FILE" /var/www/honey-pearls-wordpress/.env
+    - cat /var/www/honey-pearls-wordpress/.env
     # wejdź do katalogu głównego Bedrock i zainstaluj zależności
     - cd /var/www/honey-pearls-wordpress/ && composer install --no-dev --optimize-autoloader
 

@@ -1,0 +1,16 @@
+body{
+	--e-global-color-primary					: #121820;
+	--e-global-color-secondary					: #8B5E3C0D;
+	--e-global-color-text						: #575757;
+	--e-global-color-accent						: #8B5E3C;
+	--e-global-color-accentsecondary			: transparent;
+	--e-global-color-white						: #FFFFFF;
+	--e-global-color-black						: #000000;
+	--e-global-color-divider					: #1218201A;
+	--e-global-color-darkdivider				: #FFFFFF1A;
+	--e-global-color-background             	: #F3EFEB;
+	--e-global-typography-primary-font-family	: "Plus Jakarta Sans", sans-serif;
+	--e-global-typography-secondary-font-family	: "Lora", serif;
+	--e-global-typography-text-font-family		: "Plus Jakarta Sans", sans-serif;
+	--e-global-typography-accent-font-family    : "Plus Jakarta Sans", sans-serif;
+}

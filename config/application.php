@@ -166,3 +166,4 @@ if (!defined('ABSPATH')) {
 }
 
 define('FS_METHOD', 'direct');
+

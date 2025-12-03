@@ -43,7 +43,12 @@
     "wpackagist-plugin/cloudflare": "^4.13",
     "wpackagist-plugin/amazon-s3-and-cloudfront": "^3.2",
     "wpackagist-plugin/wordfence": "^8.1",
-    "wpackagist-plugin/wp-mail-smtp": "^4.7"
+    "wpackagist-plugin/wp-mail-smtp": "^4.7",
+    "wpackagist-plugin/contact-form-7": "^6.1",
+    "wpackagist-plugin/elementor": "^3.33",
+    "wpackagist-plugin/elementskit-lite": "^3.7",
+    "wpackagist-plugin/one-click-demo-import": "^3.4",
+    "wpackagist-plugin/woocommerce": "^10.3"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",

@@ -14,12 +14,12 @@ Text Domain: backeri-child
 }
 
 .ti-widget-layout {
-    height: 335px!important;
+    height: 355px!important;
 }
 
 .ti-layout-item {
     padding: 0;
-    height: 335px!important;
+    height: 355px!important;
 }
 
 .ti-widget-body {
@@ -28,5 +28,5 @@ Text Domain: backeri-child
 }
 
 .ti-widget-body img {
-    height: 335px!important;
+    height: 355px!important;
 }

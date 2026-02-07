@@ -8,3 +8,20 @@ Author URI: https://awaikenthemes.com/
 Version: 1.0.0
 Text Domain: backeri-child
 */
+
+.ti-widget-body {
+    overflow-y: hidden!important;
+    border-radius: 20px!important;
+}
+
+.ti-widget-layout {
+    height: 335px!important;
+}
+
+.ti-layout-item {
+    height: 335px!important;
+}
+
+.ti-widget-body img {
+    height: 335px!important;
+}

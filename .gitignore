@@ -3,6 +3,8 @@ web/app/plugins/*
 !web/app/plugins/.gitkeep
 !web/app/plugins/elementskit
 !web/app/plugins/backeri-theme-addons
+!web/app/plugins/social-photo-feed-widget
+!web/app/plugins/widgets-for-social-post-feed
 web/app/mu-plugins/*/
 web/app/themes/twentytwentyfive/
 web/app/upgrade

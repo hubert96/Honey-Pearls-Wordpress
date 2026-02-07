@@ -48,7 +48,8 @@
     "wpackagist-plugin/elementor": "^3.33",
     "wpackagist-plugin/elementskit-lite": "^3.7",
     "wpackagist-plugin/one-click-demo-import": "^3.4",
-    "wpackagist-plugin/woocommerce": "^10.3"
+    "wpackagist-plugin/woocommerce": "^10.3",
+    "wpackagist-plugin/wp-reviews-plugin-for-google": "^13.2"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",

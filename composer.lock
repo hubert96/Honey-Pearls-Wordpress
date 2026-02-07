@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6e376366db70b1d9e2700512f13e7d0b",
+    "content-hash": "425b2003257c6613fbbb7226654c940f",
     "packages": [
         {
             "name": "composer/installers",
@@ -1202,6 +1202,24 @@
             },
             "type": "wordpress-plugin",
             "homepage": "https://wordpress.org/plugins/wp-mail-smtp/"
+        },
+        {
+            "name": "wpackagist-plugin/wp-reviews-plugin-for-google",
+            "version": "13.2.7",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/wp-reviews-plugin-for-google/",
+                "reference": "tags/13.2.7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/wp-reviews-plugin-for-google.13.2.7.zip"
+            },
+            "require": {
+                "composer/installers": "^1.0 || ^2.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/wp-reviews-plugin-for-google/"
         },
         {
             "name": "wpackagist-theme/twentytwentyfive",

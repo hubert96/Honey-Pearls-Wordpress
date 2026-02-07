@@ -9,6 +9,10 @@ Version: 1.0.0
 Text Domain: backeri-child
 */
 
+.ti-widget {
+    margin: 0!important;
+}
+
 .ti-layout-container {
     margin-top: 0!important;
 }

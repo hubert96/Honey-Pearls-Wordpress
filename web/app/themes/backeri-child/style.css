@@ -9,9 +9,8 @@ Version: 1.0.0
 Text Domain: backeri-child
 */
 
-.ti-widget-body {
-    overflow-y: hidden!important;
-    border-radius: 20px!important;
+.ti-layout-container {
+    margin-top: 0!important;
 }
 
 .ti-widget-layout {
@@ -19,7 +18,13 @@ Text Domain: backeri-child
 }
 
 .ti-layout-item {
+    padding: 0;
     height: 335px!important;
+}
+
+.ti-widget-body {
+    overflow-y: hidden!important;
+    border-radius: 20px!important;
 }
 
 .ti-widget-body img {

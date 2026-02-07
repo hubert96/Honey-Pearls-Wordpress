@@ -11,29 +11,29 @@ Text Domain: backeri-child
 
 /* OVERWRITING SOCIAL POST ON MAIN PAGE WIDGET  */
 @media only screen and (min-width: 768px) {
-    .ti-widget {
+    .facebook-post .ti-widget {
         margin: 0!important;
     }
 
-    .ti-layout-container {
+    .facebook-post .ti-layout-container {
         margin-top: 0!important;
     }
 
-    .ti-widget-layout {
+    .facebook-post .ti-widget-layout {
         height: 355px!important;
     }
 
-    .ti-layout-item {
+    .facebook-post .ti-layout-item {
         padding: 0;
         height: 355px!important;
     }
 
-    .ti-widget-body {
+    .facebook-post .ti-widget-body {
         overflow-y: hidden!important;
         border-radius: 20px!important;
     }
 
-    .ti-widget-body img {
+    .facebook-post .ti-widget-body img {
         height: 355px!important;
     }
 }

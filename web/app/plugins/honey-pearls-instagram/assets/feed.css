@@ -95,3 +95,10 @@
 /* A full-width post, without the extra branding and navigation bars. */
 .hp-ig>.hp-ig__header,.hp-ig>.hp-ig__controls,.hp-ig a.hp-ig__add-comment,.hp-ig a.hp-ig__comments{display:none!important}
 .hp-ig .hp-ig__photo img{width:100%;height:100%;object-fit:cover!important;object-position:center}
+
+/* Homepage card spacing: one mobile gutter, balanced desktop inset. */
+.elementor-6541 .elementor-element.elementor-element-0c16795:has(.hp-ig){padding:40px}
+.elementor-6541 .elementor-element-0c16795 .hp-ig--carousel{max-width:none}
+@media(max-width:767px){
+ .elementor-6541 .elementor-element.elementor-element-0c16795:has(.hp-ig){padding:0}
+}

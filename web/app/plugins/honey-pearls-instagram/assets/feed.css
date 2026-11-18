@@ -65,7 +65,7 @@
 .hp-ig[data-hp-density=low] .hp-ig__likes,.hp-ig[data-hp-density=low] a.hp-ig__comments{margin-bottom:4px}
 
 /* Keep theme/Elementor button presets outside this widget's controls. */
-.hp-ig.hp-ig--carousel{border-radius:24px;isolation:isolate}
+.hp-ig.hp-ig--carousel{border:0;border-radius:24px;isolation:isolate}
 .hp-ig .hp-ig__controls{gap:8px;padding-inline:12px;min-width:0;overflow:hidden}
 .hp-ig .hp-ig__controls button,.hp-ig .hp-ig__close{
  appearance:none!important;min-width:0!important;min-height:0!important;max-width:none!important;

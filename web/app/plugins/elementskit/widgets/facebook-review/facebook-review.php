@@ -34,14 +34,48 @@ class ElementsKit_Widget_Facebook_Review extends Widget_Base {
 		return 'https://wpmet.com/doc/facebook-review/';
 	}
 
+	public function get_style_depends() {
+		return ['ekit-social-reviews-common', 'ekit-layout-responsive', 'ekit-pro-facebook-review', 'swiper'];
+	}
+
+	public function get_script_depends() {
+		return ['ekit-pro-facebook-review', 'swiper'];
+	}
+
     protected function is_dynamic_content(): bool {
         return false;
     }
+
+	/**
+	 * The rating stars are static icons, so their SVG is printed inline instead of
+	 * being left as an ekiticons <i> tag. With the inline SVG render option on the
+	 * ekiticons font is not enqueued on the frontend, so those tags render blank.
+	 */
+	private function get_star_svg($star_icon) {
+		$paths = [
+			'icon-star-1' => 'M32 12.967c0-0.474-0.359-0.769-1.077-0.885l-9.654-1.404-4.327-8.75c-0.243-0.526-0.558-0.788-0.942-0.788s-0.699 0.263-0.942 0.788l-4.327 8.75-9.654 1.404c-0.718 0.116-1.077 0.41-1.077 0.885 0 0.269 0.16 0.577 0.481 0.923l7 6.808-1.654 9.615c-0.026 0.18-0.038 0.308-0.038 0.385 0 0.269 0.067 0.497 0.202 0.683s0.336 0.279 0.606 0.279c0.231 0 0.487-0.077 0.769-0.231l8.634-4.539 8.635 4.539c0.27 0.154 0.526 0.231 0.769 0.231 0.257 0 0.452-0.093 0.587-0.279s0.201-0.413 0.201-0.683c0-0.166-0.006-0.295-0.019-0.385l-1.654-9.615 6.981-6.808c0.334-0.333 0.5-0.641 0.5-0.923z',
+			'icon-star1'  => 'M24.8 30.4c-0.131 0-0.263-0.032-0.383-0.098l-8.417-4.591-8.417 4.591c-0.269 0.147-0.597 0.127-0.847-0.050s-0.376-0.482-0.325-0.783l1.532-9.194-6.109-6.109c-0.212-0.212-0.288-0.524-0.196-0.81s0.335-0.496 0.63-0.545l9.198-1.533 3.818-7.636c0.136-0.271 0.412-0.442 0.716-0.442s0.58 0.171 0.716 0.442l3.818 7.636 9.198 1.533c0.296 0.049 0.539 0.26 0.63 0.545s0.016 0.598-0.196 0.81l-6.109 6.109 1.532 9.194c0.050 0.302-0.076 0.606-0.325 0.783-0.138 0.098-0.301 0.148-0.464 0.148zM16 24c0.132 0 0.264 0.033 0.383 0.098l7.358 4.013-1.33-7.98c-0.043-0.255 0.041-0.514 0.223-0.697l5.301-5.301-8.067-1.344c-0.253-0.042-0.47-0.202-0.584-0.431l-3.284-6.569-3.284 6.569c-0.114 0.229-0.332 0.389-0.584 0.431l-8.067 1.344 5.301 5.301c0.183 0.183 0.266 0.442 0.223 0.697l-1.33 7.98 7.358-4.013c0.119-0.065 0.251-0.098 0.383-0.098z',
+		];
+
+		if(empty($paths[$star_icon])) {
+			return '';
+		}
+
+		// Sized and coloured off the parent so the existing star controls keep working.
+		$style = 'width:1em;height:1em;fill:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle;';
+
+		$svg = '<svg class="icon ' . esc_attr($star_icon) . '" style="' . esc_attr($style) . '"';
+		$svg .= ' viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">';
+		$svg .= '<path d="' . esc_attr($paths[$star_icon]) . '"></path>';
+		$svg .= '</svg>';
+
+		return $svg;
+	}
+
 	private function get_stars_rating($rating) {
 		$htm = '';
 		for($i = 1; $i <= 5; $i++) {
-			$star_icon = $i <= $rating ? 'icon-star-1' : 'icon-star1';
-			$htm .= '<i class="icon ' . esc_attr($star_icon) . '"></i>';
+			$htm .= $this->get_star_svg($i <= $rating ? 'icon-star-1' : 'icon-star1');
 		}
 
 		return $htm;
@@ -52,9 +86,9 @@ class ElementsKit_Widget_Facebook_Review extends Widget_Base {
 		if($additional_flag === true && $len > $max_len) {
 			return
 				'<span>' . substr($txt, 0, $max_len) . '</span>' .
-				'<span 
-                class="more" 
-                data-collapsed="true" 
+				'<span
+                class="more"
+                data-collapsed="true"
                 data-text="' . $txt . '"
             > ...More
             </span>';
@@ -498,6 +532,18 @@ class ElementsKit_Widget_Facebook_Review extends Widget_Base {
 				'type'         => Controls_Manager::SWITCHER,
 				'return_value' => 'yes',
 				'default'      => 'yes',
+			]
+		);
+
+		// ekit_review_card_hide_profile
+		$this->add_control(
+			'ekit_review_card_hide_profile',
+			[
+				'label'        => esc_html__('Hide profile of review', 'elementskit'),
+				'type'         => Controls_Manager::SWITCHER,
+				'return_value' => 'yes',
+				'default'      => '',
+				'description'  => esc_html__('Facebook no longer returns who wrote a review, so every card falls back to a placeholder picture and the name Anonymous. Turn this on to leave both out.', 'elementskit'),
 			]
 		);
 
@@ -1304,7 +1350,7 @@ class ElementsKit_Widget_Facebook_Review extends Widget_Base {
 					'padding:{{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				'{{WRAPPER}} .ekit-review-card.ekit-review-card-facebook .ekit-review-card--top-right-logo' =>
 					"top:{{TOP}}{{UNIT}}; right:{{RIGHT}}{{UNIT}};",
-				// '{{WRAPPER}} .ekit-review-card-facebook.ekit-review-card-bubble:after' => 
+				// '{{WRAPPER}} .ekit-review-card-facebook.ekit-review-card-bubble:after' =>
 				// 	"left:calc({{LEFT}}{{UNIT}} + 10px);",
 				'{{WRAPPER}} .ekit-review-card-facebook .ekit-review-card--thumbnail'                       =>
 					"margin-top:{{LEFT}}{{UNIT}};",
@@ -1542,14 +1588,6 @@ class ElementsKit_Widget_Facebook_Review extends Widget_Base {
 			['shadow', 'margin', 'typography']
 		);
 
-		$this->add_group_control(
-			Group_Control_Typography::get_type(), [
-			'name'     => 'reviewer_stars_typography',
-			'selector' =>
-				'{{WRAPPER}} .ekit-review-card-facebook .ekit-review-card--stars, {{WRAPPER}} .ekit-review-card-facebook .ekit-review-card--stars .icon',
-			]
-		);
-
 		$this->add_responsive_control(
 			'reviewer_stars_spacing', [
 				'label'      => __('Icons Spacing', 'elementskit'),
@@ -1676,7 +1714,7 @@ class ElementsKit_Widget_Facebook_Review extends Widget_Base {
 		// Overview average rating text
 		$this->control_text(
 			'ekit_fb_review_overview_rating_stars',
-			'.ekit-review-card-facebook.ekit-review-card-overview .ekit-review-card--stars i',
+			'.ekit-review-card-facebook.ekit-review-card-overview .ekit-review-card--stars .icon',
 			['margin', 'shadow', 'typography']
 		);
 
@@ -1792,7 +1830,7 @@ class ElementsKit_Widget_Facebook_Review extends Widget_Base {
 
 		// ekit_fb_review_posted_on_icon_color
 		$this->add_control(
-			'ekit_fb_review_posted_on_icon_color', 
+			'ekit_fb_review_posted_on_icon_color',
 			[
 				'label'     => __('Icon Color', 'elementskit'),
 				'type'      => Controls_Manager::COLOR,
@@ -2324,14 +2362,24 @@ class ElementsKit_Widget_Facebook_Review extends Widget_Base {
 		$pg_id = $config['pg_id'];
 		$pg_tok = $config['pg_tok'];
 
+		// The API responses are cached, not the markup. Once a good response has
+		// been stored nothing is fetched again until the cache is cleared from the
+		// settings, so a token that expires later can never replace the reviews
+		// with an error meant for the site owner.
 		$overall = Handler::get_fb_page_overall_rating($pg_id, $pg_tok);
 
-		if( !isset($overall->error) && isset($overall['success']) && $overall['success'] == true ) :
+		if(!empty($overall['success'])) :
 			$settings = $this->get_settings_for_display();
 			extract($settings);
 
 			$handler_url = Handler::get_url();
 			$page_Info = $overall['dt'];
+
+			// The Facebook URL expires, so the picture is served from the local mirror.
+			if(!empty($page_Info['picture'])) {
+				$page_Info['picture'] = Handler::cached_img_url($page_Info['picture']);
+			}
+
 			$reviews = Handler::get_fb_reviews($pg_id, $pg_tok);
 
 			if(!empty($reviews->error)) {
@@ -2345,11 +2393,24 @@ class ElementsKit_Widget_Facebook_Review extends Widget_Base {
 				return '';
 			}
 
+			if(!empty($reviews->data) && isset($ekit_fbp_review_only_positive) && $ekit_fbp_review_only_positive == 'positive') {
+				$reviews->data = array_filter($reviews->data, function ($item) {
+					return $item->recommendation_type == 'positive';
+				});
+			}
+
+			// rating_count only counts the old star ratings, so it stays 0 on a page
+			// that has recommendations instead. Fall back to the reviews on hand.
+			if(empty($page_Info['count']) && !empty($reviews->data)) {
+				$page_Info['count'] = count($reviews->data);
+			}
+
 			//=================================
 
 			$overview = isset($ekit_review_overview_card) && $ekit_review_overview_card == 'yes';
 			$allOverviews = isset($ekit_review_show_all_overviews) && $ekit_review_show_all_overviews == 'yes';
 			$thumbnail_badge = isset($ekit_review_card_thumbnail_badge) && $ekit_review_card_thumbnail_badge == 'yes';
+			$hide_profile = isset($ekit_review_card_hide_profile) && $ekit_review_card_hide_profile == 'yes';
 			$border = isset($ekit_review_card_border_type_border) && $ekit_review_card_border_type_border;
 			$align_content_center = $ekit_review_card_align_center == 'yes' && $ekit_review_card_type != 'bubble' && $ekit_review_styles != 'default';
 			$format_comment = $ekit_review_card_appearance == 'grid' || $ekit_review_styles == 'slideshow';
@@ -2394,12 +2455,6 @@ class ElementsKit_Widget_Facebook_Review extends Widget_Base {
 					}
 
 					if(!empty($reviews->data)) :
-
-						if($ekit_fbp_review_only_positive == 'positive') {
-							$reviews->data = array_filter($reviews->data, function ($item) {
-								return $item->recommendation_type == 'positive';
-							});
-						}
 
 						?>
 						<div class="ekit-review-cards <?php echo "ekit-review-cards-" . esc_attr($ekit_review_card_appearance); ?>">
@@ -2471,7 +2526,7 @@ class ElementsKit_Widget_Facebook_Review extends Widget_Base {
 												<?php
 											endforeach; ?>
 										</div>
-									
+
 										<?php if(!empty($ekit_review_slideshow_show_dot)) : ?>
 											<div class="swiper-pagination"></div>
 										<?php endif; ?>
@@ -2535,10 +2590,13 @@ class ElementsKit_Widget_Facebook_Review extends Widget_Base {
 
             </div>
             <!-- End Markup -->
-		<?php 
+			<?php
+
 		else :
+
 			echo esc_html__('Page information could not be retrieved!', 'elementskit') . '<br/><br/>';
-			echo esc_html($overall->error->message, 'elementskit');
+			echo esc_html(empty($overall['msg']) ? '' : $overall['msg']);
 		endif;
 	}
+
 }

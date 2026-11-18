@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 /**
  * Theme updater admin page and functions.
  *
@@ -14,7 +17,6 @@ class AWAIKEN_Theme_Updater_Admin {
 	 * @type string
 	 */
 	protected $remote_api_url = null;
-	protected $tf_pc_val_api_url = null;
 	protected $theme_slug     = null;
 	protected $version        = null;
 	protected $author         = null;
@@ -36,8 +38,7 @@ class AWAIKEN_Theme_Updater_Admin {
 			$config,
 			array(
 				'remote_api_url' => '',
-				'tf_pc_val_api_url' => '',
-				'theme_slug'     => get_template(),
+				'theme_slug'     => '',
 				'item_name'      => '',
 				'license'        => '',
 				'version'        => '',
@@ -60,7 +61,6 @@ class AWAIKEN_Theme_Updater_Admin {
 
 		// Set config arguments
 		$this->remote_api_url = $config['remote_api_url'];
-		$this->tf_pc_val_api_url = $config['tf_pc_val_api_url'];
 		$this->item_name      = $config['item_name'];
 		$this->theme_slug     = sanitize_key( $config['theme_slug'] );
 		$this->version        = $config['version'];
@@ -84,11 +84,7 @@ class AWAIKEN_Theme_Updater_Admin {
 		add_action( 'admin_init', array( $this, 'license_action' ) );
 		add_action( 'admin_menu', array( $this, 'license_menu' ) );
 		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
-		add_action('admin_init', array( $this, 'admin_notices_dismissed' ) );
-
-		if(AWAIKEN_MP == 'AT') {
-			//add_action( 'update_option_' . $this->theme_slug . '_license_key', array( $this, 'activate_license' ), 10, 2 );
-		}
+		add_action( 'update_option_' . $this->theme_slug . '_license_key', array( $this, 'activate_license' ), 10, 2 );
 		add_filter( 'http_request_args', array( $this, 'disable_wporg_request' ), 5, 2 );
 
 	}
@@ -137,9 +133,9 @@ class AWAIKEN_Theme_Updater_Admin {
 	 * since 1.0.0
 	 */
 	public function admin_notices() {
-		// Check if the current page is the "license" page
-		if (isset($_GET['page']) && $_GET['page'] === $this->theme_slug . '-license') {
-			return; // Do not display notices
+		// Check if the current page is the "license" page (either location)
+		if ( isset( $_GET['page'] ) && in_array( $_GET['page'], array( $this->theme_slug . '-license', 'at-license' ), true ) ) {
+			return;
 		}
 		
 		$status  = get_option( $this->theme_slug . '_license_key_status', false );
@@ -150,70 +146,17 @@ class AWAIKEN_Theme_Updater_Admin {
 		
 		$strings = $this->strings;
 
-		$user_id = get_current_user_id();
-		$meta_key_dismiss = $this->theme_slug . '_license_notice_dismissed';
-		$meta_key_later = $this->theme_slug . '_license_notice_maybe_later';
-		$current_time = time();
-		$show_notice = true;
-
-		// Check if the notice is permanently dismissed
-		if (get_user_meta($user_id, $meta_key_dismiss, true)) {
-			$show_notice = false;
-		}
-
-		// Check if "Maybe Later" was clicked and if the notice should reappear
-		$maybe_later_time = get_user_meta($user_id, $meta_key_later, true);
-		if ($maybe_later_time && $current_time < $maybe_later_time) {
-			$show_notice = false;
-		}
-
-		if ($show_notice) {
-			
-			// Get the current page URL to redirect back
-			$current_url = esc_url_raw(add_query_arg([], $GLOBALS['_SERVER']['REQUEST_URI']));
-			
-			
-			// Generate a nonce for security
-			$dismiss_url = add_query_arg(
-				[$this->theme_slug . '-license-notice-dismissed' => '1', '_wpnonce' => wp_create_nonce($this->theme_slug . '_license_dismiss_notice')],
-				$current_url
-			);
-			$later_url = add_query_arg(
-				[$this->theme_slug . '-license-notice-maybe-later' => '1', '_wpnonce' => wp_create_nonce($this->theme_slug . '_license_maybe_later')],
-				$current_url
-			);
+		$show_dashboard = apply_filters( 'at_show_dashboard', true );
+			$license_url    = $show_dashboard
+				? admin_url( 'admin.php?page=at-license' )
+				: admin_url( 'themes.php?page=' . $this->theme_slug . '-license' );
 
 			echo '<div class="notice notice-info is-dismissible at-license-activation-info">';
 			echo '<p><strong>' . $strings['activate-license-info'] . '</strong></p>';
-			echo '<p><a href="' . esc_url(admin_url('themes.php?page=' . $this->theme_slug . '-license')) . '">' . $strings['activate-license'] . '</a></p>';
+			echo '<p><a href="' . esc_url( $license_url ) . '">' . $strings['activate-license'] . '</a></p>';
 			echo '</div>';
-		}
-	}
-
-	// Hook to handle notice actions
-	public function admin_notices_dismissed() {
 		
-		$current_url = esc_url_raw(remove_query_arg([ 
-				$this->theme_slug . '-license-notice-dismissed',
-				$this->theme_slug . '-license-notice-maybe-later',
-				'_wpnonce'
-			], $GLOBALS['_SERVER']['REQUEST_URI']));
-		
-		if (isset($_GET[$this->theme_slug . '-license-notice-dismissed']) && check_admin_referer($this->theme_slug . '_license_dismiss_notice')) {
-			$user_id = get_current_user_id();
-			update_user_meta($user_id, $this->theme_slug . '_license_notice_dismissed', 1);
-			wp_redirect($current_url);
-			exit;
-		}
-
-		if (isset($_GET[$this->theme_slug . '-license-notice-maybe-later']) && check_admin_referer($this->theme_slug . '_license_maybe_later')) {
-			$user_id = get_current_user_id();
-			update_user_meta($user_id, $this->theme_slug . '_license_notice_maybe_later', strtotime('+1 week'));
-			wp_redirect($current_url);
-			exit;
-		}
 	}
-
 
 	/**
 	 * Adds a menu item for the theme license under the appearance menu.
@@ -224,133 +167,131 @@ class AWAIKEN_Theme_Updater_Admin {
 
 		$strings = $this->strings;
 
-		add_theme_page(
-			$strings['theme-license'],
-			$strings['theme-license'],
-			'manage_options',
-			$this->theme_slug . '-license',
-			array( $this, 'license_page' )
-		);
-		
-		add_theme_page(
-			'License Failed',
-			'License Failed',
-			'manage_options',
-			'at-license-activation-failed',
-			array( $this, 'license_activation_failed_page' )
-		);
-		
-	}
-	
-	/**
-	 * Outputs the markup used on the theme license failed page.
-	 *
-	 */
-	public function license_activation_failed_page() {
-		?>
-		<div class="wrap">
-			<h2><?php _e( 'License activation page failed to load', 'backeri' ); ?></h2>
-			<style>
-			.at-license-activation-info,
-			#setting-error-tgmpa
-			{
-				display:none;
-			}
-			</style>
-		</div>
-		<div class="notice notice-info is-dismissible">
-		<p><?php _e( 'Please contact us at our email support@awaiken.com and provide the following details. Our team will assist you in resolving the issue.', 'backeri' ); ?></p>
-		<ol>
-			<li><?php _e( 'Item purchase code', 'backeri' ); ?></li>
-			<li><?php _e( 'Server IP address', 'backeri' ); ?></li>
-			<li><?php _e( 'Site URL', 'backeri' ); ?></li>
-		</ol>
-		</div>
-		<?php 
+		$show_dashboard = apply_filters( 'at_show_dashboard', true );
+
+		if ( $show_dashboard ) {
+			// Dashboard is visible: license lives under the Theme Dashboard menu, hide it from Appearance.
+			add_submenu_page( // phpcs:ignore WPThemeReview.PluginTerritory.NoAddAdminPages.add_menu_pages_add_submenu_page
+				'at-dashboard',
+				$strings['theme-license'],
+				$strings['theme-license'],
+				'manage_options',
+				'at-license',
+				array( $this, 'license_page_dashboard' )
+			);
+		} else {
+			// Dashboard is hidden (white-label): expose license under Appearance instead.
+			add_theme_page(
+				$strings['theme-license'],
+				$strings['theme-license'],
+				'manage_options',
+				$this->theme_slug . '-license',
+				array( $this, 'license_page' )
+			);
+		}
+
 	}
 
 	/**
-	 * Outputs the markup used on the theme license page.
+	 * Outputs the license page using the Theme Dashboard layout (header + form + footer).
+	 */
+	public function license_page_dashboard() {
+		global $at_theme_dashboard;
+		if ( $at_theme_dashboard ) {
+			$at_theme_dashboard->license_page_template();
+		}
+	}
+
+	/**
+	 * Outputs the markup used on the Appearance > Theme License page.
 	 *
 	 * since 1.0.0
 	 */
 	public function license_page() {
-
 		$strings = $this->strings;
-
-		$license = trim( get_option( $this->theme_slug . '_license_key' ) );
-		
-		$_license_message  = get_option( $this->theme_slug . '_license_message', false );
-
-		// Checks license status to display under license key
-		if ( ! $license ) {
-			if(AWAIKEN_MP == 'TF') {
-				$message = sprintf( $strings['enter-key-tf'], 'https://help.market.envato.com/hc/en-us/articles/202822600-Where-Is-My-Purchase-Code' );
-			}
-			else{
-				$message = $strings['enter-key'];
-			}
-		} else {
-			// delete_transient( $this->theme_slug . '_license_message' );
-			if ( ! get_transient( $this->theme_slug . '_license_message', false ) ) {
-				set_transient( $this->theme_slug . '_license_message', $this->check_license(), ( 60 * 60 * 24 ) );
-			} 
-			
-			$message = get_transient( $this->theme_slug . '_license_message' );
-		}
-		$status  = get_option( $this->theme_slug . '_license_key_status', false );
 		?>
 		<div class="wrap">
 			<h2><?php echo esc_html( $strings['theme-license'] ); ?></h2>
-			<form method="post" action="options.php">
+			<?php $this->render_license_form( 'appearance' ); ?>
+		</div>
+		<?php
+	}
 
-				<?php settings_fields( $this->theme_slug . '-license' ); ?>
+	/**
+	 * Renders only the license form — used both by the Appearance page and the dashboard layout.
+	 *
+	 * @param string $origin 'appearance' or 'dashboard'
+	 */
+	public function render_license_form( $origin = 'appearance' ) {
 
-				<table class="form-table">
-					<tbody>
+		$strings = $this->strings;
 
-						<tr valign="top">
-							<th scope="row" valign="top">
-								<?php echo esc_html($strings['license-key']); ?>
-							</th>
-							<td>
-								<input id="<?php echo esc_attr( $this->theme_slug ); ?>_license_key" name="<?php echo esc_attr($this->theme_slug); ?>_license_key" type="text" class="regular-text" value="<?php echo esc_attr( $license ); ?>" />
-								<p class="description">
-									<?php echo wp_kses_post($message); ?>
-									<?php 
-										$status_msg =  ($status == 'pending-active')?$strings['pending-active']:'';
-										echo esc_html($status_msg);
-									?>
-								</p>
-							</td>
-						</tr>
+		$this->render_api_error_notice();
 
-						<?php if ( $license && in_array( $status, array('valid', 'pending-active', 'inactive', 'site_inactive')) ) { ?>
-						<tr valign="top">
-							<th scope="row" valign="top">
-								<?php echo esc_html( $strings['license-action'] ); ?>
-							</th>
-							<td>
+		$license = trim( get_option( $this->theme_slug . '_license_key' ) );
+
+		if ( ! $license ) {
+			$message = sprintf( $strings['enter-key'], 'https://docs.awaikenthemes.com/how-to-get-license-key/' );
+		} else {
+			if ( ! get_transient( $this->theme_slug . '_license_message', false ) ) {
+				set_transient( $this->theme_slug . '_license_message', $this->check_license(), ( 60 * 60 * 24 ) );
+			}
+			$message = get_transient( $this->theme_slug . '_license_message' );
+		}
+		
+		$status  = get_option( $this->theme_slug . '_license_key_status', false );
+		
+		?>
+		<form method="post" class="license-form" action="options.php">
+
+			<?php settings_fields( $this->theme_slug . '-license' ); ?>
+			<input type="hidden" name="at_license_origin" value="<?php echo esc_attr( $origin ); ?>" />
+
+			<table class="form-table">
+				<tbody>
+
+					<tr valign="top">
+						<th scope="row" valign="top">
+							<?php echo esc_html( $strings['license-key'] ); ?>
+						</th>
+						<td>
+							<input id="<?php echo esc_attr( $this->theme_slug ); ?>_license_key" name="<?php echo esc_attr( $this->theme_slug ); ?>_license_key" type="text" class="regular-text" value="<?php echo esc_attr( $license ); ?>" />
+							<p class="description">
+								<?php echo wp_kses_post( $message ); ?>
 								<?php
-								wp_nonce_field( $this->theme_slug . '_nonce', $this->theme_slug . '_nonce' );
-								if ( 'valid' === $status ) {
-									?>
-									<input type="submit" class="button-secondary" name="<?php echo esc_attr( $this->theme_slug ); ?>_license_deactivate" value="<?php echo esc_attr( $strings['deactivate-license'] ); ?>"/>
-								<?php 
-								} 
-								else if ( in_array( $status, array('pending-active', 'inactive', 'site_inactive'))  ) { ?>
-									<input type="submit" class="button-secondary" name="<?php echo esc_attr( $this->theme_slug ); ?>_license_activate" value="<?php echo esc_attr( $strings['activate-license'] ); ?>"/>
-									<?php
-								}
+								$status_msg = ( $status === 'pending-active' ) ? $strings['pending-active'] : '';
+								echo esc_html( $status_msg );
 								?>
-							</td>
-						</tr>
-						<?php } ?>
+							</p>
+						</td>
+					</tr>
 
-					</tbody>
-				</table>
-				<?php submit_button(); ?>
-			</form>
+					<?php if ( $license ) { ?>
+					<tr valign="top">
+						<th scope="row" valign="top">
+							<?php echo esc_html( $strings['license-action'] ); ?>
+						</th>
+						<td>
+							<?php
+							wp_nonce_field( $this->theme_slug . '_nonce', $this->theme_slug . '_nonce' );
+							if ( 'valid' === $status ) {
+								?>
+								<input type="submit" class="button-secondary" name="<?php echo esc_attr( $this->theme_slug ); ?>_license_deactivate" value="<?php echo esc_attr( $strings['deactivate-license'] ); ?>"/>
+								<?php
+							} else {
+								?>
+								<input type="submit" class="button-secondary" name="<?php echo esc_attr( $this->theme_slug ); ?>_license_activate" value="<?php echo esc_attr( $strings['activate-license'] ); ?>"/>
+								<?php
+							}
+							?>
+						</td>
+					</tr>
+					<?php } ?>
+
+				</tbody>
+			</table>
+			<?php submit_button(); ?>
+		</form>
 		<?php
 	}
 
@@ -365,6 +306,7 @@ class AWAIKEN_Theme_Updater_Admin {
 			$this->theme_slug . '_license_key',
 			array( $this, 'sanitize_license' )
 		);
+
 	}
 
 	/**
@@ -397,18 +339,10 @@ class AWAIKEN_Theme_Updater_Admin {
 	 * @return array $response decoded JSON response.
 	 */
 	public function get_api_response( $api_params ) {
-		
-		if(AWAIKEN_MP == 'TF') { 
-			$url	=	$this->tf_pc_val_api_url;
-		}
-		else{
-			$url	=	$this->remote_api_url;
-		}
 
-		// Call the custom API.
 		$verify_ssl = (bool) apply_filters( 'awaiken_sl_api_request_verify_ssl', true );
 		$response   = wp_remote_post(
-			$url,
+			$this->remote_api_url,
 			array(
 				'timeout'   => 15,
 				'sslverify' => $verify_ssl,
@@ -416,26 +350,146 @@ class AWAIKEN_Theme_Updater_Admin {
 			)
 		);
 		
-		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
-			$response_code = wp_remote_retrieve_response_code( $response );
-			$redirect =  admin_url( 'themes.php?page=at-license-activation-failed&code='.urlencode( $response_code ));
-			echo '<script type="text/javascript">';
-			echo 'window.location.href = "' .  $redirect . '";';
-			echo '</script>';
-			exit;
+		//print_r($response);
+		
+		if ( is_wp_error( $response ) ) {
+			// cURL-level failure (timeout, DNS, SSL) — customer's server can't reach us.
+			set_transient( $this->theme_slug . '_license_api_error', 'client_error', 60 );
+		} elseif ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
+			// Our server returned a non-200 (e.g. 403, 500).
+			set_transient( $this->theme_slug . '_license_api_error', 'server_error', 60 );
+		} else {
+			delete_transient( $this->theme_slug . '_license_api_error' );
 		}
-
+		
 		return $response;
 	}
 
 	/**
-	 * Activates the license key.
-	 *
-	 * @since 1.0.0
+	 * Renders a connection-error notice if the last API call failed.
+	 * Called at the top of render_license_form() so it shows inline on the license page.
 	 */
+	private function render_api_error_notice() {
+		$error = get_transient( $this->theme_slug . '_license_api_error' );
+		if ( ! $error ) {
+			return;
+		}
+		delete_transient( $this->theme_slug . '_license_api_error' );
+		?>
+		<div class="alf-box <?php echo  esc_attr( $error === 'client_error' ? 'alf-their-issue' : 'alf-our-issue' ); ?>" style="margin-bottom:16px;">
+			<?php if ( $error === 'client_error' ) : ?>
+				<p>&#x1F7E0; <?php _e( 'Your server is unable to make an outbound connection to our server. This is usually caused by a firewall or network restriction on your hosting environment.', 'backeri' ); ?></p>
+				<p><strong><?php _e( 'Please contact your hosting provider and share the following:', 'backeri' ); ?></strong></p>
+				<ol>
+					<li><?php _e( 'My WordPress site cannot make outbound HTTPS (cURL) connections to external URLs.', 'backeri' ); ?></li>
+					<li><?php printf( __( 'Please whitelist outbound connections to: <code>%s</code>', 'backeri' ), esc_html( parse_url( $this->remote_api_url, PHP_URL_HOST ) ) ); ?></li>
+					<li><?php _e( 'Error: cURL connection timed out or failed on port 443.', 'backeri' ); ?></li>
+				</ol>
+			<?php elseif ( $error === 'server_error' ) : ?>
+				<p>&#x1F534; <?php _e( 'Please try again in a few minutes. If the issue persists, please contact our support team at support@awaiken.com and include the details below.', 'backeri' ); ?></p>
+				<ol>
+					<li><?php _e( 'Your license key', 'backeri' ); ?></li>
+					<li><?php _e( 'Your server IP address', 'backeri' ); ?></li>
+					<li><?php _e( 'Your site URL', 'backeri' ); ?></li>
+				</ol>
+			<?php endif; ?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Builds a human-readable status message from a decoded EDD license API response object.
+	 * Used by both activate_license() and check_license() to avoid duplicating logic.
+	 *
+	 * @param object $license_data Decoded JSON response from the EDD API.
+	 * @return string
+	 */
+	private function build_license_message( $license_data ) {
+
+		$strings    = $this->strings;
+		$renew_link = '';
+		$expires    = false;
+
+		if ( isset( $license_data->expires ) && 'lifetime' !== $license_data->expires ) {
+			$expires    = date_i18n( get_option( 'date_format' ), strtotime( $license_data->expires, current_time( 'timestamp' ) ) );
+			$renew_link = '<a href="' . esc_url( $this->get_renewal_link() ) . '" target="_blank">' . $strings['renew'] . '</a>';
+		} elseif ( isset( $license_data->expires ) && 'lifetime' === $license_data->expires ) {
+			$expires = 'lifetime';
+		}
+
+		$site_count    = isset( $license_data->site_count )    ? $license_data->site_count    : '';
+		$license_limit = isset( $license_data->license_limit ) ? $license_data->license_limit : '';
+
+		if ( 0 === $license_limit ) {
+			$license_limit = $strings['unlimited'];
+		}
+
+		switch ( $license_data->license ) {
+			case 'valid':
+				$message = $strings['license-key-is-active'] . ' ';
+				if ( $expires && 'lifetime' !== $expires ) {
+					$message .= sprintf( $strings['expires%s'], $expires ) . ' ';
+				}
+				if ( 'lifetime' === $expires ) {
+					$message .= $strings['expires-never'] . ' ';
+				}
+				if ( $site_count && $license_limit ) {
+					$message .= sprintf( $strings['%1$s/%2$-sites'], $site_count, $license_limit );
+				}
+				break;
+
+			case 'expired':
+				$message = $expires
+					? sprintf( $strings['license-key-expired-%s'], $expires )
+					: $strings['license-key-expired'];
+				if ( $renew_link ) {
+					$message .= ' ' . $renew_link;
+				}
+				break;
+
+			case 'invalid':
+			case 'invalid_item_id':
+			case 'item_name_mismatch':
+				$message = $strings['license-key-invalid'];
+				break;
+
+			case 'inactive':
+				$message = $strings['license-is-inactive'];
+				break;
+
+			case 'disabled':
+				$message = $strings['license-key-is-disabled'];
+				break;
+
+			case 'site_inactive':
+				$message = $strings['site-is-inactive'];
+				break;
+
+			case 'error':
+			default:
+				$message = $strings['license-status-unknown'];
+				break;
+		}
+
+		return $message;
+	}
+
+	/**
+	 * Returns the URL of the license page based on where the form was submitted from.
+	 */
+	private function get_license_page_url() {
+		$from_dashboard = isset( $_POST['at_license_origin'] ) && $_POST['at_license_origin'] === 'dashboard';
+		return $from_dashboard
+			? admin_url( 'admin.php?page=at-license' )
+			: admin_url( 'themes.php?page=' . $this->theme_slug . '-license' );
+	}
+
 	public function activate_license() {
 
 		$license = trim( get_option( $this->theme_slug . '_license_key' ) );
+		if ( empty( $license ) ) {
+			return $this->strings['enter-key'];
+		}
 
 		// Data to send in our API request.
 		$api_params = array(
@@ -458,7 +512,7 @@ class AWAIKEN_Theme_Updater_Admin {
 				$message = $this->strings['error-generic'];
 			}
 
-			$base_url = admin_url( 'themes.php?page=' . $this->theme_slug . '-license' );
+			$base_url = $this->get_license_page_url();
 			$redirect = add_query_arg(
 				array(
 					'sl_theme_activation' => 'false',
@@ -468,16 +522,17 @@ class AWAIKEN_Theme_Updater_Admin {
 			);
 
 			wp_redirect( $redirect );
-			
+			exit();
 
 		} else {
+
 
 			$license_data = json_decode( wp_remote_retrieve_body( $response ) );
 
 			if ( false === $license_data->success ) {
-				
+
 				switch ( $license_data->error ) {
-						
+
 					case 'expired':
 						$message = sprintf(
 							$this->strings['license-expired-on'],
@@ -494,6 +549,12 @@ class AWAIKEN_Theme_Updater_Admin {
 						$message = $this->strings['license-key-invalid'];
 						break;
 
+					case 'missing_item_id':
+					case 'key_mismatch':
+					case 'invalid_item_id':
+						$message = $this->strings['license-key-invalid'];
+						break;
+
 					case 'invalid':
 					case 'site_inactive':
 						$message = $this->strings['site-is-inactive'];
@@ -507,35 +568,35 @@ class AWAIKEN_Theme_Updater_Admin {
 						$message = $this->strings['activation-limit'];
 						break;
 
+					case 'missing_url':
+					case 'bundle_activation_not_allowed':
+						$message = $this->strings['error-generic'];
+						break;
+
 					default:
 						$message = $this->strings['error-generic'];
 						break;
 				}
 
 				if ( ! empty( $message ) ) {
-		
-					$base_url = admin_url( 'themes.php?page=' . $this->theme_slug . '-license' );
-					$redirect = add_query_arg(
-						array(
-							'sl_theme_activation' => 'false',
-							'message'             => urlencode( $message ),
-						),
-						$base_url
-					);
-
-					wp_redirect( $redirect );
+					set_transient( $this->theme_slug . '_license_message', $message, ( 60 * 60 * 24 ) );
+					wp_redirect( $this->get_license_page_url() );
 					exit();
 				}
 			}
 		}
-		
-		// $response->license will be either "active" or "inactive"
+
+		// $response->license will be either "valid" or "inactive"
 		if ( $license_data && isset( $license_data->license ) ) {
 			update_option( $this->theme_slug . '_license_key_status', $license_data->license );
-			delete_transient( $this->theme_slug . '_license_message' );
+
+			// Build and cache the status message from the activate response directly,
+			// so render_license_form() does not fire a redundant check_license API call.
+			$cached_message = $this->build_license_message( $license_data );
+			set_transient( $this->theme_slug . '_license_message', $cached_message, ( 60 * 60 * 24 ) );
 		}
 
-		wp_redirect( admin_url( 'themes.php?page=' . $this->theme_slug . '-license' ) );
+		wp_redirect( $this->get_license_page_url() );
 		exit();
 
 	}
@@ -571,7 +632,7 @@ class AWAIKEN_Theme_Updater_Admin {
 				$message = $this->strings['error-generic'];
 			}
 
-			$base_url = admin_url( 'themes.php?page=' . $this->theme_slug . '-license' );
+			$base_url = $this->get_license_page_url();
 			$redirect = add_query_arg(
 				array(
 					'sl_theme_activation' => 'false',
@@ -583,32 +644,22 @@ class AWAIKEN_Theme_Updater_Admin {
 			wp_redirect( $redirect );
 			exit();
 
-		} else {
-
-			$license_data = json_decode( wp_remote_retrieve_body( $response ) );
-
-			// $license_data->license will be either "deactivated" or "failed"
-			if ( $license_data && ( $license_data->license == 'deactivated' ) ) {
-				delete_option( $this->theme_slug . '_license_key_status' );
-				delete_transient( $this->theme_slug . '_license_message' );
-			}
 		}
 
-		if ( ! empty( $message ) ) {
-			$base_url = admin_url( 'themes.php?page=' . $this->theme_slug . '-license' );
-			$redirect = add_query_arg(
-				array(
-					'sl_theme_activation' => 'false',
-					'message'             => urlencode( $message ),
-				),
-				$base_url
-			);
+		$license_data = json_decode( wp_remote_retrieve_body( $response ) );
 
-			wp_redirect( $redirect );
+		if ( $license_data && $license_data->license === 'deactivated' ) {
+			// Set status to inactive and cache the message directly — avoids a
+			// redundant check_license() API call on the next page load.
+			update_option( $this->theme_slug . '_license_key_status', 'inactive' );
+			set_transient( $this->theme_slug . '_license_message', $this->strings['license-is-inactive'], ( 60 * 60 * 24 ) );
+		} elseif ( $license_data && $license_data->license === 'failed' ) {
+			set_transient( $this->theme_slug . '_license_message', $this->strings['error-generic'], ( 60 * 60 * 24 ) );
+			wp_redirect( $this->get_license_page_url() );
 			exit();
 		}
 
-		wp_redirect( admin_url( 'themes.php?page=' . $this->theme_slug . '-license' ) );
+		wp_redirect( $this->get_license_page_url() );
 		exit();
 
 	}
@@ -668,23 +719,13 @@ class AWAIKEN_Theme_Updater_Admin {
 	public function check_license() {
 
 		$license = trim( get_option( $this->theme_slug . '_license_key' ) );
-		$status  = get_option( $this->theme_slug . '_license_key_status', false );
 		$strings = $this->strings;
 		
-		if(AWAIKEN_MP == 'TF' && $status !== 'valid' ) { //
-			$api_params = array(
-				'at_action'  => 'validate_license',
-				'purchase_code'     => $license,
-				'item_name'   => rawurlencode( $this->item_name ),
-				'url'         => home_url(),
-				'item_id'     => $this->item_id,
-				'environment' => function_exists( 'wp_get_environment_type' ) ? wp_get_environment_type() : 'production',
-			);
-			$response = $this->get_api_response( $api_params );
-	
+		if ( empty( $license ) ) {
+			return $strings['enter-key'];
 		}
-		else{
-			$api_params = array(
+		
+		$api_params = array(
 				'edd_action'  => 'check_license',
 				'license'     => $license,
 				'item_name'   => rawurlencode( $this->item_name ),
@@ -694,103 +735,26 @@ class AWAIKEN_Theme_Updater_Admin {
 			);
 
 			$response = $this->get_api_response( $api_params );
-		}
 		
-		// make sure the response came back okay
+		// If the API call failed, get_api_response() already set the error transient.
+		// Return a neutral message; render_api_error_notice() will show the detailed notice.
 		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
-
-			if ( is_wp_error( $response ) ) {
-				$message = $response->get_error_message();
-			} else {
-				$message = $strings['license-status-unknown'];
-			}
-
-			$base_url = admin_url( 'themes.php?page=' . $this->theme_slug . '-license' );
-			$redirect = add_query_arg(
-				array(
-					'sl_theme_activation' => 'false',
-					'message'             => urlencode( $message ),
-				),
-				$base_url
-			);
-			
-			wp_redirect( $redirect );
-			exit();
-
+			return $strings['license-status-unknown'];
 		} else {
 
 			$license_data = json_decode( wp_remote_retrieve_body( $response ) );
 					
 
-			// If response doesn't include license data, return
+			// If response doesn't include license data, return unknown.
 			if ( ! isset( $license_data->license ) ) {
-				$message = $strings['license-status-unknown'];
-				return $message;
+				return $strings['license-status-unknown'];
 			}
 
-			// We need to update the license status at the same time the message is updated
-			if ( $license_data && isset( $license_data->license ) ) {
-				update_option( $this->theme_slug . '_license_key_status', $license_data->license );
-			}
+			update_option( $this->theme_slug . '_license_key_status', $license_data->license );
 
-			// Get expire date
-			$expires = false;
-			if ( isset( $license_data->expires ) && 'lifetime' != $license_data->expires ) {
-				$expires    = date_i18n( get_option( 'date_format' ), strtotime( $license_data->expires, current_time( 'timestamp' ) ) );
-				$renew_link = '<a href="' . esc_url( $this->get_renewal_link() ) . '" target="_blank">' . $strings['renew'] . '</a>';
-			} elseif ( isset( $license_data->expires ) && 'lifetime' == $license_data->expires ) {
-				$expires = 'lifetime';
-			}
-
-			// Get site counts
-			$site_count    = ( isset($license_data->site_count))?$license_data->site_count:'';
-			$license_limit = ( isset($license_data->license_limit))?$license_data->license_limit:'';
-
-			// If unlimited
-			if ( 0 === $license_limit ) {
-				$license_limit = $strings['unlimited'];
-			}
-
-			if ( 'error' === $license_data->license ) {
-				$message = $strings['error-generic'];
-			}elseif ( 'valid' === $license_data->license ) {
-				$message = $strings['license-key-is-active'] . ' ';
-				if ( isset( $expires ) && 'lifetime' != $expires ) {
-					$message .= sprintf( $strings['expires%s'], $expires ) . ' ';
-				}
-				if ( isset( $expires ) && 'lifetime' == $expires ) {
-					$message .= $strings['expires-never']. ' ';
-				}
-				if ( $site_count && $license_limit ) {
-					$message .= sprintf( $strings['%1$s/%2$-sites'], $site_count, $license_limit );
-				}
-				
-			} elseif ( 'expired' === $license_data->license ) {
-				if ( $expires ) {
-					$message = sprintf( $strings['license-key-expired-%s'], $expires );
-				} else {
-					$message = $strings['license-key-expired'];
-				}
-				if ( $renew_link ) {
-					$message .= ' ' . $renew_link;
-				}
-			} elseif ( 'invalid' === $license_data->license || 'invalid_item_id' === $license_data->license ) {
-				$message = $strings['license-keys-do-not-match'];
-			} elseif ( 'inactive' === $license_data->license ) {
-				$message = $strings['license-is-inactive'];
-			} elseif ( 'disabled' === $license_data->license ) {
-				$message = $strings['license-key-is-disabled'];
-			} elseif ( 'site_inactive' === $license_data->license ) {
-				// Site is inactive
-				$message = $strings['site-is-inactive'];
-			} else {
-				$message = $strings['license-status-unknown'];
-			}
-			
-			
+			return $this->build_license_message( $license_data );
 		}
 
-		return $message;
 	}
 
 	/**
@@ -825,7 +789,7 @@ class AWAIKEN_Theme_Updater_Admin {
 /**
  * This is a means of catching errors from the activation method above and displaying it to the customer
  */
-function backeri_theme_admin_notices() {
+function at_theme_admin_notices() {
 	if ( isset( $_GET['sl_theme_activation'] ) && ! empty( $_GET['message'] ) ) {
 
 		switch ( $_GET['sl_theme_activation'] ) {
@@ -846,4 +810,4 @@ function backeri_theme_admin_notices() {
 		}
 	}
 }
-add_action( 'admin_notices', 'backeri_theme_admin_notices' );
+add_action( 'admin_notices', 'at_theme_admin_notices' );

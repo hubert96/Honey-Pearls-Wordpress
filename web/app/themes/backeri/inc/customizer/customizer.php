@@ -249,6 +249,19 @@ class awaiken_initialise_customizer_settings {
 			)
 		) );
 
+		// Show Breadcrumb on Pages
+		$wp_customize->add_setting( 'page_show_breadcrumb', array(
+			'default'           => 1,
+			'transport'         => 'refresh',
+			'sanitize_callback' => 'skyrocket_switch_sanitization',
+		) );
+
+		$wp_customize->add_control( new Skyrocket_Toggle_Switch_Custom_control( $wp_customize, 'page_show_breadcrumb', array(
+			'label'   => __( 'Show Breadcrumb on Pages', 'backeri' ),
+			'section' => $section,
+			'description' => __( 'Works when the Default page template is selected. For pages built with an Elementor page template, edit the breadcrumb in Elementor.', 'backeri' ),
+		) ) );
+
 	}
 	
 	/**
@@ -333,6 +346,68 @@ class awaiken_initialise_customizer_settings {
 			  ),
 		) );
 		
+
+		// Show Breadcrumb on Archive Pages
+		$wp_customize->add_setting( 'blog_archive_show_breadcrumb', array(
+			'default'           => 1,
+			'transport'         => 'refresh',
+			'sanitize_callback' => 'skyrocket_switch_sanitization',
+		) );
+
+		$wp_customize->add_control( new Skyrocket_Toggle_Switch_Custom_control( $wp_customize, 'blog_archive_show_breadcrumb', array(
+			'label'   => __( 'Show Breadcrumb on Archive Pages', 'backeri' ),
+			'section' => $section,
+			'description' => __( 'Works when the Default page template is selected. For pages built with an Elementor page template, edit the breadcrumb in Elementor.', 'backeri' ),
+		) ) );
+
+		// Post single meta heading
+		$wp_customize->add_setting( 'blog_single_meta_heading', array(
+			'default'           => '',
+			'sanitize_callback' => 'sanitize_text_field',
+		) );
+
+		$wp_customize->add_control( new Skyrocket_Simple_Notice_Custom_Control( $wp_customize, 'blog_single_meta_heading', array(
+			'label'   => __( 'Post single meta', 'backeri' ),
+			'section' => $section,
+		) ) );
+
+		// show date on single post
+		$wp_customize->add_setting( 'blog_single_show_date', array(
+			'default'           => 1,
+			'transport'         => 'refresh',
+			'sanitize_callback' => 'skyrocket_switch_sanitization',
+		) );
+
+		$wp_customize->add_control( new Skyrocket_Toggle_Switch_Custom_control( $wp_customize, 'blog_single_show_date', array(
+			'label'   => __( 'Show Date', 'backeri' ),
+			'section' => $section,
+		) ) );
+
+		// show category on single post
+		$wp_customize->add_setting( 'blog_single_show_category', array(
+			'default'           => 1,
+			'transport'         => 'refresh',
+			'sanitize_callback' => 'skyrocket_switch_sanitization',
+		) );
+
+		$wp_customize->add_control( new Skyrocket_Toggle_Switch_Custom_control( $wp_customize, 'blog_single_show_category', array(
+			'label'   => __( 'Show Category', 'backeri' ),
+			'section' => $section,
+		) ) );
+
+		// Post navigation (previous / next) on single post
+		$wp_customize->add_setting( 'blog_single_post_navigation', array(
+			'default'           => 0,
+			'transport'         => 'refresh',
+			'sanitize_callback' => 'skyrocket_switch_sanitization',
+		) );
+
+		$wp_customize->add_control( new Skyrocket_Toggle_Switch_Custom_control( $wp_customize, 'blog_single_post_navigation', array(
+			'label'       => __( 'Post Navigation', 'backeri' ),
+			'description' => esc_html__( 'Show previous and next post links on single post.', 'backeri' ),
+			'section'     => $section,
+		) ) );
+
 		// Social Sharing
 		$wp_customize->add_setting( 'social_sharing',
 			array(
@@ -433,6 +508,20 @@ class awaiken_initialise_customizer_settings {
 				'type' => 'textarea',
 			)
 		);
+
+		// Show Breadcrumb on 404 Page
+		$wp_customize->add_setting( '404_show_breadcrumb', array(
+			'default'           => 1,
+			'transport'         => 'refresh',
+			'sanitize_callback' => 'skyrocket_switch_sanitization',
+		) );
+
+		$wp_customize->add_control( new Skyrocket_Toggle_Switch_Custom_control( $wp_customize, '404_show_breadcrumb', array(
+			'label'   => __( 'Show Breadcrumb on 404 Page', 'backeri' ),
+			'section' => $section,
+			'description' => __( 'Works when the Default page template is selected. For pages built with an Elementor page template, edit the breadcrumb in Elementor.', 'backeri' ),
+		) ) );
+
 	}
 	
 	/**

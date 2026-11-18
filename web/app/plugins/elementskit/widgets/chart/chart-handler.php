@@ -30,8 +30,4 @@ class ElementsKit_Widget_Chart_Handler extends \ElementsKit_Lite\Core\Handler_Wi
     static function get_url() {
         return \ElementsKit::widget_url() . 'chart/';
     }
-
-    public function scripts(){
-       wp_register_script( 'chart-kit-js', self::get_url() . 'assets/js/chart.js', array( 'jquery' ), false, true );
-    }
 }

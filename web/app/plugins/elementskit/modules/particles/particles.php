@@ -1,6 +1,8 @@
 <?php
 namespace Elementor;
 
+use ElementsKit_Lite\Utils;
+
 defined( 'ABSPATH' ) || exit;
 
 class ElementsKit_Particles {
@@ -66,7 +68,7 @@ class ElementsKit_Particles {
             'ekit_particles_section',
             [
                 'tab' => Controls_Manager::TAB_ADVANCED,
-                'label' => esc_html__( 'Elementskit Particles', 'elementskit' ),
+                'label' => ( method_exists( Utils::class, 'get_promo_icon' ) ? Utils::get_promo_icon() : 'ElementsKit' ) . esc_html__( 'Particles', 'elementskit' ),
             ]
         );
 

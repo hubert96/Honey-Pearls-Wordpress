@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Backeri\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-28 11:30+0000\n"
+"POT-Creation-Date: 2026-10-19 07:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/\n"
-"X-Loco-Version: 2.8.0; wp-6.8.3; php-8.2.12\n"
+"X-Loco-Version: 2.8.9; wp-7.1.3; php-8.3.35\n"
 "X-Domain: backeri"
 
 #. 1: plugin name.
@@ -28,11 +28,31 @@ msgstr ""
 msgid "%1$s installed successfully."
 msgstr ""
 
-#: inc/customizer/customizer.php:414
+#: inc/admin/views/system-requirements.php:196
+msgid "(demo import / XML parsing)"
+msgstr ""
+
+#: inc/admin/views/getting-started.php:28
+msgid "1. Activate Theme License"
+msgstr ""
+
+#: inc/admin/views/getting-started.php:40
+msgid "2. Install Plugins"
+msgstr ""
+
+#: inc/admin/views/getting-started.php:59
+msgid "3. Import Demo Data"
+msgstr ""
+
+#: inc/admin/views/getting-started.php:72
+msgid "4. Configure Theme Settings"
+msgstr ""
+
+#: inc/customizer/customizer.php:489
 msgid "404 Heading"
 msgstr ""
 
-#: inc/customizer/customizer.php:389
+#: inc/customizer/customizer.php:464
 msgid "404 Image"
 msgstr ""
 
@@ -44,8 +64,35 @@ msgstr ""
 msgid "404 Options"
 msgstr ""
 
-#: inc/customizer/customizer.php:431
+#: inc/customizer/customizer.php:506
 msgid "404 Text"
+msgstr ""
+
+#: inc/admin/views/system-requirements.php:146
+msgid "6.6+"
+msgstr ""
+
+#. %s: URL to the upgrade page
+#: inc/admin/views/welcome-panel.php:61
+#, php-format
+msgid ""
+"<a href=\"%s\" rel=\"noopener noreferrer\" target=\"_blank\">"
+"Documentation</a>"
+msgstr ""
+
+#: inc/admin/views/getting-started.php:51
+msgid ""
+"<strong>Important:</strong> For the best demo import experience, deactivate "
+"any plugins not required by our theme. Unnecessary active plugins may cause "
+"conflicts during the import process."
+msgstr ""
+
+#: inc/plugin-updates.php:70
+msgid "A valid theme license is required to download this plugin."
+msgstr ""
+
+#: inc/admin/views/system-requirements.php:20
+msgid "Action needed"
 msgstr ""
 
 #: inc/class-tgm-plugin-activation.php:2821
@@ -58,8 +105,12 @@ msgstr ""
 msgid "Activate %2$s"
 msgstr ""
 
-#: inc/updater/theme-updater.php:40
+#: inc/updater/theme-updater.php:39
 msgid "Activate License"
+msgstr ""
+
+#: inc/admin/views/license.php:14
+msgid "Activate your theme license to receive automatic updates."
 msgstr ""
 
 #: inc/class-tgm-plugin-activation.php:2415
@@ -78,12 +129,16 @@ msgstr ""
 msgid "Add Image"
 msgstr ""
 
-#: inc/customizer/customizer.php:502
+#: inc/customizer/customizer.php:591
 msgid "Add Row"
 msgstr ""
 
-#: functions.php:278
+#: functions.php:280
 msgid "Add widgets here to appear in your sidebar."
+msgstr ""
+
+#: inc/admin/views/troubleshooting.php:25
+msgid "After Import Style is Missing"
 msgstr ""
 
 #: inc/compatibility/elementor/widgets/site-logo.php:153
@@ -110,8 +165,8 @@ msgstr ""
 msgid "An error occurred while installing %1$s: <strong>%2$s</strong>."
 msgstr ""
 
-#: inc/updater/theme-updater.php:65
-msgid "An error occurred, please try again."
+#: inc/updater/theme-updater.php:63
+msgid "An unexpected error occurred. Please try again or contact support."
 msgstr ""
 
 #: inc/compatibility/elementor/modify-default-control.php:12
@@ -119,7 +174,11 @@ msgstr ""
 msgid "Animation"
 msgstr ""
 
-#: inc/customizer/customizer.php:308
+#: inc/admin/views/troubleshooting.php:72
+msgid "Applying..."
+msgstr ""
+
+#: inc/customizer/customizer.php:321
 msgid "Archive Page Layout"
 msgstr ""
 
@@ -149,7 +208,7 @@ msgid "Available version:"
 msgstr ""
 
 #. Author of the theme
-msgid "Awaiken Themes"
+msgid "AwaikenThemes"
 msgstr ""
 
 #: template-parts/404.php:71
@@ -176,7 +235,19 @@ msgstr ""
 msgid "Backeri - Template"
 msgstr ""
 
-#: inc/required-plugins.php:190
+#. phpcs:ignore WPThemeReview.PluginTerritory.NoAddAdminPages.add_menu_pages_add_menu_page
+#: inc/admin/class-dashboard.php:89 inc/admin/class-dashboard.php:100
+msgid "Backeri Dashboard"
+msgstr ""
+
+#: inc/admin/class-dashboard.php:50
+msgid ""
+"Backeri has been successfully installed and is ready to use. Click the "
+"Getting Started tab to quickly get started with a pre-made template, or "
+"visit the Dashboard tab for a complete overview."
+msgstr ""
+
+#: inc/required-plugins.php:174
 msgid "Backeri Theme Addons"
 msgstr ""
 
@@ -215,11 +286,11 @@ msgstr ""
 msgid "Blog Options"
 msgstr ""
 
-#: inc/customizer/customizer.php:271
+#: inc/customizer/customizer.php:284
 msgid "Blog Page Title"
 msgstr ""
 
-#: inc/customizer/customizer.php:325
+#: inc/customizer/customizer.php:338
 msgid "Blog Single Layout"
 msgstr ""
 
@@ -259,24 +330,24 @@ msgstr ""
 
 #: inc/compatibility/woocommerce.php:94 inc/customizer/customizer.php:188
 #: inc/customizer/customizer.php:215 inc/customizer/customizer.php:242
-#: inc/customizer/customizer.php:291 inc/customizer/customizer.php:394
-#: inc/customizer/customizer.php:462
+#: inc/customizer/customizer.php:304 inc/customizer/customizer.php:469
+#: inc/customizer/customizer.php:551
 msgid "Change File"
 msgstr ""
 
 #: inc/compatibility/woocommerce.php:99 inc/customizer/customizer.php:193
 #: inc/customizer/customizer.php:220 inc/customizer/customizer.php:247
-#: inc/customizer/customizer.php:296 inc/customizer/customizer.php:399
-#: inc/customizer/customizer.php:467
+#: inc/customizer/customizer.php:309 inc/customizer/customizer.php:474
+#: inc/customizer/customizer.php:556
 msgid "Choose File"
 msgstr ""
 
-#: inc/customizer/customizer.php:347
+#: inc/customizer/customizer.php:422
 msgid "Choose the social network you want to display in the social share box."
 msgstr ""
 
-#: inc/updater/theme-updater.php:66
-msgid "Click the Activate License button to activate the license."
+#: inc/updater/theme-updater.php:64
+msgid "Click the Activate License button below to activate your license."
 msgstr ""
 
 #. %s is the page number.
@@ -299,16 +370,24 @@ msgctxt "comments title"
 msgid "One Response"
 msgstr ""
 
-#: inc/required-plugins.php:202
+#: inc/required-plugins.php:186
 msgid "Contact Form 7"
 msgstr ""
 
-#: inc/customizer/customizer.php:482
+#: inc/customizer/customizer.php:571
 msgid "Copyright Text"
 msgstr ""
 
+#: inc/updater/theme-updater.php:61
+msgid "Could not connect to the server."
+msgstr ""
+
+#: inc/plugin-updates.php:89
+msgid "Could not reach the license server to download the plugin."
+msgstr ""
+
 #: template-parts/footer.php:60
-msgid "Created by Awaiken, Powered by WordPress. All rights reserved"
+msgid "Created by AwaikenThemes, Powered by WordPress. All rights reserved"
 msgstr ""
 
 #: inc/compatibility/elementor/widgets/site-logo.php:193
@@ -331,6 +410,27 @@ msgstr ""
 msgid "Custom URL"
 msgstr ""
 
+#: inc/admin/views/dashboard.php:57
+msgid ""
+"Customize your footer layout, widgets, and copyright text. Navigate to "
+"<strong>Appearance > Footers</strong>, click Edit with Elementor on the "
+"active footer to customize it."
+msgstr ""
+
+#: inc/admin/views/dashboard.php:49
+msgid ""
+"Customize your header layout, logo position, and navigation. Navigate to "
+"<strong>Appearance > Headers</strong>, click Edit with Elementor on the "
+"active header to customize it."
+msgstr ""
+
+#: inc/admin/views/dashboard.php:66
+msgid ""
+"Customize your WooCommerce pages like Shop, Cart, and Checkout. Navigate to "
+"<strong>ShopEngine > Builder Templates</strong>, click Edit with Elementor "
+"to customize it."
+msgstr ""
+
 #: inc/breadcrumbs.php:793 inc/breadcrumbs.php:1222
 msgctxt "daily archives date format"
 msgid "j"
@@ -342,24 +442,32 @@ msgstr ""
 msgid "Daily Archives: %s"
 msgstr ""
 
+#: inc/admin/class-dashboard.php:101 inc/admin/views/welcome-panel.php:30
+msgid "Dashboard"
+msgstr ""
+
 #: inc/compatibility/elementor/widgets/site-logo.php:419
 msgid "Dashed"
 msgstr ""
 
-#: inc/updater/theme-updater.php:39
+#: inc/updater/theme-updater.php:38
 msgid "Deactivate License"
 msgstr ""
 
 #: inc/compatibility/woocommerce.php:95 inc/customizer/customizer.php:189
 #: inc/customizer/customizer.php:216 inc/customizer/customizer.php:243
-#: inc/customizer/customizer.php:292 inc/customizer/customizer.php:395
-#: inc/customizer/customizer.php:463
+#: inc/customizer/customizer.php:305 inc/customizer/customizer.php:470
+#: inc/customizer/customizer.php:552
 #: inc/compatibility/elementor/widgets/site-logo.php:214
 #: inc/compatibility/elementor/widgets/site-logo.php:245
 msgid "Default"
 msgstr ""
 
-#: inc/class-tgm-plugin-activation.php:407 inc/updater/theme-updater.php:32
+#: inc/admin/views/system-requirements.php:124
+msgid "Disabled"
+msgstr ""
+
+#: inc/class-tgm-plugin-activation.php:407
 msgid "Dismiss this notice"
 msgstr ""
 
@@ -375,10 +483,6 @@ msgstr ""
 msgid "Display small icon before small heading."
 msgstr ""
 
-#: inc/admin/admin.php:33 inc/admin/admin.php:34
-msgid "Documentation"
-msgstr ""
-
 #: inc/compatibility/elementor/widgets/site-logo.php:418
 msgid "Dotted"
 msgstr ""
@@ -387,61 +491,97 @@ msgstr ""
 msgid "Double"
 msgstr ""
 
-#: inc/required-plugins.php:170
+#: inc/admin/views/dashboard.php:58
+msgid "Edit Footer"
+msgstr ""
+
+#: inc/admin/views/dashboard.php:50
+msgid "Edit Header"
+msgstr ""
+
+#: inc/admin/views/dashboard.php:42
+msgid "Edit Homepage Settings"
+msgstr ""
+
+#: inc/admin/views/dashboard.php:25
+msgid "Edit Logo & Favicon"
+msgstr ""
+
+#: inc/admin/views/dashboard.php:33
+msgid "Edit Typography & Colors"
+msgstr ""
+
+#: inc/admin/views/dashboard.php:67
+msgid "Edit WooCommerce Templates"
+msgstr ""
+
+#: inc/required-plugins.php:154
 msgid "Elementor"
 msgstr ""
 
-#: inc/required-plugins.php:176
+#: inc/required-plugins.php:160
 msgid "ElementsKit Lite"
 msgstr ""
 
-#: inc/required-plugins.php:182
+#: inc/required-plugins.php:166
 msgid "ElementsKit Pro"
 msgstr ""
 
-#: inc/customizer/customizer.php:362 inc/updater/theme-updater.php:37
+#: inc/customizer/customizer.php:437
 msgid "Email"
+msgstr ""
+
+#: inc/admin/views/system-requirements.php:123
+#: inc/admin/views/system-requirements.php:124
+msgid "Enabled"
 msgstr ""
 
 #: inc/compatibility/elementor/widgets/site-logo.php:196
 msgid "Enter caption"
 msgstr ""
 
-#: inc/customizer/customizer.php:499
+#: inc/customizer/customizer.php:588
 msgid "Enter the social profile URLs."
 msgstr ""
 
-#: inc/updater/theme-updater.php:34
+#: inc/updater/theme-updater.php:35
 #, php-format
 msgid ""
-"Enter your Item Purchase Code. <a href=\"%s\" rel=\"noopener noreferrer\" "
-"target=\"_blank\">Refer to the article for instructions on where to find "
-"it</a>."
+"Enter your theme license key. Not sure where to find it? <a href=\"%s\" "
+"rel=\"noopener noreferrer\" target=\"_blank\">View Instructions</a>"
 msgstr ""
 
-#: inc/updater/theme-updater.php:35
-msgid "Enter your theme license key."
+#: inc/updater/theme-updater-admin.php:386
+msgid "Error: cURL connection timed out or failed on port 443."
 msgstr ""
 
 #. the license expiration date
-#: inc/updater/theme-updater.php:46
+#: inc/updater/theme-updater.php:44
 #, php-format
 msgid "Expires %s."
+msgstr ""
+
+#: inc/admin/views/system-requirements.php:187
+msgid "Extension"
 msgstr ""
 
 #: inc/class-tgm-plugin-activation.php:2389
 msgid "External Source"
 msgstr ""
 
-#: inc/customizer/customizer.php:354
+#: inc/customizer/customizer.php:429
 msgid "Facebook"
 msgstr ""
 
-#: functions.php:101
+#: inc/admin/views/getting-started.php:15
+msgid "Follow these steps to get your site up and running."
+msgstr ""
+
+#: functions.php:100 inc/admin/views/dashboard.php:55
 msgid "Footer"
 msgstr ""
 
-#: inc/customizer/customizer.php:457
+#: inc/customizer/customizer.php:546
 msgid "Footer Logo"
 msgstr ""
 
@@ -455,7 +595,7 @@ msgid "Footers"
 msgstr ""
 
 #: inc/compatibility/woocommerce.php:116 inc/compatibility/woocommerce.php:134
-#: inc/customizer/customizer.php:313 inc/customizer/customizer.php:331
+#: inc/customizer/customizer.php:326 inc/customizer/customizer.php:344
 msgid "Full Width"
 msgstr ""
 
@@ -467,16 +607,26 @@ msgstr ""
 msgid "General Options"
 msgstr ""
 
-#: functions.php:100
+#: inc/admin/class-dashboard.php:110 inc/admin/class-dashboard.php:111
+#: inc/admin/views/welcome-panel.php:34
+msgid "Getting Started"
+msgstr ""
+
+#: inc/admin/views/troubleshooting.php:17
+msgid ""
+"Having issues after demo import? Use the tools below to fix common problems."
+msgstr ""
+
+#: functions.php:99 inc/admin/views/dashboard.php:47
 msgid "Header"
 msgstr ""
 
 #: inc/compatibility/woocommerce.php:88 inc/customizer/customizer.php:236
-#: inc/customizer/customizer.php:285
+#: inc/customizer/customizer.php:298
 msgid "Header Background Image"
 msgstr ""
 
-#: inc/customizer/customizer.php:286
+#: inc/customizer/customizer.php:299
 msgid "Header background image for blog archive and single page."
 msgstr ""
 
@@ -495,8 +645,12 @@ msgstr ""
 msgid "Headers"
 msgstr ""
 
-#: inc/breadcrumbs.php:269 inc/functions.php:199
+#: inc/functions.php:199 inc/breadcrumbs.php:269
 msgid "Home"
+msgstr ""
+
+#: inc/admin/views/dashboard.php:39
+msgid "Homepage Settings"
 msgstr ""
 
 #: inc/breadcrumbs.php:775
@@ -516,12 +670,12 @@ msgstr ""
 msgid "Hover Effect"
 msgstr ""
 
-#. URI of the theme
-msgid "https://1.envato.market/backeri-wp"
+#. Author URI of the theme
+msgid "https://awaikenthemes.com/"
 msgstr ""
 
-#. Author URI of the theme
-msgid "https://themeforest.net/user/awaiken"
+#. URI of the theme
+msgid "https://awaikenthemes.com/wordpress-theme/backeri/"
 msgstr ""
 
 #: inc/compatibility/elementor/widgets/site-logo.php:230
@@ -536,11 +690,19 @@ msgstr ""
 msgid "If you want to change the current loading icon, select it here."
 msgstr ""
 
+#: inc/admin/views/troubleshooting.php:27
+msgid ""
+"If your site looks unstyled after the demo import, and fonts, colors, or "
+"layouts appear broken, it may be because the Elementor Kit was not applied "
+"automatically. This commonly happens on some staging environments. Click the "
+"button below to re-apply the styles."
+msgstr ""
+
 #: inc/compatibility/elementor/widgets/site-logo.php:146
 msgid "Image Size"
 msgstr ""
 
-#: inc/ocdi.php:31
+#: inc/ocdi.php:41
 msgid ""
 "Importing demo data (post, pages, images, theme settings, etc.) is the "
 "quickest and easiest way to set up your new theme. It allows you to simply "
@@ -598,20 +760,12 @@ msgstr ""
 msgid "Installing Plugin: %s"
 msgstr ""
 
-#: inc/required-plugins.php:43
-msgid "Invalid license"
-msgstr ""
-
-#: inc/updater/theme-updater.php:59
-msgid "Invalid license."
+#: inc/updater/theme-updater.php:57
+msgid "Invalid license key. Please check and try again."
 msgstr ""
 
 #: template-parts/search.php:81
 msgid "It seems we can't find what you're looking for."
-msgstr ""
-
-#: inc/updater/theme-updater-admin.php:264
-msgid "Item purchase code"
 msgstr ""
 
 #: inc/compatibility/elementor/widgets/site-logo.php:157
@@ -622,16 +776,12 @@ msgstr ""
 msgid "Left Sidebar"
 msgstr ""
 
-#: inc/updater/theme-updater.php:38
+#: inc/admin/views/welcome-panel.php:38
+msgid "License"
+msgstr ""
+
+#: inc/updater/theme-updater.php:37
 msgid "License Action"
-msgstr ""
-
-#: inc/updater/theme-updater-admin.php:252
-msgid "License activation page failed to load"
-msgstr ""
-
-#: inc/updater/theme-updater.php:57
-msgid "License is inactive."
 msgstr ""
 
 #: inc/updater/theme-updater.php:36
@@ -639,32 +789,16 @@ msgid "License Key"
 msgstr ""
 
 #. the license expiration date
-#: inc/updater/theme-updater.php:52
+#: inc/updater/theme-updater.php:50
 #, php-format
 msgid "License key expired %s."
 msgstr ""
 
-#: inc/updater/theme-updater.php:53
-msgid "License key has expired."
+#: inc/updater/theme-updater.php:54
+msgid "License key mismatch. Please verify and try again."
 msgstr ""
 
-#: inc/updater/theme-updater.php:44
-msgid "License key is active."
-msgstr ""
-
-#: inc/updater/theme-updater.php:58
-msgid "License key is disabled."
-msgstr ""
-
-#: inc/updater/theme-updater.php:56
-msgid "License keys do not match."
-msgstr ""
-
-#: inc/updater/theme-updater.php:41 inc/updater/theme-updater.php:63
-msgid "License status is unknown."
-msgstr ""
-
-#: inc/updater/theme-updater.php:47
+#: inc/updater/theme-updater.php:45
 msgid "Lifetime License."
 msgstr ""
 
@@ -677,14 +811,18 @@ msgstr ""
 msgid "Link"
 msgstr ""
 
-#: inc/customizer/customizer.php:357
+#: inc/customizer/customizer.php:432
 msgid "LinkedIn"
+msgstr ""
+
+#: inc/admin/views/dashboard.php:22
+msgid "Logo & Favicon"
 msgstr ""
 
 #. If there are characters in your language that are not
 #. supported by Lora, translate this to 'off'. Do not translate
 #. into your own language.
-#: functions.php:63
+#: functions.php:62
 msgctxt "Lora font: on or off"
 msgid "on"
 msgstr ""
@@ -699,10 +837,6 @@ msgstr ""
 
 #: inc/compatibility/elementor/widgets/site-logo.php:319
 msgid "Max Width"
-msgstr ""
-
-#: inc/updater/theme-updater.php:31
-msgid "Maybe Later"
 msgstr ""
 
 #: inc/compatibility/elementor/widgets/site-logo.php:216
@@ -740,6 +874,43 @@ msgstr ""
 msgid "Monthly Archives: %s"
 msgstr ""
 
+#: inc/updater/theme-updater-admin.php:384
+msgid ""
+"My WordPress site cannot make outbound HTTPS (cURL) connections to external "
+"URLs."
+msgstr ""
+
+#. %s: Link to the WordPress dashboard
+#: inc/admin/views/license.php:30
+#, php-format
+msgid ""
+"Need help finding your license key? Visit our <a target=\"_blank\" "
+"rel=\"noopener noreferrer\" href=\"%s\">documentation</a> for step-by-step "
+"instructions."
+msgstr ""
+
+#. %s: Link to the WordPress dashboard
+#: inc/admin/views/getting-started.php:88
+#: inc/admin/views/troubleshooting.php:51
+#, php-format
+msgid ""
+"Need help? Visit our <a target=\"_blank\" rel=\"noopener noreferrer\" "
+"href=\"%s\">troubleshooting</a> documentation for detailed guides on issues."
+msgstr ""
+
+#. %s: Link to the WordPress dashboard
+#: inc/admin/views/dashboard.php:77
+#, php-format
+msgid ""
+"Need more help? Visit our <a target=\"_blank\" rel=\"noopener noreferrer\" "
+"href=\"%s\">documentation</a> for detailed guides on all customization "
+"options."
+msgstr ""
+
+#: template-parts/single.php:107
+msgid "Next Post"
+msgstr ""
+
 #: inc/compatibility/elementor/widgets/site-logo.php:119
 #: inc/compatibility/elementor/widgets/site-logo.php:183
 #: inc/compatibility/elementor/widgets/site-logo.php:247
@@ -754,8 +925,8 @@ msgstr ""
 
 #: inc/compatibility/woocommerce.php:97 inc/customizer/customizer.php:191
 #: inc/customizer/customizer.php:218 inc/customizer/customizer.php:245
-#: inc/customizer/customizer.php:294 inc/customizer/customizer.php:397
-#: inc/customizer/customizer.php:465
+#: inc/customizer/customizer.php:307 inc/customizer/customizer.php:472
+#: inc/customizer/customizer.php:554
 msgid "No file selected"
 msgstr ""
 
@@ -803,7 +974,15 @@ msgstr ""
 msgid "Not Installed"
 msgstr ""
 
-#: inc/required-plugins.php:210
+#: inc/admin/views/troubleshooting.php:30
+msgid "Note:"
+msgstr ""
+
+#: inc/admin/views/system-requirements.php:18
+msgid "OK"
+msgstr ""
+
+#: inc/required-plugins.php:194
 msgid "One Click Demo Import"
 msgstr ""
 
@@ -830,12 +1009,36 @@ msgstr ""
 msgid "Page not found"
 msgstr ""
 
-#: inc/customizer/customizer.php:360
-msgid "Pinterest"
+#: inc/admin/views/system-requirements.php:183
+msgid "PHP Extensions"
 msgstr ""
 
-#: inc/updater/theme-updater.php:30
-msgid "Please activate the theme license key to proceed."
+#: inc/admin/views/system-requirements.php:177
+msgid "PHP max input vars"
+msgstr ""
+
+#: inc/admin/views/system-requirements.php:174
+msgid "PHP memory limit"
+msgstr ""
+
+#: inc/admin/views/system-requirements.php:175
+msgid "PHP Post Max Size"
+msgstr ""
+
+#: inc/admin/views/system-requirements.php:161
+msgid "PHP Server"
+msgstr ""
+
+#: inc/admin/views/system-requirements.php:176
+msgid "PHP time limit"
+msgstr ""
+
+#: inc/admin/views/system-requirements.php:173
+msgid "PHP version"
+msgstr ""
+
+#: inc/customizer/customizer.php:435
+msgid "Pinterest"
 msgstr ""
 
 #: inc/class-tgm-plugin-activation.php:409
@@ -849,10 +1052,19 @@ msgid ""
 "according to the WordPress guidelines."
 msgstr ""
 
-#: inc/updater/theme-updater-admin.php:262
+#: inc/updater/theme-updater-admin.php:382
+msgid "Please contact your hosting provider and share the following:"
+msgstr ""
+
+#: inc/updater/theme-updater-admin.php:389
 msgid ""
-"Please contact us at our email support@awaiken.com and provide the following "
-"details. Our team will assist you in resolving the issue."
+"Please try again in a few minutes. If the issue persists, please contact our "
+"support team at support@awaiken.com and include the details below."
+msgstr ""
+
+#: inc/updater/theme-updater-admin.php:385
+#, php-format
+msgid "Please whitelist outbound connections to: <code>%s</code>"
 msgstr ""
 
 #: inc/class-tgm-plugin-activation.php:2642
@@ -894,9 +1106,21 @@ msgstr[1] ""
 #. If there are characters in your language that are not
 #. supported by Plus Jakarta Sans, translate this to 'off'. Do not translate
 #. into your own language.
-#: functions.php:57
+#: functions.php:56
 msgctxt "Plus Jakarta Sans font: on or off"
 msgid "on"
+msgstr ""
+
+#: inc/customizer/customizer.php:406
+msgid "Post Navigation"
+msgstr ""
+
+#: template-parts/single.php:108
+msgid "Post navigation"
+msgstr ""
+
+#: inc/customizer/customizer.php:370
+msgid "Post single meta"
 msgstr ""
 
 #: inc/class-tgm-plugin-activation.php:2392
@@ -911,12 +1135,32 @@ msgstr ""
 msgid "Preloader icon"
 msgstr ""
 
+#: template-parts/single.php:106
+msgid "Previous Post"
+msgstr ""
+
 #: inc/compatibility/woocommerce.php:56
 msgid "Product Sidebar"
 msgstr ""
 
 #: inc/compatibility/woocommerce.php:129
 msgid "Product Single Layout"
+msgstr ""
+
+#: inc/updater/theme-updater.php:65
+msgid "Purchased from"
+msgstr ""
+
+#: inc/admin/views/dashboard.php:16
+msgid ""
+"Quickly access and customize the key areas of your theme from one place."
+msgstr ""
+
+#: inc/admin/views/troubleshooting.php:38
+#: inc/admin/views/troubleshooting.php:90
+#: inc/admin/views/troubleshooting.php:94
+#: inc/admin/views/troubleshooting.php:103
+msgid "Re-Apply Style"
 msgstr ""
 
 #: template-parts/archive.php:73 template-parts/search.php:71
@@ -927,27 +1171,35 @@ msgstr ""
 msgid "Recommended"
 msgstr ""
 
-#: inc/customizer/customizer.php:358
+#: inc/customizer/customizer.php:433
 msgid "Reddit"
 msgstr ""
 
 #: inc/compatibility/woocommerce.php:96 inc/customizer/customizer.php:190
 #: inc/customizer/customizer.php:217 inc/customizer/customizer.php:244
-#: inc/customizer/customizer.php:293 inc/customizer/customizer.php:396
-#: inc/customizer/customizer.php:464
+#: inc/customizer/customizer.php:306 inc/customizer/customizer.php:471
+#: inc/customizer/customizer.php:553
 msgid "Remove"
 msgstr ""
 
-#: inc/updater/theme-updater.php:42
-msgid "Renew?"
+#: inc/updater/theme-updater.php:40
+msgid "Renew Now"
 msgstr ""
 
 #: inc/class-tgm-plugin-activation.php:2367
+#: inc/admin/views/system-requirements.php:137
+#: inc/admin/views/system-requirements.php:166
+#: inc/admin/views/system-requirements.php:188
 msgid "Required"
 msgstr ""
 
 #: inc/class-tgm-plugin-activation.php:2421
 msgid "Required Update not Available"
+msgstr ""
+
+#: inc/admin/views/system-requirements.php:136
+#: inc/admin/views/system-requirements.php:165
+msgid "Requirement"
 msgstr ""
 
 #: inc/class-tgm-plugin-activation.php:2424
@@ -993,9 +1245,9 @@ msgstr ""
 #: inc/customizer/customizer.php:187 inc/customizer/customizer.php:192
 #: inc/customizer/customizer.php:214 inc/customizer/customizer.php:219
 #: inc/customizer/customizer.php:241 inc/customizer/customizer.php:246
-#: inc/customizer/customizer.php:290 inc/customizer/customizer.php:295
-#: inc/customizer/customizer.php:393 inc/customizer/customizer.php:398
-#: inc/customizer/customizer.php:461 inc/customizer/customizer.php:466
+#: inc/customizer/customizer.php:303 inc/customizer/customizer.php:308
+#: inc/customizer/customizer.php:468 inc/customizer/customizer.php:473
+#: inc/customizer/customizer.php:550 inc/customizer/customizer.php:555
 msgid "Select File"
 msgstr ""
 
@@ -1003,8 +1255,8 @@ msgstr ""
 msgid "Select Template"
 msgstr ""
 
-#: inc/updater/theme-updater-admin.php:265
-msgid "Server IP address"
+#: inc/admin/views/dashboard.php:32
+msgid "Set your brand fonts and color palette to match your identity."
 msgstr ""
 
 #: inc/compatibility/elementor/widgets/breadcrumb.php:42
@@ -1023,11 +1275,35 @@ msgstr ""
 msgid "Shop Sidebar"
 msgstr ""
 
+#: inc/customizer/customizer.php:520
+msgid "Show Breadcrumb on 404 Page"
+msgstr ""
+
+#: inc/customizer/customizer.php:358
+msgid "Show Breadcrumb on Archive Pages"
+msgstr ""
+
+#: inc/customizer/customizer.php:260
+msgid "Show Breadcrumb on Pages"
+msgstr ""
+
+#: inc/customizer/customizer.php:394
+msgid "Show Category"
+msgstr ""
+
+#: inc/customizer/customizer.php:382
+msgid "Show Date"
+msgstr ""
+
 #: inc/customizer/customizer.php:117
 msgid "Show Magic Cursor."
 msgstr ""
 
-#: functions.php:276
+#: inc/customizer/customizer.php:407
+msgid "Show previous and next post links on single post."
+msgstr ""
+
+#: functions.php:278
 msgid "Sidebar"
 msgstr ""
 
@@ -1037,10 +1313,6 @@ msgstr ""
 
 #: inc/compatibility/elementor/widgets/site-logo.php:275
 msgid "Site logo"
-msgstr ""
-
-#: inc/updater/theme-updater-admin.php:266
-msgid "Site URL"
 msgstr ""
 
 #: header.php:29
@@ -1059,11 +1331,11 @@ msgstr ""
 msgid "Smooth Scrolling Disable/Enable"
 msgstr ""
 
-#: inc/customizer/customizer.php:346
+#: inc/customizer/customizer.php:421
 msgid "Social Sharing"
 msgstr ""
 
-#: inc/customizer/customizer.php:498
+#: inc/customizer/customizer.php:587
 msgid "Social URLs"
 msgstr ""
 
@@ -1075,6 +1347,10 @@ msgstr ""
 msgid "Something went wrong with the plugin API."
 msgstr ""
 
+#: inc/admin/views/troubleshooting.php:102
+msgid "Something went wrong. Please try again."
+msgstr ""
+
 #: inc/class-tgm-plugin-activation.php:2643
 msgid "Source"
 msgstr ""
@@ -1084,6 +1360,9 @@ msgid "Spacing"
 msgstr ""
 
 #: inc/class-tgm-plugin-activation.php:2649
+#: inc/admin/views/system-requirements.php:139
+#: inc/admin/views/system-requirements.php:168
+#: inc/admin/views/system-requirements.php:190
 msgid "Status"
 msgstr ""
 
@@ -1103,17 +1382,35 @@ msgstr ""
 msgid "Style 4"
 msgstr ""
 
+#: inc/admin/views/troubleshooting.php:37
+msgid "Style Applied"
+msgstr ""
+
+#: inc/admin/class-dashboard.php:284
+msgid ""
+"Style has been re-applied successfully! If you have any caching plugins "
+"active, please clear their cache to see the changes."
+msgstr ""
+
+#: inc/admin/class-dashboard.php:286
+msgid "Style not found. Please contact our support team."
+msgstr ""
+
+#: inc/admin/views/system-requirements.php:92
+msgid "System Requirements"
+msgstr ""
+
 #. Add the tag's name to the title
 #: inc/functions.php:227
 #, php-format
 msgid "Tag: %s"
 msgstr ""
 
-#: template-parts/single.php:84
+#: template-parts/single.php:94
 msgid "Tags:"
 msgstr ""
 
-#: inc/customizer/customizer.php:363
+#: inc/customizer/customizer.php:438
 msgid "Telegram"
 msgstr ""
 
@@ -1191,8 +1488,18 @@ msgid ""
 "and renaming did not work."
 msgstr ""
 
-#: inc/updater/theme-updater.php:33
+#: inc/admin/views/system-requirements.php:93
+msgid ""
+"The table below compares your server environment against the minimum values "
+"required to run this theme correctly."
+msgstr ""
+
+#: inc/updater/theme-updater.php:34
 msgid "Theme License"
+msgstr ""
+
+#: inc/admin/class-dashboard.php:90
+msgid "Theme Options"
 msgstr ""
 
 #: inc/class-tgm-plugin-activation.php:408
@@ -1208,8 +1515,14 @@ msgid_plural "There are updates available for the following plugins: %1$s."
 msgstr[0] ""
 msgstr[1] ""
 
+#: inc/admin/views/troubleshooting.php:31
+msgid ""
+"This action is safe and will not delete or affect your existing content. "
+"Please note that it can only be applied once."
+msgstr ""
+
 #. the theme name
-#: inc/updater/theme-updater.php:62
+#: inc/updater/theme-updater.php:60
 #, php-format
 msgid "This appears to be an invalid license key for %s."
 msgstr ""
@@ -1252,6 +1565,37 @@ msgid_plural "To Activate <span class=\"count\">(%s)</span>"
 msgstr[0] ""
 msgstr[1] ""
 
+#: inc/admin/views/getting-started.php:31
+#, php-format
+msgid ""
+"To activate theme license, Click on the <a href=\"%s\" target=\"_blank\">"
+"<strong>Activate License</strong></a> link at the top of the screen."
+msgstr ""
+
+#: inc/admin/views/dashboard.php:41
+msgid ""
+"To change the homepage, navigate to <strong>Appearance > Customize > "
+"Homepage Settings</strong>"
+msgstr ""
+
+#: inc/admin/views/getting-started.php:76
+msgid ""
+"To configure site-wide settings like fonts, colors, edit any page with "
+"Elementor. Click the <strong>hamburger menu (☰)</strong> in the upper-left "
+"corner of the Elementor panel, then select <strong>Site Settings</strong> "
+"from the dropdown menu."
+msgstr ""
+
+#: inc/admin/views/getting-started.php:63
+#, php-format
+msgid ""
+"To import the demo content, go to <a href=\"%s\" target=\"_blank\"><strong>"
+"Appearance > Import Demo Data</strong></a>, Click on the <strong>Import Demo "
+"Data</strong> button, and then click <strong>Continue & Import</strong> to "
+"proceed. Wait for the import process to complete, this may take a few "
+"minutes depending on your server speed."
+msgstr ""
+
 #. 1: number of plugins.
 #: inc/class-tgm-plugin-activation.php:2486
 #, php-format
@@ -1260,15 +1604,30 @@ msgid_plural "To Install <span class=\"count\">(%s)</span>"
 msgstr[0] ""
 msgstr[1] ""
 
+#: inc/admin/views/getting-started.php:43
+#, php-format
+msgid ""
+"To install plugins, Click on the <a href=\"%s\" target=\"_blank\"><strong>"
+"Begin installing plugins</strong></a> link at the top of the screen. Select "
+"all plugins, choose <strong>Install</strong> from the bulk actions dropdown, "
+"and click <strong>Apply</strong>. Once installed, activate all plugins the "
+"same way."
+msgstr ""
+
 #: inc/compatibility/elementor/widgets/site-logo.php:553
 msgid "Transition Duration"
 msgstr ""
 
-#: inc/customizer/customizer.php:359
+#: inc/admin/class-dashboard.php:121 inc/admin/class-dashboard.php:122
+#: inc/admin/views/welcome-panel.php:42
+msgid "Troubleshooting"
+msgstr ""
+
+#: inc/customizer/customizer.php:434
 msgid "Tumblr"
 msgstr ""
 
-#: inc/customizer/customizer.php:355
+#: inc/customizer/customizer.php:430
 msgid "Twitter"
 msgstr ""
 
@@ -1276,18 +1635,12 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: inc/required-plugins.php:55
-msgid ""
-"Unable to connect to Awaiken server. Failed to fetch data from the server."
+#: inc/admin/views/dashboard.php:31
+msgid "Typography & Colors"
 msgstr ""
 
-#: inc/required-plugins.php:49
-msgid ""
-"Unable to connect to Awaiken server. Failed to retrieve valid JSON data."
-msgstr ""
-
-#: inc/updater/theme-updater.php:43
-msgid "unlimited"
+#: inc/updater/theme-updater.php:41
+msgid "Unlimited"
 msgstr ""
 
 #: inc/class-tgm-plugin-activation.php:2818
@@ -1328,7 +1681,7 @@ msgstr ""
 msgid "Updating Plugin: %s"
 msgstr ""
 
-#: inc/updater/theme-updater.php:64
+#: inc/updater/theme-updater.php:62
 msgid ""
 "Updating this theme will lose any customizations you have made. 'Cancel' to "
 "stop, 'OK' to update."
@@ -1336,6 +1689,12 @@ msgstr ""
 
 #: inc/class-tgm-plugin-activation.php:2779
 msgid "Upgrade message from the plugin author:"
+msgstr ""
+
+#: inc/admin/views/dashboard.php:24
+msgid ""
+"Upload your logo and favicon to brand your site. Navigate to <strong>"
+"Appearance > Customize > Site Identity</strong>"
 msgstr ""
 
 #: inc/functions.php:210
@@ -1350,7 +1709,7 @@ msgstr ""
 msgid "View"
 msgstr ""
 
-#: inc/customizer/customizer.php:361
+#: inc/customizer/customizer.php:436
 msgid "vk"
 msgstr ""
 
@@ -1365,7 +1724,11 @@ msgctxt "weekly archives date format"
 msgid "W"
 msgstr ""
 
-#: inc/customizer/customizer.php:356
+#: inc/admin/class-dashboard.php:49
+msgid "Welcome to Backeri"
+msgstr ""
+
+#: inc/customizer/customizer.php:431
 msgid "Whatsapp"
 msgstr ""
 
@@ -1373,19 +1736,38 @@ msgstr ""
 msgid "Width"
 msgstr ""
 
-#: inc/customizer/customizer.php:314 inc/customizer/customizer.php:332
+#: inc/customizer/customizer.php:327 inc/customizer/customizer.php:345
 msgid "With Sidebar"
 msgstr ""
 
-#: inc/required-plugins.php:197
+#: inc/required-plugins.php:181 inc/admin/views/dashboard.php:64
 msgid "WooCommerce"
+msgstr ""
+
+#: inc/admin/views/system-requirements.php:132
+msgid "WordPress"
+msgstr ""
+
+#: inc/admin/views/system-requirements.php:151
+msgid "WordPress memory limit"
 msgstr ""
 
 #: inc/class-tgm-plugin-activation.php:2386
 msgid "WordPress Repository"
 msgstr ""
 
-#: inc/customizer/customizer.php:326
+#: inc/admin/views/system-requirements.php:145
+msgid "WordPress version"
+msgstr ""
+
+#: inc/customizer/customizer.php:262 inc/customizer/customizer.php:360
+#: inc/customizer/customizer.php:522
+msgid ""
+"Works when the Default page template is selected. For pages built with an "
+"Elementor page template, edit the breadcrumb in Elementor."
+msgstr ""
+
+#: inc/customizer/customizer.php:339
 msgid "Works with the Default Template only."
 msgstr ""
 
@@ -1407,22 +1789,115 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
+#: inc/admin/class-dashboard.php:244
+msgid "You do not have permission to perform this action."
+msgstr ""
+
 #. 1. the number of sites activated 2. the total number of activations allowed.
-#: inc/updater/theme-updater.php:49
+#: inc/updater/theme-updater.php:47
 #, php-format
 msgid "You have %1$s / %2$s sites activated."
 msgstr ""
 
-#: inc/updater/theme-updater.php:60
+#: inc/updater/theme-updater.php:55
+msgid ""
+"Your license is inactive. Click the Activate License button below to "
+"activate it."
+msgstr ""
+
+#: inc/updater/theme-updater.php:58
 msgid "Your license is not active for this URL."
 msgstr ""
 
+#: inc/updater/theme-updater-admin.php:391
+msgid "Your license key"
+msgstr ""
+
 #. the license expiration date
-#: inc/updater/theme-updater.php:55
+#: inc/updater/theme-updater.php:53
 #, php-format
 msgid "Your license key expired on %s."
 msgstr ""
 
-#: inc/updater/theme-updater.php:50
+#: inc/updater/theme-updater.php:56
+msgid ""
+"Your license key has been disabled. Please contact support for assistance."
+msgstr ""
+
+#: inc/updater/theme-updater.php:51
+msgid ""
+"Your license key has expired. Please renew to continue receiving updates and "
+"support."
+msgstr ""
+
+#: inc/updater/theme-updater.php:48
 msgid "Your license key has reached its activation limit."
+msgstr ""
+
+#: inc/updater/theme-updater.php:42
+msgid "Your license key is active."
+msgstr ""
+
+#: inc/admin/views/system-requirements.php:138
+#: inc/admin/views/system-requirements.php:167
+#: inc/admin/views/system-requirements.php:189
+msgid "Your Server"
+msgstr ""
+
+#: inc/updater/theme-updater-admin.php:392
+msgid "Your server IP address"
+msgstr ""
+
+#: inc/updater/theme-updater-admin.php:381
+msgid ""
+"Your server is unable to make an outbound connection to our server. This is "
+"usually caused by a firewall or network restriction on your hosting "
+"environment."
+msgstr ""
+
+#. %s: Link to the Getting Started
+#: inc/admin/views/dashboard.php:106
+#, php-format
+msgid ""
+"Your site is not set up yet. Visit the <a href=\"%s\">Getting Started</a> "
+"tab to begin the setup process."
+msgstr ""
+
+#: inc/updater/theme-updater-admin.php:393
+msgid "Your site URL"
+msgstr ""
+
+#: inc/updater/theme-updater.php:33
+msgid "Your theme license is not activated. Please activate your license."
+msgstr ""
+
+#: inc/plugin-updates.php:94
+msgid ""
+"Your theme license is not active for this site, so the plugin could not be "
+"updated."
+msgstr ""
+
+#: inc/admin/views/getting-started.php:18
+#, php-format
+msgid ""
+"⚠️ <strong>Before You Begin:</strong> Please ensure your server meets our "
+"minimum system requirements for a smooth setup experience. You can check "
+"your current status by visiting <a href=\"%s\"><strong>Dashboard</strong></a>"
+" tab."
+msgstr ""
+
+#: inc/admin/views/dashboard.php:114
+msgid ""
+"⚠️ <strong>Before You Begin:</strong> Please ensure your server meets our "
+"minimum system requirements for a smooth setup experience. You can check "
+"your current status on the right-hand side."
+msgstr ""
+
+#. %s: Link to the documentation
+#: inc/admin/views/system-requirements.php:206
+#, php-format
+msgid ""
+"⚠️ Some requirements need attention. Please contact your hosting provider or "
+"refer to our <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">"
+"documentation</a> to fix them."
 msgstr ""

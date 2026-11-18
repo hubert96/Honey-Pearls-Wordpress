@@ -36,11 +36,11 @@ class Elementskit_Copy_Paste_Ajax {
 		$ajax->register_ajax_action( 'ekit_copy_paste', function( array $data ) {
 
 			if ( ! current_user_can( 'edit_posts' ) ) {
-                throw new \Exception( __( 'Access denied [CP]', 'elementskit' ) ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                throw new \Exception( esc_html__( 'Access denied [CP]', 'elementskit' ) );
 			} elseif(!isset($data['type']) || $data['type'] !== 'single') {
-                throw new \Exception( __( 'Invalid type [CP]', 'elementskit' ) ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                throw new \Exception( esc_html__( 'Invalid type [CP]', 'elementskit' ) );
             } elseif(!isset($data['template']) || empty($data['template'])) {
-                throw new \Exception( __( 'Element code not found [CP]', 'elementskit' ) ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                throw new \Exception( esc_html__( 'Element code not found [CP]', 'elementskit' ) );
             }
 
 			return $this->prepare_copy_paste_data($data['template']);

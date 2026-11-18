@@ -6,7 +6,9 @@ defined( 'ABSPATH' ) || exit;
 class Init {
 	private $dir;
 	private $url;
-	
+
+	private $lib_url;
+
 	public function __construct() {
 		global $post;
 
@@ -15,6 +17,9 @@ class Init {
 
 		// get current module's url
 		$this->url = \ElementsKit::plugin_url() . 'modules/advanced-tooltip/';
+
+		// get current module's lib url
+		$this->lib_url = \ElementsKit::plugin_url() . 'assets/libs/tippy/';
 
 		// Register frontend scripts
 		add_action('elementor/frontend/before_register_scripts', [$this, 'register_frontend_scripts']);
@@ -43,31 +48,32 @@ class Init {
 	 * @return array
 	 */
 	private function get_assets_config() {
+
 		return [
 			'styles' => [
 				'ekit-adv-tooltip' => [
-					'src' => $this->url . 'assets/css/tippy-custom.css',
+					'src' => $this->lib_url . 'tippy-custom.css',
 					'version' => \ElementsKit::version(),
 					'dependencies' => [],
 				],
 			],
 			'scripts' => [
 				'popper-defer' => [
-					'src' => $this->url . 'assets/js/popper.min.js',
+					'src' => $this->lib_url . 'popper.min.js',
 					'version' => \ElementsKit::version(),
 					'dependencies' => ['jquery'],
 					'in_footer' => true,
 				],
 				'tippyjs-defer' => [
-					'src' => $this->url . 'assets/js/tippy.min.js',
+					'src' => $this->lib_url . 'tippy.min.js',
 					'version' => \ElementsKit::version(),
-					'dependencies' => ['jquery', 'popper-defer'], // Chain dependencies properly
+					'dependencies' => ['jquery', 'popper-defer'],
 					'in_footer' => true,
 				],
 				'ekit-adv-tooltip-defer' => [
 					'src' => $this->url . 'assets/js/init.js',
 					'version' => \ElementsKit::version(),
-					'dependencies' => ['jquery', 'tippyjs-defer'], // Depends on tippy, not just jquery
+					'dependencies' => ['jquery', 'tippyjs-defer'],
 					'in_footer' => true,
 				],
 			],

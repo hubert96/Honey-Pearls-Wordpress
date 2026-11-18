@@ -33,6 +33,14 @@ class ElementsKit_Widget_Comparison_Table extends Widget_Base {
     public function get_help_url() {
         return 'https://wpmet.com/doc/comparison-table/';
     }
+
+	public function get_style_depends() {
+		return ['ekit-pro-comparison-table'];
+	}
+
+	public function get_script_depends() {
+		return ['ekit-pro-comparison-table'];
+	}
     protected function is_dynamic_content(): bool {
         return false;
     }
@@ -263,6 +271,44 @@ class ElementsKit_Widget_Comparison_Table extends Widget_Base {
 				'condition'     => [
 					'ekit_cp_table_heading_cell_btn' => 'yes',
 				],
+			]
+		);
+
+		$repeater_body->add_control(
+			'ekit_cp_table_heading_tooltip_enable',
+			[
+				'label'        => esc_html__( 'Enable Tooltip', 'elementskit' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'default'      => '',
+				'return_value' => 'yes',
+				'separator'    => 'before',
+			]
+		);
+
+		$repeater_body->add_control(
+			'ekit_cp_table_heading_tooltip_text',
+			[
+				'label'     => esc_html__( 'Tooltip Text', 'elementskit' ),
+				'type'      => Controls_Manager::TEXT,
+				'default'   => esc_html__( 'Tooltip', 'elementskit' ),
+				'condition' => [ 'ekit_cp_table_heading_tooltip_enable' => 'yes' ],
+			]
+		);
+
+		$repeater_body->add_control(
+			'ekit_cp_table_heading_tooltip_position',
+			[
+				'label'   => esc_html__( 'Tooltip Position', 'elementskit' ),
+				'type'    => Controls_Manager::CHOOSE,
+				'options' => [
+					'top'    => [ 'title' => esc_html__( 'Top', 'elementskit' ),    'icon' => 'eicon-caret-up' ],
+					'bottom' => [ 'title' => esc_html__( 'Bottom', 'elementskit' ), 'icon' => 'eicon-caret-down' ],
+					'left'   => [ 'title' => esc_html__( 'Left', 'elementskit' ),   'icon' => 'eicon-caret-left' ],
+					'right'  => [ 'title' => esc_html__( 'Right', 'elementskit' ),  'icon' => 'eicon-caret-right' ],
+				],
+				'default'   => 'top',
+				'toggle'    => false,
+				'condition' => [ 'ekit_cp_table_heading_tooltip_enable' => 'yes' ],
 			]
 		);
 
@@ -569,6 +615,44 @@ class ElementsKit_Widget_Comparison_Table extends Widget_Base {
 		);
 
 		$repeater_body->add_control(
+			'ekit_cp_table_body_tooltip_enable',
+			[
+				'label'        => esc_html__( 'Enable Tooltip', 'elementskit' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'default'      => '',
+				'return_value' => 'yes',
+				'separator'    => 'before',
+			]
+		);
+
+		$repeater_body->add_control(
+			'ekit_cp_table_body_tooltip_text',
+			[
+				'label'     => esc_html__( 'Tooltip Text', 'elementskit' ),
+				'type'      => Controls_Manager::TEXT,
+				'default'   => esc_html__( 'Tooltip', 'elementskit' ),
+				'condition' => [ 'ekit_cp_table_body_tooltip_enable' => 'yes' ],
+			]
+		);
+
+		$repeater_body->add_control(
+			'ekit_cp_table_body_tooltip_position',
+			[
+				'label'   => esc_html__( 'Tooltip Position', 'elementskit' ),
+				'type'    => Controls_Manager::CHOOSE,
+				'options' => [
+					'top'    => [ 'title' => esc_html__( 'Top', 'elementskit' ),    'icon' => 'eicon-caret-up' ],
+					'bottom' => [ 'title' => esc_html__( 'Bottom', 'elementskit' ), 'icon' => 'eicon-caret-down' ],
+					'left'   => [ 'title' => esc_html__( 'Left', 'elementskit' ),   'icon' => 'eicon-caret-left' ],
+					'right'  => [ 'title' => esc_html__( 'Right', 'elementskit' ),  'icon' => 'eicon-caret-right' ],
+				],
+				'default'   => 'top',
+				'toggle'    => false,
+				'condition' => [ 'ekit_cp_table_body_tooltip_enable' => 'yes' ],
+			]
+		);
+
+		$repeater_body->add_control(
 			'ekit_cp_table_cell_btn_align',
 			[
 				'label'   => esc_html__( 'Alignment', 'elementskit' ),
@@ -633,6 +717,8 @@ class ElementsKit_Widget_Comparison_Table extends Widget_Base {
         );
 
         $this->end_controls_section();
+
+
 
         // table button repeater section
         $this->start_controls_section(
@@ -1112,7 +1198,7 @@ class ElementsKit_Widget_Comparison_Table extends Widget_Base {
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .ekit-wid-con .ekit-comparison-table-heading-cell a, {{WRAPPER}} .ekit-wid-con .ekit-comparison-table-heading-cell li' => 'color: {{VALUE}}',
-					'{{WRAPPER}} .ekit-wid-con .ekit-comparison-table-heading-cell a :is( i, svg ), {{WRAPPER}} .ekit-wid-con .ekit-comparison-table-heading-cell li :is( i, svg )' => 'color: {{VALUE}}; fill: {{VALUE}}; stroke: {{VALUE}};',
+					'{{WRAPPER}} .ekit-wid-con .ekit-comparison-table-heading-cell a :is( i, svg ), {{WRAPPER}} .ekit-wid-con .ekit-comparison-table-heading-cell li :is( i, svg )' => 'color: {{VALUE}}; fill: {{VALUE}};',
 				],
 			]
 		);
@@ -1153,7 +1239,7 @@ class ElementsKit_Widget_Comparison_Table extends Widget_Base {
 				'selectors' => [
 					'{{WRAPPER}} .ekit-wid-con .ekit-comparison-table-heading-cell:hover a' => 'color: {{VALUE}}',
 					'{{WRAPPER}} .ekit-wid-con .ekit-comparison-table-heading-cell:hover li' => 'color: {{VALUE}}',
-					'{{WRAPPER}} .ekit-wid-con .ekit-comparison-table-heading-cell a:hover :is( i, svg ), {{WRAPPER}} .ekit-wid-con .ekit-comparison-table-heading-cell li:hover :is( i, svg )' => 'color: {{VALUE}}; fill: {{VALUE}}; stroke: {{VALUE}};',
+					'{{WRAPPER}} .ekit-wid-con .ekit-comparison-table-heading-cell a:hover :is( i, svg ), {{WRAPPER}} .ekit-wid-con .ekit-comparison-table-heading-cell li:hover :is( i, svg )' => 'color: {{VALUE}}; fill: {{VALUE}};',
 				],
 			]
 		);
@@ -1388,8 +1474,10 @@ class ElementsKit_Widget_Comparison_Table extends Widget_Base {
 				'selectors' => [
 					'{{WRAPPER}} .ekit-wid-con .ekit-comparison-table-cell a' => 'color: {{VALUE}}',
 					'{{WRAPPER}} .ekit-wid-con .ekit-comparison-table-cell li' => 'color: {{VALUE}}',
-					'{{WRAPPER}} .ekit-wid-con .ekit-comparison-table-cell li :is( i, svg)' => 'color: {{VALUE}}; fill: {{VALUE}}; stroke: {{VALUE}}',
-					'{{WRAPPER}} .ekit-wid-con .ekit-comparison-table-cell a :is( i, svg)' => 'color: {{VALUE}}; fill: {{VALUE}}; stroke: {{VALUE}}',
+					'{{WRAPPER}} .ekit-wid-con .ekit-comparison-table-cell li i' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .ekit-wid-con .ekit-comparison-table-cell li svg' => 'fill: {{VALUE}};',
+					'{{WRAPPER}} .ekit-wid-con .ekit-comparison-table-cell a i' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .ekit-wid-con .ekit-comparison-table-cell a svg' => 'fill: {{VALUE}};',
 				],
 			]
 		);
@@ -1456,8 +1544,10 @@ class ElementsKit_Widget_Comparison_Table extends Widget_Base {
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .ekit-wid-con .ekit-comparison-table-cell:hover a, .ekit-wid-con .ekit-comparison-table-cell:hover li' => 'color: {{VALUE}}',
-					'{{WRAPPER}} .ekit-wid-con .ekit-comparison-table-cell li:hover :is( i, svg)' => 'color: {{VALUE}}; fill: {{VALUE}}; stroke: {{VALUE}}',
-					'{{WRAPPER}} .ekit-wid-con .ekit-comparison-table-cell a:hover :is( i, svg)' => 'color: {{VALUE}}; fill: {{VALUE}}; stroke: {{VALUE}}',
+					'{{WRAPPER}} .ekit-wid-con .ekit-comparison-table-cell li:hover i' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .ekit-wid-con .ekit-comparison-table-cell li:hover svg' => 'fill: {{VALUE}};',
+					'{{WRAPPER}} .ekit-wid-con .ekit-comparison-table-cell a:hover i' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .ekit-wid-con .ekit-comparison-table-cell a:hover svg' => 'fill: {{VALUE}};',
 				],
 			]
 		);
@@ -1799,6 +1889,8 @@ class ElementsKit_Widget_Comparison_Table extends Widget_Base {
 
 		$this->end_controls_section();
 
+		
+
 		//Table Cell Button Style Section
 		$this->start_controls_section(
 			'ekit_cp_table_bcell_button', [
@@ -1966,6 +2058,113 @@ class ElementsKit_Widget_Comparison_Table extends Widget_Base {
 				],
 			]
 		);
+
+		$this->end_controls_section();
+
+	    // Tooltip Style Section
+		$this->start_controls_section(
+			'ekit_cp_table_tooltip_style',
+			[
+				'label' => esc_html__( 'Tooltip', 'elementskit' ),
+				'tab'   => Controls_Manager::TAB_STYLE,
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name' => 'ekit_cp_table_tooltip_typography',
+				'selector' => '{{WRAPPER}} .ekit-cp-tooltip-wrap::before',
+			]
+		);
+
+		$this->add_control(
+			'ekit_cp_table_tooltip_color',
+			[
+				'label'     => esc_html__( 'Text Color', 'elementskit' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#ffffff',
+				'selectors' => [
+					'{{WRAPPER}} .ekit-cp-tooltip-wrap::before' => 'color: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_control(
+			'ekit_cp_table_tooltip_bg',
+			[
+				'label'     => esc_html__( 'Background Color', 'elementskit' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#333333',
+				'selectors' => [
+					'{{WRAPPER}} .ekit-cp-tooltip-wrap::before' => 'background-color: {{VALUE}};',
+					'{{WRAPPER}} .ekit-cp-tooltip-wrap::after' => 'background-color: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Border::get_type(),
+			[
+				'name'     => 'ekit_cp_table_tooltip_border',
+				'selector' => '{{WRAPPER}} .ekit-cp-tooltip-wrap::before',
+			]
+		);
+
+		$this->add_control(
+			'ekit_cp_table_tooltip_border_radius',
+			[
+				'label'      => esc_html__( 'Border Radius', 'elementskit' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', '%' ],
+				'default'    => [ 'top' => '4', 'right' => '4', 'bottom' => '4', 'left' => '4', 'unit' => 'px' ],
+				'selectors'  => [
+					'{{WRAPPER}} .ekit-cp-tooltip-wrap::before' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		$this->add_control(
+			'ekit_cp_table_tooltip_padding',
+			[
+				'label'      => esc_html__( 'Padding', 'elementskit' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', 'em' ],
+				'default'    => [ 'top' => '5', 'right' => '10', 'bottom' => '5', 'left' => '10', 'unit' => 'px' ],
+				'selectors'  => [
+					'{{WRAPPER}} .ekit-cp-tooltip-wrap::before' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		$this->add_control(
+			'ekit_cp_table_tooltip_arrow_width',
+			[
+				'label'      => esc_html__( 'Arrow Width', 'elementskit' ),
+				'type'       => Controls_Manager::SLIDER,
+				'size_units' => [ 'px' ],
+				'range'      => [ 'px' => [ 'min' => 0, 'max' => 50 ] ],
+				'default'    => [ 'unit' => 'px', 'size' => 20 ],
+				'selectors'  => [
+					'{{WRAPPER}} .ekit-wid-con .ekit-cp-tooltip-wrap' => '--tooltip-arrow-width: {{SIZE}}{{UNIT}};',
+				],
+			]
+		);
+
+		$this->add_control(
+			'ekit_cp_table_tooltip_arrow_height',
+			[
+				'label'      => esc_html__( 'Arrow Height', 'elementskit' ),
+				'type'       => Controls_Manager::SLIDER,
+				'size_units' => [ 'px' ],
+				'range'      => [ 'px' => [ 'min' => 0, 'max' => 50 ] ],
+				'default'    => [ 'unit' => 'px', 'size' => 10 ],
+				'selectors'  => [
+					'{{WRAPPER}} .ekit-wid-con .ekit-cp-tooltip-wrap' => '--tooltip-arrow-height: {{SIZE}}{{UNIT}};',
+				],
+			]
+		);
+
 
 		$this->end_controls_section();
 
@@ -2674,6 +2873,89 @@ class ElementsKit_Widget_Comparison_Table extends Widget_Base {
 		echo '</div>';
 	}
 
+	/**
+	 * Renders a button with an optional tooltip wrapper.
+	 *
+	 * Outputs a container div holding an anchor element. If tooltip settings are
+	 * present in the repeater item, the anchor is wrapped in a tooltip span with
+	 * the appropriate data attributes.
+	 *
+	 * @since 4.4.5
+	 *
+	 * @param array  $item   Repeater item data containing button text, URL, and tooltip settings.
+	 * @param string $prefix Context prefix used to build dynamic field keys (e.g. 'body', 'head', 'foot').
+	 * @return void
+	 */
+	public function render_btn_with_tooltip( array $item, string $prefix ) {
+		$is_body         = $prefix === 'body';
+		$btn_text_key    = $is_body ? 'ekit_cp_table_cell_btn_text' : "ekit_cp_table_{$prefix}_cell_btn_text";
+		$url_key         = "ekit_cp_table_{$prefix}_cell_url";
+		$btn_class       = $is_body ? 'ekit-cp-table-button' : 'ekit-comparison-table-heading-button';
+		$container_class = $is_body ? 'ekit-comparison-table-bcell-btn' : 'ekit-comparison-table-heading-btn';
+		$tooltip_enabled = ! empty( $item[ "ekit_cp_table_{$prefix}_tooltip_enable" ] ) && ! empty( $item[ "ekit_cp_table_{$prefix}_tooltip_text" ] );
+		$tooltip_pos     = ! empty( $item[ "ekit_cp_table_{$prefix}_tooltip_position" ] ) ? $item[ "ekit_cp_table_{$prefix}_tooltip_position" ] : 'top';
+		$url             = ! empty( $item[ $url_key ]['url'] ) ? esc_url( $item[ $url_key ]['url'] ) : '#';
+		?>
+		<div class="<?php echo esc_attr( $container_class ); ?>">
+			<?php if ( $tooltip_enabled ) : ?>
+				<span class="ekit-cp-tooltip-wrap"
+					data-ekit-cp-tooltip="<?php echo esc_attr( $item[ "ekit_cp_table_{$prefix}_tooltip_text" ] ); ?>"
+					data-ekit-cp-tooltip-pos="<?php echo esc_attr( $tooltip_pos ); ?>"
+				>
+			<?php endif; ?>
+				<a href="<?php echo esc_url( $url ); ?>" class="<?php echo esc_attr( $btn_class ); ?>">
+					<?php echo wp_kses( $item[ $btn_text_key ], \ElementsKit_Lite\Utils::get_kses_array() ); ?>
+				</a>
+			<?php if ( $tooltip_enabled ) : ?>
+				</span>
+			<?php endif; ?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Renders the content of a comparison table cell.
+	 *
+	 * Outputs an icon (if set), text, and/or image for a given repeater item.
+	 * If tooltip settings are present, text and image are each individually
+	 * wrapped in a tooltip span with the appropriate data attributes.
+	 *
+	 * @since 4.4.5
+	 *
+	 * @param array  $item   Repeater item data containing cell content and tooltip settings.
+	 * @param string $prefix Context prefix used to build dynamic field keys (e.g. 'body', 'head', 'foot').
+	 * @return void
+	 */
+	public function render_cell( array $item, string $prefix ) {
+		$icon_key    = "ekit_cp_table_{$prefix}_cell_icons";
+		$text_key    = $prefix === 'body' ? 'ekit_cp_table_cell_text' : "ekit_cp_table_{$prefix}_cell_text";
+		$image_key   = $prefix === 'body' ? "ekit_cp_table_{$prefix}_cell_icon_image" : "ekit_cp_table_{$prefix}_cell_image";
+		$tooltip_en  = "ekit_cp_table_{$prefix}_tooltip_enable";
+		$tooltip_txt = "ekit_cp_table_{$prefix}_tooltip_text";
+		$tooltip_pos = "ekit_cp_table_{$prefix}_tooltip_position";
+
+		if ( ! empty( $item[ $icon_key ]['value'] ) ) {
+			\Elementor\Icons_Manager::render_icon( $item[ $icon_key ], [ 'aria-hidden' => 'true' ] );
+		}
+
+		$has_tooltip   = ! empty( $item[ $tooltip_en ] ) && ! empty( $item[ $tooltip_txt ] );
+		$tooltip_attrs = $has_tooltip ? sprintf(
+			' class="ekit-cp-tooltip-wrap" data-ekit-cp-tooltip="%s" data-ekit-cp-tooltip-pos="%s"',
+			esc_attr( $item[ $tooltip_txt ] ),
+			esc_attr( ! empty( $item[ $tooltip_pos ] ) ? $item[ $tooltip_pos ] : 'top' )
+		) : '';
+
+		if ( ! empty( $item[ $text_key ] ) ) {
+			$text = wp_kses( $item[ $text_key ], \ElementsKit_Lite\Utils::get_kses_array() );
+			echo $has_tooltip ? "<span{$tooltip_attrs}>{$text}</span>" : $text; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $text is wp_kses()'d and $tooltip_attrs uses esc_attr().
+		}
+
+		if ( ! empty( $item[ $image_key ]['url'] ) ) {
+			$img = '<img src="' . esc_url( $item[ $image_key ]['url'] ) . '" alt="">';
+			echo $has_tooltip ? "<span{$tooltip_attrs}>{$img}</span>" : $img; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $img src is esc_url()'d and $tooltip_attrs uses esc_attr().
+		}
+	}
+
 	protected function render_raw() {
 		$settings = $this->get_settings_for_display();
 		extract($settings);
@@ -2684,13 +2966,13 @@ class ElementsKit_Widget_Comparison_Table extends Widget_Base {
 			<?php if($ekit_cp_table_compare_button_position === 'top'): ?>
 				<div class="compare-button-wrap">
 				<?php if($ekit_cp_table_compare_button_switch === 'inline'): ?>
-						<button id="buttonId" class="compare-button"><?php echo esc_html_e($ekit_cp_table_compare_button_text, 'elementskit'); ?></button>
+						<button id="buttonId" class="compare-button"><?php echo esc_html($ekit_cp_table_compare_button_text); ?></button>
 					<?php endif; 
 
 					if($ekit_cp_table_compare_button_switch === 'tab'): ?>
-						<div class="ekit-diff-toggle on" id="buttonId">
-							<span class="ekit-diff-off"><?php esc_html_e($ekit_cp_table_compare_full_button_text, 'elementskit'); ?></span>
-							<span class="ekit-diff-on"><?php esc_html_e($ekit_cp_table_compare_button_text, 'elementskit'); ?></span>
+						<div class="ekit-diff-toggle on" id="buttonId" role="button" tabindex="0">
+							<span class="ekit-diff-off"><?php echo esc_html($ekit_cp_table_compare_full_button_text); ?></span>
+							<span class="ekit-diff-on"><?php echo esc_html($ekit_cp_table_compare_button_text); ?></span>
 						</div>
 					<?php endif; ?>
 				</div>
@@ -2707,24 +2989,16 @@ class ElementsKit_Widget_Comparison_Table extends Widget_Base {
 
 									<?php if (empty($item['ekit_cp_table_heading_cell_url']['url'])): ?>
 										<li>
-											<?php require Handler::get_dir() . 'styles/heading-cell.php'; ?>
+											<?php $this->render_cell( $item, 'heading' ); ?>
 										</li>
 									<?php else: ?>
 										<a <?php $this->print_render_attribute_string('ekit_cp_table_heading_cell_url'.$item['_id']); ?> >
-											<?php require Handler::get_dir() . 'styles/heading-cell.php'; ?>
+											<?php $this->render_cell( $item, 'heading' ); ?>
 										</a>
 									<?php endif; ?>
 
-									<?php if (!empty($item['ekit_cp_table_heading_cell_btn'] == 'yes')) : ?>
-										<div class="ekit-comparison-table-heading-btn">
-
-											<?php if (!empty($item['ekit_cp_table_heading_cell_btn_text'])) : ?>
-												<a href="<?php echo (!empty($item['ekit_cp_table_heading_cell_url']['url']) ? esc_url($item['ekit_cp_table_heading_cell_url']['url']) : '#') ?>" class="ekit-comparison-table-heading-button">
-													<?php echo wp_kses($item['ekit_cp_table_heading_cell_btn_text'], \ElementsKit_Lite\Utils::get_kses_array()); ?>
-												</a>
-											<?php endif; ?>
-
-										</div>
+									<?php if ( ! empty( $item['ekit_cp_table_heading_cell_btn'] ) && $item['ekit_cp_table_heading_cell_btn'] === 'yes' && ! empty( $item['ekit_cp_table_heading_cell_btn_text'] ) ) : ?>
+										<?php $this->render_btn_with_tooltip( $item, 'heading' ); ?>
 									<?php endif; ?>
 
 								</div>
@@ -2751,21 +3025,16 @@ class ElementsKit_Widget_Comparison_Table extends Widget_Base {
 
 									<?php if (empty($item['ekit_cp_table_body_cell_url']['url'])): ?>
 										<li>
-											<?php require Handler::get_dir() . 'styles/body-cell.php'; ?>
+											<?php $this->render_cell( $item, 'body' ); ?>
 										</li>
 									<?php else: ?>
 										<a <?php $this->print_render_attribute_string('ekit_cp_table_body_cell_url'.$item['_id']); ?>>
-											<?php require Handler::get_dir() . 'styles/body-cell.php'; ?>
+											<?php $this->render_cell( $item, 'body' ); ?>
 										</a>
 									<?php endif; ?>
 
-								<?php if (!empty($item['ekit_cp_table_cell_btn_text'])) : ?>
-
-									<div class="ekit-comparison-table-bcell-btn">
-										<a href="<?php echo (!empty($item['ekit_cp_table_body_cell_url']['url']) ? esc_url($item['ekit_cp_table_body_cell_url']['url']) : '#') ?>" class="ekit-cp-table-button">
-											<?php echo wp_kses($item['ekit_cp_table_cell_btn_text'], \ElementsKit_Lite\Utils::get_kses_array()); ?>
-										</a>
-									</div>
+								<?php if ( ! empty( $item['ekit_cp_table_cell_btn'] ) && $item['ekit_cp_table_cell_btn'] === 'yes' && ! empty( $item['ekit_cp_table_cell_btn_text'] ) ) : ?>
+									<?php $this->render_btn_with_tooltip( $item, 'body' ); ?>
 								<?php endif; ?>
 
 								</div>
@@ -2788,13 +3057,13 @@ class ElementsKit_Widget_Comparison_Table extends Widget_Base {
 			<?php if($ekit_cp_table_compare_button_position === 'bottom'): ?>
 				<div class="compare-button-wrap">
 					<?php if($ekit_cp_table_compare_button_switch === 'inline'): ?>
-						<button id="buttonId" class="compare-button"><?php esc_html_e($ekit_cp_table_compare_button_text, 'elementskit'); ?></button>
+						<button id="buttonId" class="compare-button"><?php echo esc_html($ekit_cp_table_compare_button_text); ?></button>
 					<?php endif; 
 
 					if($ekit_cp_table_compare_button_switch === 'tab'): ?>
-						<div class="ekit-diff-toggle on" id="buttonId">
-							<span class="ekit-diff-off"><?php esc_html_e($ekit_cp_table_compare_full_button_text, 'elementskit'); ?></span>
-							<span class="ekit-diff-on"><?php esc_html_e($ekit_cp_table_compare_button_text, 'elementskit'); ?></span>
+						<div class="ekit-diff-toggle on" id="buttonId" role="button" tabindex="0">
+							<span class="ekit-diff-off"><?php echo esc_html($ekit_cp_table_compare_full_button_text); ?></span>
+							<span class="ekit-diff-on"><?php echo esc_html($ekit_cp_table_compare_button_text); ?></span>
 						</div>
 					<?php endif; ?>
 				</div>
@@ -2802,4 +3071,5 @@ class ElementsKit_Widget_Comparison_Table extends Widget_Base {
 		<?php
 
 	}
+	
 }

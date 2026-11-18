@@ -1,15 +1,15 @@
 /*
 Theme Name: Backeri
-Theme URI: https://1.envato.market/backeri-wp
+Theme URI: https://awaikenthemes.com/wordpress-theme/backeri/
 Description: Bakery & Pastry Shop WordPress Theme
-Author: Awaiken Themes
-Author URI: https://themeforest.net/user/awaiken
-Version: 1.0.1
+Author: AwaikenThemes
+Author URI: https://awaikenthemes.com/
+Version: 1.0.4
 Requires at least: 6.6
-Tested up to: 6.8
+Tested up to: 7.0
 Requires PHP: 7.4
-License: Themeforest Split Licence
-License URI: https://themeforest.net/licenses/standard
+License: GNU General Public License v3 or later.
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Text Domain: backeri
 Tags: one-column, two-columns, three-columns, four-columns, custom-colors, custom-menu, custom-logo, editor-style, featured-images, threaded-comments, style-variations, blog
 */
@@ -143,7 +143,6 @@ iframe{
 /* Elementor Button CSS */
 
 .ekit-btn-wraper .ekit_position_aware svg{
-	margin: 0  0 0 12px!important;
 	transition: all 0.4s ease-in-out !important;
 }
 
@@ -324,6 +323,26 @@ body.fancy-scrollbar::-webkit-scrollbar-thumb{
 
 .elementskit-infobox .elementskit-info-box-icon{
 	transition: all 0.4s ease-in-out;
+}
+
+.ekit_social_media li a:hover i,
+.ekit_social_media li a:hover svg{
+    color: inherit !important;
+}
+
+.elementor-widget-elementskit-video .ekit-wid-con .ekit-video-popup{
+    align-content: center;
+    line-height: 1em;
+}
+
+.mfp-container .ekit-video-popup-close{
+    width: 44px;
+    margin: 10px;
+}
+
+.mfp-iframe-holder .mfp-close.ekit-popup-close,
+button.mfp-close.ekit-popup-close{
+	padding: 0;
 }
 
 /* Theme Header CSS */
@@ -1046,78 +1065,78 @@ footer.footer{
 	padding: 100px 0px;
 }
 
-.post-item{
+.page-blog-archive .post-item{
 	height: calc(100% - 30px);
 	margin-bottom: 30px;
 }
 
-.post-featured-image a{
+.page-blog-archive .post-featured-image a{
     display: block;
 	border-radius: 20px;
     overflow: hidden;
 	margin-bottom: 20px;
 }
 
-.post-featured-image figure{
+.page-blog-archive .post-featured-image figure{
 	display: block;
 }
 
-.post-featured-image img{
+.page-blog-archive .post-featured-image img{
 	width: 100%;
     aspect-ratio: 1 / 0.695;
     object-fit: cover;
     transition: all 0.5s ease-in-out;
 }
 
-.post-item:hover .post-featured-image img{
+.page-blog-archive .post-item:hover .post-featured-image img{
 	transform: scale(1.1);
 }
 
-.post-item-content{
+.page-blog-archive .post-item-content{
 	border-bottom: 1px solid var(--e-global-color-divider);
 	margin-bottom: 20px;
 	padding-bottom: 20px;
 }
 
-.post-item-content h2{
+.page-blog-archive .post-item-content h2{
     font-size: 20px !important;
 	line-height: 1.4em !important;
 }
 
-.post-item-content h2 a{
+.page-blog-archive .post-item-content h2 a{
 	display: inline-block;
     color: var(--e-global-color-primary);
 	word-break: break-all;
 }
 
-.post-item-btn a{
+.page-blog-archive .post-item-btn a{
 	display: flex;
 	align-items: center;
 	color: var(--e-global-color-accent);
 	font-weight: 600;
 }
 
-.post-item-btn a svg{
+.page-blog-archive .post-item-btn a svg{
 	margin-left: 5px;
 	transition: all 0.3s ease-in-out;
 }
 
-.post-item-btn a:hover{
+.page-blog-archive .post-item-btn a:hover{
 	color: var(--e-global-color-primary);
 }
 
-.post-item-btn a:hover svg{
+.page-blog-archive .post-item-btn a:hover svg{
 	transform: rotate(45deg);
 }
 
-.post-item-btn a i{
+.page-blog-archive .post-item-btn a i{
 	margin-left: 10px;
 	font-size: 16px;
 	transform: rotate(-45deg);
 	transition: all 0.3s ease-in-out;
 }
 
-.post-item-btn a:hover i{
+.page-blog-archive .post-item-btn a:hover i{
 	transform: rotate(0deg);
 }
 
@@ -1388,6 +1407,65 @@ footer.footer{
 	background-color: var(--e-global-color-primary);
 }
 
+.post-navigation-box{
+	margin-top: 40px;
+	padding-top: 40px;
+	border-top: 1px solid var(--e-global-color-divider);
+}
+
+.post-navigation-box .nav-links{
+	display: flex;
+	justify-content: space-between;
+	gap: 20px;
+}
+
+.post-navigation-box .nav-previous,
+.post-navigation-box .nav-next{
+	max-width: 48%;
+}
+
+.post-navigation-box .nav-next{
+	margin-left: auto;
+	text-align: right;
+}
+
+.post-navigation-box .nav-links a{
+	display: block;
+	color: var(--e-global-color-primary);
+	transition: all 0.4s ease-in-out;
+}
+
+.post-navigation-box .nav-links a:hover{
+	color: var(--e-global-color-accent);
+}
+
+.post-navigation-box .nav-subtitle{
+	display: block;
+	font-size: 14px;
+	text-transform: uppercase;
+	margin-bottom: 5px;
+	opacity: 0.7;
+}
+
+.post-navigation-box .nav-title{
+	display: block;
+	font-size: 18px;
+	font-weight: 600;
+	line-height: 1.4em;
+}
+
+@media only screen and (max-width: 575px){
+	.post-navigation-box .nav-links{
+		flex-direction: column;
+	}
+
+	.post-navigation-box .nav-previous,
+	.post-navigation-box .nav-next{
+		max-width: 100%;
+		text-align: left;
+	}
+}
+
 .post-social-sharing{
 	text-align: right;
 }
@@ -1448,6 +1526,13 @@ footer.footer{
 
 .post-entry .wp-block-calendar{
 	margin-bottom: 20px;
+}
+
+
+.single-product .post-single-image,
+.single-product .post-single-meta
+{
+	display: none;
 }
 
 @media only screen and (max-width: 1300px){
@@ -1518,16 +1603,16 @@ footer.footer{
 		padding: 50px 0;
 	}
 	
-	.post-featured-image a{
+	.page-blog-archive .post-featured-image a{
 		margin-bottom: 15px;
 	}
 
-	.post-item-content{
+	.page-blog-archive .post-item-content{
 		margin-bottom: 15px;
 		padding-bottom: 15px;
 	}
 
-	.post-item-content h2{
+	.page-blog-archive .post-item-content h2{
 		font-size: 18px !important;
 	}
 
@@ -3061,15 +3146,28 @@ body.admin-bar .main-header.ekit-sticky--effects{
 	padding-bottom: 0 !important;
 }
 
+.footer-form .wpcf7-spinner{
+	display: none;
+}
+
 .footer-form .form-group{
     display: flex;
     align-items: center;
 	justify-content:start;
 }
 
-.footer-form .wpcf7-not-valid-tip,
+/* .footer-form .wpcf7-not-valid-tip,
 .footer-form .wpcf7-response-output{
 	display: none;
+} */
+
+.footer-form .wpcf7-not-valid-tip{
+	display: none;
+}
+
+.footer-form .wpcf7 form.invalid .wpcf7-response-output{
+	border: none !important;
+	padding: 0 !important;
 }
 
 .footer-form .email-field{
@@ -3294,7 +3392,7 @@ body.admin-bar .main-header.ekit-sticky--effects{
 
 .hero-video-tag .ekit-wid-con .ekit-video-popup-btn{
 	width: auto !important;
-	height: 35% !important;
+	height: 35px !important;
 }
 
 .hero-video-tag .ekit-video-popup span{
@@ -3454,6 +3552,7 @@ body.admin-bar .main-header.ekit-sticky--effects{
 	aspect-ratio: 1 / 1.29;
     object-fit: cover;
 	width: 100% !important;
+	transition: all 0.6s ease-in-out !important;
 }
 
 .product-item .elementskit-box-content .elementskit-info-box-title{
@@ -4001,6 +4100,14 @@ body.admin-bar .main-header.ekit-sticky--effects{
 
 /* Video Gallery CSS */
 
+.page-video-gallery .filter-grid .filter-item:hover{
+	transform: initial !important;
+}
+
+.page-video-gallery .filter-grid .filter-item{
+	background:none;
+}
+
 .page-video-gallery .ekit-video-item a::before{
 	transform: scale(0);
 	transition: all 0.4s ease-in-out !important;
@@ -4024,10 +4131,6 @@ body.admin-bar .main-header.ekit-sticky--effects{
 }
 
 /* Contact Us CSS */
-
-.wpcf7-spinner{
-	display: none;
-}
 
 .wpcf7-not-valid-tip{
 	color: #E65757 !important;

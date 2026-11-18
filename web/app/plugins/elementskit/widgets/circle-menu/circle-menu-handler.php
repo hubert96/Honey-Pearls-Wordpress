@@ -26,8 +26,4 @@ class ElementsKit_Widget_Circle_Menu_Handler extends \ElementsKit_Lite\Core\Hand
     static function get_url() {
         return \ElementsKit::widget_url() . 'circle-menu/';
     }
-
-	public function scripts(){
-		wp_register_script( 'circle-menu', self::get_url() . 'assets/js/circle-menu.min.js', array( 'jquery' ), \ElementsKit_Lite::version(), true );
-	}
 }

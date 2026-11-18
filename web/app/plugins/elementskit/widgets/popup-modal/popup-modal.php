@@ -41,6 +41,14 @@ class ElementsKit_Widget_Popup_Modal extends Widget_Base
         return 'https://wpmet.com/doc/pop-up-modal/';
     }
 
+	public function get_style_depends() {
+		return ['ekit-button', 'ekit-pro-popup-modal'];
+	}
+
+	public function get_script_depends() {
+		return ['ekit-pro-popup-modal'];
+	}
+
     protected function is_dynamic_content(): bool {
         return true;
     }
@@ -636,7 +644,7 @@ class ElementsKit_Widget_Popup_Modal extends Widget_Base
     private function control_section_close_button(){
 
         $this->add_responsive_control( 'close_btn_size', [
-            'label'           => esc_html__('Size', 'elementskit'),
+            'label'           => esc_html__('Button Size', 'elementskit'),
             'type'            => Controls_Manager::SLIDER,
             'size_units'      => ['px','em'],
             'range'           => [
@@ -839,8 +847,8 @@ class ElementsKit_Widget_Popup_Modal extends Widget_Base
             'size_units' => ['px', '%'],
             'default' => [ 'size' => 14, 'unit' => 'px' ],
             'selectors' => [
-                '{{WRAPPER}} .ekit-popup-btn.ekit-popup__toggler i' => 
-                    'font-size: {{SIZE}}{{UNIT}}',
+                '{{WRAPPER}} .ekit-popup-btn.ekit-popup__toggler i' => 'font-size: {{SIZE}}{{UNIT}}',
+                '{{WRAPPER}} .ekit-popup-btn.ekit-popup__toggler svg' => 'font-size: {{SIZE}}{{UNIT}}',
             ],
             'condition' => [
 				'show_toggler_btn_icon' => 'yes'
@@ -853,8 +861,8 @@ class ElementsKit_Widget_Popup_Modal extends Widget_Base
             'size_units' => ['px', '%'],
             'default' => [ 'size' => 8, 'unit' => 'px' ],
             'selectors' => [
-                '{{WRAPPER}} .ekit-popup-modal-toggler i' => 
-                    'margin-right: {{SIZE}}{{UNIT}}',
+                '{{WRAPPER}} .ekit-popup-modal-toggler i' => 'margin-right: {{SIZE}}{{UNIT}}',
+                '{{WRAPPER}} .ekit-popup-modal-toggler svg' => 'margin-right: {{SIZE}}{{UNIT}}',
             ],
             'condition' => [
 				'show_toggler_btn_icon' => 'yes',
@@ -868,8 +876,8 @@ class ElementsKit_Widget_Popup_Modal extends Widget_Base
             'size_units' => ['px', '%'],
             'default' => [ 'size' => 8, 'unit' => 'px' ],
             'selectors' => [
-                '{{WRAPPER}} .ekit-popup-modal-toggler i' => 
-                    'margin-left: {{SIZE}}{{UNIT}}',
+                '{{WRAPPER}} .ekit-popup-modal-toggler i' => 'margin-left: {{SIZE}}{{UNIT}}',
+                '{{WRAPPER}} .ekit-popup-modal-toggler svg' => 'margin-left: {{SIZE}}{{UNIT}}',
             ],
             'condition' => [
 				'show_toggler_btn_icon' => 'yes',
@@ -1863,14 +1871,20 @@ class ElementsKit_Widget_Popup_Modal extends Widget_Base
         ?>
         <!-- Start Markup -->
             <?php if ($toggler_type == 'image' && !empty($toggler_image['url'] )): ?>
-                <div class='ekit-popup-modal__toggler-wrapper'><?php 
-                    echo \ElementsKit_Lite\Utils::render( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
-                        Group_Control_Image_Size::get_attachment_image_html( 
+                <div class='ekit-popup-modal__toggler-wrapper'><?php
+                    $ekit_toggler_img_html = \ElementsKit_Lite\Utils::render(
+                        Group_Control_Image_Size::get_attachment_image_html(
                             $settings, 'toggler_img_size', 'toggler_image'
-                        ), [ 
-                            'class' => 'ekit-popup-modal-toggler'
-                        ]
+                        )
                     );
+                    // Make the image toggler focusable and keyboard-operable (Enter/Space handled in popup-modal.js).
+                    $ekit_toggler_img_html = preg_replace(
+                        '/<img /',
+                        '<img role="button" tabindex="0" aria-label="' . esc_attr__( 'Open dialog', 'elementskit' ) . '" ',
+                        $ekit_toggler_img_html,
+                        1
+                    );
+                    echo $ekit_toggler_img_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                 ?></div>
             <?php elseif($toggler_type == 'button'): ?>
                 <div class='ekit-popup-modal__toggler-wrapper'>
@@ -1909,20 +1923,28 @@ class ElementsKit_Widget_Popup_Modal extends Widget_Base
             <?php endif?>
 
             <!-- Modal -->
-            <div 
-                class="<?php echo esc_attr($popup_classes) ?>" 
+            <?php $ekit_popup_title_id = 'ekit-popup-modal__title-' . esc_attr( $this->get_id() ); ?>
+            <div
+                class="<?php echo esc_attr($popup_classes) ?>"
+                role="dialog"
+                aria-modal="true"
+                <?php if ( $show_header && $popup_title !== '' ) : ?>
+                    aria-labelledby="<?php echo esc_attr( $ekit_popup_title_id ); ?>"
+                <?php else : ?>
+                    aria-label="<?php echo esc_attr( $popup_title !== '' ? $popup_title : esc_attr__( 'Dialog', 'elementskit' ) ); ?>"
+                <?php endif; ?>
                 data-toggleafter="<?php echo esc_attr($toggle_after); ?>"
                 data-toggletype="<?php echo esc_attr($toggler_type); ?>"
                 data-cookieconsent="<?php if($enable_cookie_consent=='yes') echo esc_attr( $this->get_id() ); ?>"
             >
                 <?php if($close_btn_window): ?>
-                    <div class="ekit-popup-modal__close ekit-popup__close ekit-popup__close-btn <?php echo esc_attr( $close_btn_position ) ?>">
-                        <?php Icons_Manager::render_icon( 
+                    <button type="button" class="ekit-popup-modal__close ekit-popup__close ekit-popup__close-btn <?php echo esc_attr( $close_btn_position ) ?>" aria-label="<?php echo esc_attr__( 'Close', 'elementskit' ); ?>">
+                        <?php Icons_Manager::render_icon(
                             $close_button_icons, [
                                 'aria-hidden' => 'true'
                             ]
                         )?>
-                    </div>
+                    </button>
                 <?php endif; ?>
                 <div
                     class="<?php echo esc_attr( $content_classes ) ?>" 
@@ -1930,19 +1952,19 @@ class ElementsKit_Widget_Popup_Modal extends Widget_Base
                     data-animation="<?php echo esc_attr( !empty($inside_animation) ? $inside_animation : '' ) ?>"
                 >
                     <?php if($close_btn_popup): ?>
-                        <div class="ekit-popup-modal__close <?php echo esc_attr( $close_btn_position ) ?>">
-                            <?php Icons_Manager::render_icon( 
+                        <button type="button" class="ekit-popup-modal__close <?php echo esc_attr( $close_btn_position ) ?>" aria-label="<?php echo esc_attr__( 'Close', 'elementskit' ); ?>">
+                            <?php Icons_Manager::render_icon(
                                 $close_button_icons, [
                                     'aria-hidden' => 'true'
                                 ]
                             )?>
-                        </div>
+                        </button>
                     <?php endif; ?>
 
                     <!-- Start Header -->
                     <?php if($show_header): ?>
                         <div class="ekit-popup-modal__header ekit-popup__header <?php echo esc_attr( $header_divider ) ?>">
-                            <h4 class="ekit-popup-modal__title ekit-popup__title">
+                            <h4 class="ekit-popup-modal__title ekit-popup__title" id="<?php echo esc_attr( $ekit_popup_title_id ); ?>">
                                 <?php echo esc_html( $popup_title ) ?>
                             </h4>
                             <?php if($show_subtitle): ?>

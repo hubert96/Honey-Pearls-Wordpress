@@ -38,6 +38,8 @@ class Plugin{
         Hooks\Register_Modules::instance();
         Hooks\Register_Widgets::instance();
 
+		$this->register_lite_extensions();
+
         Libs\Framework\Attr::instance();
 
         new Widgets\Init\Enqueue_Scripts();
@@ -77,6 +79,15 @@ class Plugin{
 		wp_register_script( 'animejs', \ElementsKit::module_url() . 'parallax/assets/js/anime.js', [], \ElementsKit::version(), true );
 	}
 
+	/**
+	 * Register Pro implementations that extend controls owned by Lite.
+	 */
+	private function register_lite_extensions() {
+		require_once \ElementsKit::plugin_dir() . 'compatibility/nav-menu.php';
+
+		new \Elementor\ElementsKit_Pro_Nav_Menu_Extension();
+	}
+
     /**
      * Autoloader.
      *
@@ -86,8 +97,6 @@ class Plugin{
      * @access private
      */
     private function registrar_autoloader() {
-        require_once \ElementsKit::plugin_dir() . 'libs/composer/vendor/build/vendor/src/autoload.php';
-        //require_once \ElementsKit::plugin_dir() . 'libs/composer/vendor/scoper-autoload.php';
         require_once \ElementsKit::plugin_dir() . 'autoloader.php';
         Autoloader::run();
     }

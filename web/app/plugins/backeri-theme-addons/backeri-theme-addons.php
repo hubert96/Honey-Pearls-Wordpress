@@ -3,7 +3,7 @@
 Plugin Name:  Backeri Theme Addons
 Plugin URI:   https://awaikenthemes.com
 Description:  This plugin is intended for use with the backeri theme.
-Version:      1.0.0
+Version:      1.0.1
 Author:       Awaiken Technology
 Author URI:   https://awaiken.com
 License:      GNU General Public License v3 or later.
@@ -12,9 +12,13 @@ Text Domain:  backeri-theme-addons
 Domain Path:  /languages
 */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 define( 'BACKERI_ADDONS_URL', plugins_url( '/', __FILE__ ) );
 define( 'BACKERI_ADDONS_PATH', plugin_dir_path( __FILE__ ) );
-define( 'BACKERI_PLUGIN_VERSION', '1.0.0' );
+define( 'BACKERI_PLUGIN_VERSION', '1.0.1' );
 
 
 // Load translation.

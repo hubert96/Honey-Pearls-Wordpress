@@ -32,7 +32,7 @@ if($not_found_image) {
 				<div class="col-md-12">
 					<div class="page-header-box">
 						<h1><?php echo esc_html__( 'Page not found', 'backeri' ); ?></h1>
-						<?php do_action('backeri_action_get_breadcrumb');		?>
+						<?php if ( get_theme_mod( '404_show_breadcrumb', 1 ) ) { do_action( 'backeri_action_get_breadcrumb' ); }		?>
 					</div>
 				</div>
 			</div>

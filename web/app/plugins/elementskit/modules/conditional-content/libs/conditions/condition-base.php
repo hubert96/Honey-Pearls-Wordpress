@@ -22,7 +22,7 @@ abstract class Condition_Base
 
     public function get_server_time($format = 'Y-m-d h:i:s A')
     {
-        $today = date($format, strtotime("now") + (get_option('gmt_offset') * HOUR_IN_SECONDS));
+        $today = gmdate($format, strtotime("now") + (get_option('gmt_offset') * HOUR_IN_SECONDS));
         return $today;
     }
 }

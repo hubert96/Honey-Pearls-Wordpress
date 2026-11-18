@@ -2,6 +2,7 @@
 namespace Elementor;
 
 use Elementor\Controls_Manager;
+use ElementsKit_Lite\Utils;
 
 defined('ABSPATH') || die();
 
@@ -21,7 +22,7 @@ class ElementsKit_Glass_Morphism {
 		$element->start_controls_section(
 			'elementskit_glass_morphism_section',
 			[
-				'label' => esc_html__( 'Elementskit Glass Morphism', 'elementskit' ),
+				'label' => ( method_exists( Utils::class, 'get_promo_icon' ) ? Utils::get_promo_icon() : 'ElementsKit' ) . esc_html__( 'Glass Morphism', 'elementskit' ),
 				'tab' => Controls_Manager::TAB_ADVANCED,
 			]
 		);
@@ -32,6 +33,9 @@ class ElementsKit_Glass_Morphism {
 				'label'           => esc_html__( 'Glass Morphism', 'elementskit' ),
 				'type'            => Controls_Manager::POPOVER_TOGGLE,
 				'return_value'    => 'yes',
+				'description' => esc_html__(
+                    'Note: Glass Morphism requires a light, semi-transparent background color (e.g. #D4D4D42B) to achieve the desired glass effect.', 'elementskit'
+				),
 			]
 		);
 

@@ -22,7 +22,7 @@
 
     <!-- Start Overview Image -->
     <div class="ekit-review-card--image">
-        <img class="thumbnail" src="<?php echo esc_url($page_thumbnail) ?>">
+        <img class="thumbnail" src="<?php echo esc_url($page_thumbnail) ?>" alt="<?php echo esc_attr__( 'Profile picture', 'elementskit' ); ?>">
     </div>
     <!-- Start Overview Image -->
 

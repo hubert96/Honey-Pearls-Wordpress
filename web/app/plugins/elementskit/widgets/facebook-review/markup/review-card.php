@@ -1,8 +1,11 @@
 <?php 
 
-    $user_thumbnail = !empty($item->reviewer->id)
-        ? Elementor\ElementsKit_Widget_Facebook_Review_Handler::get_user_profile_image_url($item->reviewer->id, $pg_tok)
-        : $handler_url . esc_html__('assets/images/profile-placeholder.jpg', 'elementskit');
+    // Facebook stopped returning the reviewer on the ratings edge, so no review
+    // ever carries a name or a picture. The placeholder is the only option, and
+    // building a Graph URL for it would have put the page token in the markup.
+    // With 'Hide profile of review' on, neither is printed at all.
+    $user_thumbnail = $handler_url . 'assets/images/profile-placeholder.svg';
+    $show_profile   = empty($hide_profile);
 
 ?>
 
@@ -20,13 +23,14 @@
         </div> <?php
 	} ?>
 
+	<?php if($show_profile) { ?>
     <!-- Start Thumbnail -->
     <div class="ekit-review-card--thumbnail <?php echo($thumbnail_badge ? esc_html__('ekit-review-card--thumbnail-badge', 'elementskit') : '') ?>">
         <div>
-            <img class="thumbnail" src="<?php echo esc_url($user_thumbnail) ?>" />
+            <img class="thumbnail" src="<?php echo esc_url($user_thumbnail) ?>" alt="<?php echo esc_attr__( 'Profile picture', 'elementskit' ); ?>" />
             <?php if($thumbnail_badge) { ?>
                 <div class="badge">
-					<img src="<?php echo esc_url($handler_url) . esc_attr('assets/svg/fb-logo-f.svg'); ?>">
+					<img src="<?php echo esc_url($handler_url) . esc_attr('assets/svg/fb-logo-f.svg'); ?>" alt="<?php echo esc_attr__( 'Facebook', 'elementskit' ); ?>">
                 </div> <?php
             } ?>
         </div>
@@ -36,15 +40,15 @@
     <h5 class="ekit-review-card--name">
 		<?php echo empty($item->reviewer->name) ? esc_html__('Anonymous', 'elementskit') : esc_html($item->reviewer->name); ?>
     </h5>
-    <p class='ekit-review-card--date small muted'><?php echo esc_html(date('d M, Y', $time)); ?></p>
+	<?php } ?>
+    <p class='ekit-review-card--date small muted'><?php echo esc_html(gmdate('d M, Y', $time)); ?></p>
 
     <!-- Start Rating stars -->
     <div class="ekit-review-card--stars">
-        <i class='icon icon-star-1'></i>
-        <i class='icon <?php echo esc_attr($star_icon) ?>'></i>
-        <i class='icon <?php echo esc_attr($star_icon) ?>'></i>
-        <i class='icon <?php echo esc_attr($star_icon) ?>'></i>
-        <i class='icon <?php echo esc_attr($star_icon) ?>'></i>
+        <?php
+            // A positive recommendation shows five filled stars, a negative one a single filled star.
+            echo $this->get_stars_rating($star_icon === 'icon-star-1' ? 5 : 1); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        ?>
     </div>
     <!-- End Rating stars -->
 

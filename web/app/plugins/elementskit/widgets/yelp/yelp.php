@@ -37,6 +37,14 @@ class ElementsKit_Widget_Yelp extends Widget_Base
         return 'https://wpmet.com/doc/yelp/';
     }
 
+	public function get_style_depends() {
+		return ['ekit-social-reviews-common', 'swiper', 'ekit-layout-responsive', 'ekit-pro-yelp'];
+	}
+
+	public function get_script_depends() {
+		return ['swiper', 'ekit-pro-yelp'];
+	}
+
     protected function is_dynamic_content(): bool {
         return false;
     }
@@ -63,16 +71,16 @@ class ElementsKit_Widget_Yelp extends Widget_Base
 		$len = strlen($txt);
 		if($additional_flag === true && $len > $max_len) {
             return
-                '<span>'.substr($txt, 0, $max_len).'</span>'.
+                '<span>'.esc_html( substr($txt, 0, $max_len) ).'</span>'.
                 '<span
                     class="more"
                     data-collapsed="true"
-                    data-text="'.$txt.'"
+                    data-text="'.esc_attr($txt).'"
                 > ...More
                 </span>'
             ;
 		}
-		return $txt;
+		return esc_html( $txt );
 	}
 
 	protected function format_column( $settings, $control_name ){
@@ -292,6 +300,20 @@ class ElementsKit_Widget_Yelp extends Widget_Base
 				],
 				'assets' => [
 					'styles' => [
+						[
+							'name' => 'swiper',
+							'conditions' => [
+								'terms' => [
+									[
+										'name' => 'ekit_review_styles',
+										'operator' => '===',
+										'value' => 'slideshow',
+									],
+								],
+							],
+						],
+					],
+					'scripts' => [
 						[
 							'name' => 'swiper',
 							'conditions' => [
@@ -1511,6 +1533,7 @@ class ElementsKit_Widget_Yelp extends Widget_Base
 				'default' => '#FFFFFF',
 				'selectors' => [
 					'{{WRAPPER}} .ekit-review-card-yelp .ekit-review-card--thumbnail-badge .badge i' => 'color: {{VALUE}}',
+					'{{WRAPPER}} .ekit-review-card-yelp .ekit-review-card--thumbnail-badge .badge svg' => 'fill: {{VALUE}};',
 				],
 				'condition' => [
 					'ekit_review_card_thumbnail_badge' => 'yes'
@@ -1933,7 +1956,7 @@ class ElementsKit_Widget_Yelp extends Widget_Base
 				'type' => Controls_Manager::COLOR,
 				'default' => '#FFFFFF',
 				'selectors' => [
-					'{{WRAPPER}} .ekit-review-slider-wrapper .swiper-navigation-button i' => 'color: {{VALUE}}',
+					'{{WRAPPER}} .ekit-review-slider-wrapper .swiper-navigation-button' => 'color: {{VALUE}}',
 				],
 			]
 		);
@@ -1994,7 +2017,7 @@ class ElementsKit_Widget_Yelp extends Widget_Base
 				'label' => esc_html__( 'Arrow Color', 'elementskit' ),
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} .ekit-review-slider-wrapper .swiper-navigation-button:hover i' => 'color: {{VALUE}}',
+					'{{WRAPPER}} .ekit-review-slider-wrapper .swiper-navigation-button:hover' => 'color: {{VALUE}}',
 				],
 			]
 		);
@@ -2552,7 +2575,7 @@ class ElementsKit_Widget_Yelp extends Widget_Base
 							});
 						}
 						?>
-						<div class="ekit-review-cards <?php echo "ekit-review-cards-" . $ekit_review_card_appearance ?>">
+						<div class="ekit-review-cards <?php echo esc_attr( "ekit-review-cards-" . $ekit_review_card_appearance ) ?>">
 							<?php
 							if(isset($ekit_review_styles) && $ekit_review_styles == 'slideshow') :
 
@@ -2679,4 +2702,5 @@ class ElementsKit_Widget_Yelp extends Widget_Base
             <!-- End Markup -->
         <?php endif;
 	}
+	
 }

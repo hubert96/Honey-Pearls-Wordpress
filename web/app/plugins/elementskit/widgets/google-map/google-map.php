@@ -15,8 +15,12 @@ class ElementsKit_Widget_Google_Map extends Widget_Base {
 		parent::__construct($data, $args);
 	}
 
+	public function get_style_depends() {
+		return ['ekit-pro-google-map'];
+	}
+
 	public function get_script_depends() {
-		return ['ekit-google-map-api', 'ekit-google-gmaps'];
+		return ['ekit-pro-google-map'];
 	}
 
 	public function get_name() {
@@ -1125,7 +1129,7 @@ class ElementsKit_Widget_Google_Map extends Widget_Base {
 	protected function ekit_get_map_theme($settings) {
 
 		if($settings['map_theme_source'] == 'custom') {
-			return strip_tags($settings['map_custom_style']);
+			return wp_strip_all_tags($settings['map_custom_style']);
 		}else {
 			$themes = include('google-map-themes.php');
 			if(isset($themes[$settings['map_theme_source']][$settings['map_gstandards']])) {

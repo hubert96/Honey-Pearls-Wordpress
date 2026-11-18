@@ -7,6 +7,7 @@ class Init {
 
 	private $dir;
 	private $url;
+	private $libs_url;
 
 	public function __construct() {
 
@@ -15,6 +16,8 @@ class Init {
 
 		// get current module's url
 		$this->url = \ElementsKit::plugin_url() . 'modules/particles/';
+		// get current module's libs url
+		$this->libs_url = \ElementsKit::plugin_url() . 'assets/libs/particles/';
 
 		// Register frontend scripts
 		add_action('elementor/frontend/before_register_scripts', [$this, 'register_frontend_scripts']);
@@ -53,7 +56,7 @@ class Init {
 			],
 			'scripts' => [
 				'particles' => [
-					'src' => $this->url . 'assets/js/particles.min.js',
+					'src' => $this->libs_url . 'particles.min.js',
 					'version' => \ElementsKit::version(),
 					'dependencies' => [],
 					'in_footer' => true,

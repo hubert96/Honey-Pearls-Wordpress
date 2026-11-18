@@ -350,10 +350,12 @@ class ElementsKit_Widget_Zoom_Handler extends \ElementsKit_Lite\Core\Handler_Wid
 
 			if (!empty($response) && isset($response['id'])) {
 				$flag = true;
+				/* translators: %s: the created meeting ID. */
 				$msg = sprintf(__('Meeting created successfully. Meeting ID: %s', 'elementskit'), $response['id']);
 				$response = json_encode($response, false);
 			} elseif ($response && isset($response['message'])) {
-				$msg = sprintf(esc_html__('Error: %s - %s', 'elementskit'), $response['code'], $response['message']);
+				/* translators: %1$s: error code. %2$s: error message. */
+				$msg = sprintf(esc_html__('Error: %1$s - %2$s', 'elementskit'), $response['code'], $response['message']);
 			}
 
 			return [

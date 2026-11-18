@@ -11,6 +11,16 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
 
     public $base;
 
+	public function get_style_depends() {
+		return ['ekit-button','ekit-pro-blog-posts'];
+	}
+
+	public function get_script_depends() {
+		$deps = ['ekit-masonry', 'imagesloaded', 'ekit-pro-blog-posts' ];
+
+		return $deps;
+	}
+
     public function get_name() {
         return Handler::get_name();
     }
@@ -33,10 +43,6 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
 
     public function get_help_url() {
         return 'https://wpmet.com/doc/blog-posts-2/';
-    }
-
-    public function format_colname($str) {
-        return str_replace('ekit', 'col', $str);
     }
 
     protected function is_dynamic_content(): bool {
@@ -68,6 +74,20 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
                    'elementskit-post-card'       => esc_html__( 'Grid Without Thumb', 'elementskit' ),
                ],
                'default'   => 'elementskit-blog-block-post',
+               // The block layout is always one post per row, so it must not fall back to the
+               // hardcoded two-per-row tablet rule of the .ekit-col-* grid classes. The grid
+               // layouts get their widths from "Show Posts Per Row" instead (empty = no rule).
+               'selectors_dictionary' => [
+                   'elementskit-blog-block-post' => 'flex: 0 0 100%; max-width: 100%;',
+                   'elementskit-post-image-card' => '',
+                   'elementskit-post-card'       => '',
+               ],
+               'selectors' => [
+                   '{{WRAPPER}} .post-items:not(.carousel-enabled) > .post-item' => '{{VALUE}}',
+               ],
+               // The selectors above turn this into a style control, but the layout style also
+               // changes the markup, so the widget still has to be re-rendered.
+               'render_type' => 'template',
            ]
        );
 
@@ -94,6 +114,20 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
 							],
 						],
 					],
+                    'scripts' => [
+                        [
+                            'name' => 'swiper',
+                            'conditions' => [
+                                'terms' => [
+                                    [
+                                        'name' => 'ekit_blog_posts_enable_carousel',
+                                        'operator' => '===',
+                                        'value' => 'yes',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
 				],
 			]
 		);
@@ -112,7 +146,7 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
            ]
        );
 
-       $this->add_control(
+       $this->add_responsive_control(
            'ekit_blog_posts_layout_style_thumb',
            [
                'label'     => esc_html__( 'Image Position', 'elementskit' ),
@@ -131,7 +165,7 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
                ],
            ]
        );
-       
+
         /**
          * Control: Featured Image Size
          */
@@ -175,23 +209,38 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
                'default'   => 'left',
            ]
        );
-       $this->add_control(
+       $this->add_responsive_control(
            'ekit_blog_posts_column',
            [
                'label'     => esc_html__( 'Show Posts Per Row', 'elementskit' ),
                'type'      => Controls_Manager::SELECT,
                'options'   => [
-                   'ekit-lg-12 ekit-md-12'   => esc_html__( '1', 'elementskit' ),
-                   'ekit-lg-6 ekit-md-6'     => esc_html__( '2', 'elementskit' ),
-                   'ekit-lg-4 ekit-md-6'     => esc_html__( '3', 'elementskit' ),
-                   'ekit-lg-3 ekit-md-6'     => esc_html__( '4', 'elementskit' ),
-                   'ekit-lg-2 ekit-md-6'     => esc_html__( '6', 'elementskit' ),
+                   'ekit-col-12'   => esc_html__( '1', 'elementskit' ),
+                   'ekit-col-6'     => esc_html__( '2', 'elementskit' ),
+                   'ekit-col-4'     => esc_html__( '3', 'elementskit' ),
+                   'ekit-col-3'     => esc_html__( '4', 'elementskit' ),
+                   'ekit-col-2'     => esc_html__( '6', 'elementskit' ),
                ],
 				'condition' => [
 					'ekit_blog_posts_layout_style!' => 'elementskit-blog-block-post',
 					'ekit_blog_posts_enable_carousel!' => 'yes'
 				],
-               'default'   => 'ekit-lg-4 ekit-md-6',
+               'default'   => 'ekit-col-4',
+               // Keeps the pre-responsive rendering as the starting point: 2 per row on tablet, 1 on mobile.
+               'tablet_default' => 'ekit-col-6',
+               'mobile_default' => 'ekit-col-12',
+               'selectors_dictionary' => [
+                   'ekit-col-12' => '100%',
+                   'ekit-col-6'  => '50%',
+                   'ekit-col-4'  => '33.3333333333%',
+                   'ekit-col-3'  => '25%',
+                   'ekit-col-2'  => '16.6666666667%',
+               ],
+               'selectors' => [
+                   '{{WRAPPER}} .post-items > .post-item' => 'flex: 0 0 {{VALUE}}; max-width: {{VALUE}};',
+               ],
+               // The masonry column count is printed into the markup, so keep re-rendering.
+               'render_type' => 'template',
            ]
        );
        $this->add_control(
@@ -248,19 +297,101 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
                'condition' => ['ekit_blog_posts_layout_style!' => 'elementskit-blog-block-post'],
            ]
 	   );
-	   
+
 			$this->add_control(
 				'grid_masonry',
 				[
 					'label'	=> esc_html__( 'Enable Masonry', 'elementskit' ),
 					'type'	=> Controls_Manager::SWITCHER,
-					'render_type' => 'template',
+					'return_value' => 'yes',
 					'condition' => [
 						'ekit_blog_posts_layout_style!' => 'elementskit-blog-block-post',
 						'ekit_blog_posts_enable_carousel!' => 'yes'
 					],
+					'assets' => [
+						'scripts' => [
+							[
+								'name' => 'masonry',
+								'conditions' => [
+									'terms' => [
+										[
+											'name' => 'grid_masonry',
+											'operator' => '===',
+											'value' => 'yes',
+										],
+									],
+								],
+							],
+						],
+
+					],
 				]
             );
+             // Row Gap
+        $this->add_control(
+            'masonry_row_gap',
+            [
+                'label' => esc_html__('Row Gap', 'elementskit'),
+                'type'  => Controls_Manager::SLIDER,
+                'size_units' => ['px', 'em', 'rem'],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 200,
+                    ],
+                    'em' => [
+                        'min' => 0,
+                        'max' => 30,
+                        'step' => 0.1,
+                    ],
+                    'rem' => [
+                        'min' => 0,
+                        'max' => 10,
+                        'step' => 0.1,
+                    ],
+                ],
+                'default' => [
+                    'unit' => 'px',
+                    'size' => 30,
+                ],
+                'condition' => [
+                    'grid_masonry' => 'yes',
+                ],
+            ]
+        );
+
+        // Column Gap
+        $this->add_control(
+            'masonry_column_gap',
+            [
+                'label' => esc_html__('Column Gap', 'elementskit'),
+                'type'  => Controls_Manager::SLIDER,
+                'size_units' => ['px', 'em', 'rem'],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 200,
+                    ],
+                    'em' => [
+                        'min' => 0,
+                        'max' => 200,
+                        'step' => 0.1,
+                    ],
+                    'rem' => [
+                        'min' => 0,
+                        'max' => 200,
+                        'step' => 0.1,
+                    ],
+                ],
+                'default' => [
+                    'unit' => 'px',
+                    'size' => 30,
+                ],
+                'condition' => [
+                    'grid_masonry' => 'yes',
+                ],
+            ]
+        );
 
             $this->add_control(
                 'ekit_blog_posts_is_pagination',
@@ -303,16 +434,15 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
            ]
        );
 
-       $this->add_control(
-           'ekit_blog_posts_num',
-           [
-               'label'     => esc_html__( 'Posts Count', 'elementskit' ),
-               'type'      => Controls_Manager::NUMBER,
-               'min'       => 1,
-               'max'       => 100,
-               'default'   => 3,
-           ]
-       );
+        $this->add_control(
+            'ekit_blog_posts_num',
+            [
+                'label'   => esc_html__( 'Posts Count', 'elementskit' ),
+                'type'    => Controls_Manager::NUMBER,
+                'min'     => 1,
+                'default' => 3,
+            ]
+        );
 
        $this->add_control(
         'ekit_blog_posts_is_manual_selection',
@@ -585,7 +715,7 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
                 ],
             ]
         );
-        
+
 
 		$this->end_controls_section();
 
@@ -692,7 +822,7 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
                'placeholder' => esc_html__( 'ID', 'elementskit' ),
            ]
        );
-       
+
        $this->end_controls_section();
 
 		// Blog Post Carousel
@@ -835,7 +965,7 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
 				'default' => 'yes',
 			]
 		);
-		
+
 		$this->add_control(
 			'ekit_blog_post_autoplay_delay',
 			[
@@ -990,6 +1120,45 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
        $this->end_controls_tab();
        $this->end_controls_tabs();
 
+       $this->add_control(
+           'ekit_blog_posts_equal_height',
+           [
+               'label'        => esc_html__( 'Equalize Card Height', 'elementskit' ),
+               'type'         => Controls_Manager::SWITCHER,
+               'label_on'     => esc_html__( 'Yes', 'elementskit' ),
+               'label_off'    => esc_html__( 'No', 'elementskit' ),
+               'return_value' => 'yes',
+               'default'      => '',
+               'separator'    => 'before',
+               'description'  => esc_html__( 'Make all cards equal height and push the Read More button to the bottom.', 'elementskit' ),
+               'selectors'    => [
+                   '{{WRAPPER}} .post-items' => 'display: flex; flex-wrap: wrap;',
+                   '{{WRAPPER}} .post-items > [class*="col-"]' => 'display: flex;',
+                   '{{WRAPPER}} .elementskit-post-image-card, {{WRAPPER}} .elementskit-post-card' => 'display: flex; flex-direction: column; width: 100%;',
+                   '{{WRAPPER}} .elementskit-post-body' => 'display: flex; flex-direction: column; flex: 1 1 auto;',
+                   '{{WRAPPER}} .btn-wraper' => 'margin-top: auto;',
+               ],
+               'conditions'   => [
+                'relation' => 'and',
+                    'terms'    => [
+                        [
+                            'name'     => 'ekit_blog_posts_layout_style',
+                            'operator' => 'in',
+                            'value'    => [
+                                'elementskit-post-image-card',
+                                'elementskit-post-card',
+                            ],
+                        ],
+                        [
+                            'name'     => 'grid_masonry',
+                            'operator' => '!==',
+                            'value'    => 'yes',
+                        ],
+                    ],
+                ],
+           ]
+       );
+
         $this->add_control(
             'ekit_blog_posts_hr',
             [
@@ -1056,15 +1225,7 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
             'label'      => esc_html__( 'Container Margin', 'elementskit' ),
             'type'       => Controls_Manager::DIMENSIONS,
             'size_units' => [ 'px', '%', 'em' ],
-            'tablet_default' => [
-                    'top' => '0',
-                    'right' => '0',
-                    'bottom' => '30',
-                    'left' => '0',
-                    'unit' => 'px',
-                    'isLinked' => 'false',
-            ],
-            'mobile_default' => [
+            'default' => [
                     'top' => '0',
                     'right' => '0',
                     'bottom' => '30',
@@ -1073,8 +1234,11 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
                     'isLinked' => 'false',
             ],
             'selectors'  => [
-                '{{WRAPPER}} .elementskit-blog-block-post, {{WRAPPER}} .elementskit-post-image-card, {{WRAPPER}} .elementskit-post-card' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                '{{WRAPPER}} .wihout-masonry .elementskit-blog-block-post, {{WRAPPER}} .wihout-masonry .elementskit-post-image-card, {{WRAPPER}} .wihout-masonry .elementskit-post-card' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
             ],
+            'condition' => [
+                'grid_masonry' => '',
+            ]
         ]
     );
 
@@ -1120,7 +1284,7 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
                 ],
             ]
         );
-        
+
         $this->add_group_control(
 			Group_Control_Box_Shadow::get_type(),
 			[
@@ -1129,7 +1293,7 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
 				'selector' => '{{WRAPPER}} .elementskit-post-body',
 			]
         );
-        
+
        $this->add_control(
            'ekit_blog_posts_content_border_title',
            [
@@ -1241,19 +1405,32 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
            ]
        );
 
-       $this->add_responsive_control(
+        $this->add_responsive_control(
            'ekit_blog_posts_feature_img_size',
            [
                'label' => esc_html__( 'Image Width', 'elementskit' ),
                'type' => Controls_Manager::SLIDER,
+               'size_units' => [ 'px', '%', 'em', 'rem'],
                'range' => [
-                   'px' => [
-                       'min' => 1,
-                       'max' => 500,
-                   ],
+                    'px' => [
+                        'min' => 1,
+                        'max' => 500,
+                    ],
+                    '%' => [
+                          'min' => 1,
+                          'max' => 100,
+                     ],
+                    'em' => [
+                        'min' => 1,
+                        'max' => 50,
+                    ],
+                    'rem' => [
+                        'min' => 1,
+                        'max' => 50,
+                    ],
                ],
                'selectors' => [
-                   '{{WRAPPER}} .elementskit-entry-thumb' => 'width: {{SIZE}}{{UNIT}}; min-width: {{SIZE}}{{UNIT}}',
+                   '{{WRAPPER}} .elementskit-entry-thumb img' => 'width: {{SIZE}}{{UNIT}};',
                ],
                'condition' => [
                     'ekit_blog_posts_layout_style' => 'elementskit-post-image-card',
@@ -1371,7 +1548,7 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
         );
 
         $this->end_controls_tab();
-        $this->end_controls_tabs(); 
+        $this->end_controls_tabs();
 
        $this->end_controls_section();
 
@@ -1512,7 +1689,8 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
                 'label'      => esc_html__( 'Icon Color', 'elementskit' ),
                 'type'       => Controls_Manager::COLOR,
                 'selectors'  => [
-                    '{{WRAPPER}} .post-meta-list > span :is(i, svg)' => 'color: {{VALUE}}; fill: {{VALUE}};',
+                    '{{WRAPPER}} .post-meta-list > span i' => 'color: {{VALUE}}',
+                    '{{WRAPPER}} .post-meta-list > span svg' => 'fill: {{VALUE}};',
                 ],
             ]
         );
@@ -1594,8 +1772,10 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
                 'label'      => esc_html__( 'Icon Color', 'elementskit' ),
                 'type'       => Controls_Manager::COLOR,
                 'selectors'  => [
-                    '{{WRAPPER}} .post-meta-list > span:hover :is(i, svg)' => 'color: {{VALUE}}; fill: {{VALUE}};',
-                    '{{WRAPPER}}.ekit-blog-posts--bg-hover .elementskit-post-image-card:hover .post-meta-list > span:hover :is(i, svg)' => 'color: {{VALUE}}; fill: {{VALUE}};',
+                    '{{WRAPPER}} .post-meta-list > span:hover i' => 'color: {{VALUE}}',
+                    '{{WRAPPER}} .post-meta-list > span:hover svg' => 'fill: {{VALUE}};',
+                    '{{WRAPPER}}.ekit-blog-posts--bg-hover .elementskit-post-image-card:hover .post-meta-list > span:hover i' => 'color: {{VALUE}}',
+                    '{{WRAPPER}}.ekit-blog-posts--bg-hover .elementskit-post-image-card:hover .post-meta-list > span:hover svg' => 'fill: {{VALUE}};',
                 ],
             ]
         );
@@ -2153,7 +2333,7 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
                 'selector'   => '{{WRAPPER}} .elementskit-meta-categories .elementskit-meta-wraper span a',
             ]
         );
- 
+
         $this->add_control(
             'ekit_blog_posts_floating_category_color',
             [
@@ -2164,7 +2344,7 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
                 ],
             ]
         );
- 
+
         $this->add_control(
             'ekit_blog_posts_floating_category_bg_color',
             [
@@ -2176,7 +2356,7 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
             ]
         );
 
-        
+
         $this->add_responsive_control(
             'ekit_blog_posts_floating_category_padding',
             [
@@ -2208,7 +2388,7 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
                 ],
             ]
         );
-        
+
         $this->add_responsive_control(
             'ekit_blog_posts_floating_category_margin_right', [
                 'label'			 =>esc_html__( 'Space Between Categories', 'elementskit' ),
@@ -2234,7 +2414,7 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
                 ],
             ]
         );
-        
+
         $this->end_controls_section();
 
        // Title Styles
@@ -3000,7 +3180,7 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
                'default' => '#ffffff',
                'selectors' => [
                    '{{WRAPPER}} .elementskit-btn:hover' => 'color: {{VALUE}};',
-                   '{{WRAPPER}} .elementskit-btn:hover svg path'  => 'stroke: {{VALUE}}; fill: {{VALUE}};',
+                   '{{WRAPPER}} .elementskit-btn:hover svg'  => 'fill: {{VALUE}};',
                ],
            ]
        );
@@ -3124,7 +3304,7 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
            ]
        );
 
-       
+
        $this->end_controls_section();
 
        $this->start_controls_section(
@@ -3193,10 +3373,10 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
         $this->add_responsive_control(
             'pagination_margin',
             [
-                'label' => esc_html__( 'margin', 'elementskit' ),
+                'label' => esc_html__( 'Margin', 'elementskit' ),
                 'type' => Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%' ],
-               
+
                 'selectors' => [
                     '{{WRAPPER}} .ekit-blog-post-pagination-container .page-numbers' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
@@ -3226,7 +3406,7 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
         $this->start_controls_tabs(
             'pagination_style_tabs'
         );
- 
+
         $this->start_controls_tab(
             'pagination_tab_normal',
             [
@@ -3347,7 +3527,7 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
 
         $this->end_controls_section();
 
-		
+
 		$this->start_controls_section(
 			'ekit_section_style_arrows',
 			[
@@ -3600,8 +3780,8 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
 			]
 		);
 
-		$this->end_controls_section();		
-		
+		$this->end_controls_section();
+
 		$this->start_controls_section(
 			'ekit_section_style_pagination',
 			[
@@ -3613,7 +3793,7 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
 				],
 			]
 		);
-		
+
 		$this->add_control(
 			'ekit_blog_pagination_horizontal_position',
 			[
@@ -3822,22 +4002,33 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
             'post_items',
             [
                 'id'    => 'post-items--' . $this->get_id(),
-                'class' => 'row post-items ekit-blog-posts-content' . ($grid_masonry === 'yes' ? ' masonry' : ' wihout-masonry') . ($ekit_blog_posts_enable_carousel === 'yes' ? ' carousel-enabled' : ' '),
+                'class' => 'ekit-row post-items ekit-blog-posts-content' . ($grid_masonry === 'yes' ? ' masonry' : ' wihout-masonry') . ($ekit_blog_posts_enable_carousel === 'yes' ? ' carousel-enabled' : ' '),
 				'data-enable' => $ekit_blog_posts_enable_carousel === 'yes' ? 'yes' : 'no',
             ]
         );
+            $masonry_columns = $this->get_masonry_columns($settings);
+            $masonry = [
+                'gutterX'    => $masonry_column_gap['size'] ?? 10,
+                'gutterY'    => $masonry_row_gap['size'] ?? 10,
+                'columns'    => $masonry_columns,
+                'responsive' => [
+                    ['maxWidth' => 1024, 'columns' => $this->get_masonry_columns($settings, 'tablet')],
+                    ['maxWidth' => 767,  'columns' => $this->get_masonry_columns($settings, 'mobile')],
+                ],
+            ];
 
-        if ($grid_masonry === 'yes' && $ekit_blog_posts_enable_carousel === '') {
+        if ($grid_masonry === 'yes') {
             $this->add_render_attribute('post_items', 'data-masonry-config', 'true');
+            $this->add_render_attribute('post_items', 'data-masonry-lib-config', wp_json_encode($masonry));
         }
 
        // Post Query
 
         if ( 'elementskit-blog-block-post' == $ekit_blog_posts_layout_style ) {
-            $ekit_blog_posts_column = 'ekit-md-12';
+            $ekit_blog_posts_column = 'ekit-col-12';
         }
 
-        $column_size   = 'ekit-md-12';
+        $column_size   = 'ekit-col-12';
         $img_order     = 'order-1';
         $content_order = 'order-2';
 
@@ -3909,10 +4100,10 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
 					|| 'yes' == $ekit_blog_posts_content
 					|| 'yes' == $ekit_blog_posts_meta
 					|| 'yes' == $ekit_blog_posts_author ) ) {
-						$column_size = 'ekit-md-6';
+						$column_size = 'ekit-col-6';
 					}
 					include ElementsKit_Widget_Blog_Posts_Handler::get_dir() . 'views/main.php'; ?>
-				<?php endwhile; 
+				<?php endwhile;
 
 			//Blog Carousel markup render
 			if ($ekit_blog_posts_enable_carousel === 'yes') : ?>
@@ -3933,21 +4124,21 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
 				<?php endif; ?>
 			<?php endif ;?>
         </div>
-        
-        
+
+
         <?php if(isset($ekit_blog_posts_is_pagination) && $ekit_blog_posts_is_pagination == 'yes') : ?>
-            <div 
+            <div
             data-ekit-blog-post-style="<?php echo esc_attr($ekit_blog_posts_pagination_style); ?>"
-            class="ekit-blog-post-pagination-container ekit-blog-post-pagination-style-<?php echo esc_attr($ekit_blog_posts_pagination_style); ?>" 
+            class="ekit-blog-post-pagination-container ekit-blog-post-pagination-style-<?php echo esc_attr($ekit_blog_posts_pagination_style); ?>"
             id="post-nagivation--<?php echo esc_attr($this->get_id()); ?>">
                 <?php
-					$next_button_text = (isset($ekit_blog_posts_pagination_style) && $ekit_blog_posts_pagination_style == 'loadmore') 
-						? sprintf( __( '%s', 'elementskit' ), esc_html__('Load More', 'elementskit') )
-						: sprintf( __( '%s', 'elementskit' ), esc_html__('Next', 'elementskit') );
+					$next_button_text = (isset($ekit_blog_posts_pagination_style) && $ekit_blog_posts_pagination_style == 'loadmore')
+						? esc_html__('Load More', 'elementskit')
+						: esc_html__('Next', 'elementskit');
 
-					$prev_button_text = sprintf( __( '%s', 'elementskit' ), esc_html__('Previous', 'elementskit') );
+					$prev_button_text = esc_html__('Previous', 'elementskit');
 
-					echo paginate_links( array(
+					echo paginate_links( array( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- paginate_links() returns safe core-generated markup.
 						//'base'                  => str_replace( 999999999, '%#%', esc_url( get_pagenum_link( 999999999 ) ) ),
 						'format'                => '?ekit-blog-posts-paged=%#%',
 						'current'               => $request_ekit_blog_posts_paged,
@@ -3960,31 +4151,35 @@ class ElementsKit_Widget_Blog_Posts extends Widget_Base {
 				?>
             </div>
 
-            <?php 
+            <?php
             endif;
-        
+
         wp_reset_postdata();
 
-		if ( \Elementor\Plugin::instance()->editor->is_edit_mode() ):
-			$this->render_editor_script();
-		endif;
    }
+   protected function get_masonry_columns($settings, $device = '')
+    {
+        $columns = 3;
 
-   protected function render_editor_script() {
-       ?>
-       <script>
-           (function ($) {
-               'use strict';
+        if (! empty($settings['grid_masonry']) && $settings['grid_masonry'] === 'yes') {
+            // Mirrors the per-device defaults of the "Show Posts Per Row" control, which are
+            // not part of $settings on the frontend until the device value is actually saved.
+            $device_defaults = [
+                'tablet' => 'ekit-col-6',
+                'mobile' => 'ekit-col-12',
+            ];
 
-               $(function () {
-                   var $postItems = $('#post-items--<?php echo esc_attr( $this->get_id() ); ?>[data-masonry-config]');
+            $setting_key  = 'ekit_blog_posts_column' . ($device ? '_' . $device : '');
+            $column_class = ! empty($settings[$setting_key]) ? $settings[$setting_key] : ($device_defaults[$device] ?? ($settings['ekit_blog_posts_column'] ?? ''));
+            $columns = [
+                'ekit-col-12' => 1,
+                'ekit-col-6'  => 2,
+                'ekit-col-4'  => 3,
+                'ekit-col-3'  => 4,
+                'ekit-col-2'  => 6,
+            ][$column_class] ?? 3;
+        }
 
-                   $postItems.imagesLoaded(function () {
-                       $postItems.masonry();
-                   });
-               });
-           }(jQuery));
-       </script>
-       <?php
-   }
+        return $columns;
+    }
 }

@@ -36,6 +36,14 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
         return 'https://wpmet.com/doc/vertical-mega-menu/';
     }
 
+	public function get_style_depends() {
+		return ['ekit-pro-vertical-menu'];
+	}
+
+	public function get_script_depends() {
+		return ['ekit-menu','ekit-pro-vertical-menu'];
+	}
+
     protected function is_dynamic_content(): bool {
         return true;
     }
@@ -43,7 +51,7 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
 	public function has_widget_inner_wrapper(): bool {
 		return ! Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
 	}
-	
+
     public function get_menus(){
         $list = [];
         $menus = wp_get_nav_menus();
@@ -63,7 +71,7 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
                 'tab' => Controls_Manager::TAB_CONTENT,
             ]
         );
-        
+
         $this->add_control(
             'elementskit_nav_menu',
             [
@@ -72,7 +80,7 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
                 'options'   => $this->get_menus(),
             ]
 		);
-        
+
         $this->add_control(
 			'elementskit_vertical_menu_badge_position',
 			[
@@ -128,7 +136,7 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
             'divider_1',
             ['type' => Controls_Manager::DIVIDER]
         );
-        
+
         $this->add_control(
 			'elementskit_vertical_menu_show_toggle',
 			[
@@ -154,7 +162,7 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
 			]
 		);
 
-       
+
 
         $this->add_control(
 			'elementskit_vertical_menu_is_toggle_for_frontpage',
@@ -167,7 +175,7 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
                 'condition' => [
                     'elementskit_vertical_menu_show_active_or_not' => ''
                 ],
-               
+
 			]
 		);
 
@@ -189,7 +197,7 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
             'divider_2',
             ['type' => Controls_Manager::DIVIDER]
         );
-        
+
         $this->add_control(
 			'elementskit_vertical_menu_toggle_title',
 			[
@@ -205,7 +213,7 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
 				],
 			]
         );
-        
+
         $this->start_controls_tabs(
             'elementskit_vertical_nav_menu_tabs',
             [
@@ -229,7 +237,7 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
                     'type' => Controls_Manager::ICONS,
                 ]
             );
-            
+
             $this->end_controls_tab();
 
             // left icon
@@ -239,7 +247,7 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
 					'label' => esc_html__( 'Icon Right', 'elementskit' ),
 				]
             );
-            
+
             $this->add_control(
                 'elementskit_vertical_menu_toggle_title_icon_left',
                 [
@@ -251,7 +259,7 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
             $this->end_controls_tab();
 
         $this->end_controls_tabs();
-        
+
         $this->add_control(
             'submenu_click_area',
             [
@@ -263,11 +271,11 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
                 'default'       => 'icon',
             ]
         );
-		
+
         $this->end_controls_section();
-		
+
         $this->insert_pro_message();
-        
+
         // Toggle Button Style
         $this->start_controls_section(
 			'elementskit_vertical_menu_toggle_style_tab',
@@ -279,7 +287,7 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
                 ]
 			]
         );
-        
+
         $this->start_controls_tabs(
             'elementskit_vertical_menu_toggle_style_control_tabs'
 		);
@@ -343,7 +351,7 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
                         '{{WRAPPER}} .ekit-vertical-menu-tigger' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                     ],
                 ]
-            );    
+            );
 
             $this->end_controls_tab();
 
@@ -354,7 +362,7 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
 					'label' => esc_html__( 'Active', 'elementskit' ),
 				]
             );
-            
+
             $this->add_control(
                 'ekit_vertical_menu_toggle_title_color_active',
                 [
@@ -414,7 +422,7 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
         );
 
         $this->end_controls_section();
-        
+
         // Menu container
         $this->start_controls_section(
 			'ekit_vertical_menu_container_style_tab',
@@ -433,7 +441,7 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
 				'selector' => '{{WRAPPER}} .ekit-vertical-navbar-nav',
 			]
         );
-        
+
         $this->add_group_control(
 			Group_Control_Box_Shadow::get_type(),
 			[
@@ -442,7 +450,7 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
 				'selector' => '{{WRAPPER}} .ekit-vertical-navbar-nav',
 			]
         );
-        
+
         $this->add_control(
 			'ekit_vertical_menu_container_border_radius',
 			[
@@ -456,7 +464,7 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
 		);
 
 		$this->end_controls_section();
-        
+
         // Menu items
         $this->start_controls_section(
 			'ekit_vertical_menu_items_style_tab',
@@ -516,7 +524,7 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
 					'label' => esc_html__( 'Hover', 'elementskit' ),
 				]
             );
-            
+
             $this->add_control(
                 'ekit_vertical_menu_items_title_color_active',
                 [
@@ -654,7 +662,7 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
         );
 
         $this->end_controls_section();
-        
+
         // Sub Menu items
         $this->start_controls_section(
 			'ekit_vertical_sub_menu_items_style_tab',
@@ -744,7 +752,7 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
 					'label' => esc_html__( 'Hover', 'elementskit' ),
 				]
             );
-            
+
             $this->add_control(
                 'ekit_vertical_sub_menu_items_title_color_active',
                 [
@@ -774,9 +782,9 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
     protected function vertical_menu_icon($props, $classname) {
         if ($props && $props['value'] !== '') {
             if ($props['library'] !== 'svg') { ?>
-                <i class="<?php echo esc_attr($props['value'] .' '. $classname); ?> vertical-menu-icon"></i>
+                <i class="<?php echo esc_attr($props['value'] .' '. $classname); ?> vertical-menu-icon" aria-hidden="true"></i>
             <?php } else { ?>
-                <img class="<?php echo esc_attr($classname); ?> vertical-menu-icon" src="<?php echo esc_url($props['value']['url']); ?>" alt="vertical menu icon">
+                <img class="<?php echo esc_attr($classname); ?> vertical-menu-icon" src="<?php echo esc_url($props['value']['url']); ?>" alt="" aria-hidden="true">
             <?php }
         }
     }
@@ -787,23 +795,25 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
 
         if ($elementskit_nav_menu !== '') {
             $active_vertical_menu_toggle = $elementskit_vertical_menu_show_active_or_not == 'yes' ? 'vertical-menu-active' : '';
-           
+
             if( $elementskit_vertical_menu_is_toggle_for_frontpage === 'yes' && is_front_page()  ) {
                 $active_vertical_menu_toggle = 'vertical-menu-active';
             }
 
         ?>
-        <div 
+        <div
             class="ekit-vertical-main-menu-wraper <?php echo esc_attr($elementskit_vertical_menu_show_toggle == 'yes' ? 'ekit-vertical-main-menu-on-click' : '') ?> <?php echo esc_attr( $active_vertical_menu_toggle ) ?> <?php echo esc_attr($elementskit_vertical_menu_badge_position == 'yes' ? 'badge-position-right' : 'badge-position-left') ?>"
         >
-            <?php if ($elementskit_vertical_menu_show_toggle == 'yes') { ?>
-            <a href="#" class="ekit-vertical-menu-tigger">
+            <?php
+                $ekit_vmenu_container_id = 'ekit-vertical-menu-container-' . esc_attr( $this->get_id() );
+                if ($elementskit_vertical_menu_show_toggle == 'yes') { ?>
+            <button type="button" class="ekit-vertical-menu-tigger" aria-expanded="<?php echo ($active_vertical_menu_toggle === 'vertical-menu-active') ? 'true' : 'false'; ?>" aria-controls="<?php echo $ekit_vmenu_container_id; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>"<?php echo ($elementskit_vertical_menu_toggle_title === '') ? ' aria-label="' . esc_attr__( 'Toggle menu', 'elementskit' ) . '"' : ''; ?>>
                 <?php $this->vertical_menu_icon($elementskit_vertical_menu_toggle_title_icon_right, 'vertical-menu-right-icon'); ?>
                 <?php if ($elementskit_vertical_menu_toggle_title !== '') { ?>
                 <span class="ekit-vertical-menu-tigger-title"><?php echo esc_html($elementskit_vertical_menu_toggle_title);?></span>
                 <?php }; ?>
                 <?php $this->vertical_menu_icon($elementskit_vertical_menu_toggle_title_icon_left, 'vertical-menu-left-icon'); ?>
-            </a>
+            </button>
             <?php }; ?>
             <?php
                 if($settings['elementskit_nav_menu'] != '' && wp_get_nav_menu_items($settings['elementskit_nav_menu']) !== false && count(wp_get_nav_menu_items($settings['elementskit_nav_menu'])) > 0){
@@ -811,6 +821,7 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
                         'items_wrap'      => '<ul id="%1$s" class="%2$s">%3$s</ul>',
                         'container'       => 'div',
                         'container_class' => 'ekit-vertical-menu-container',
+                        'container_id'    => $ekit_vmenu_container_id,
                         'menu'         	  => $settings['elementskit_nav_menu'],
                         'menu_class'      => 'ekit-vertical-navbar-nav submenu-click-on-' . $settings['submenu_click_area'],
                         'depth'           => 4,
@@ -819,7 +830,7 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
                         'walker'          => (class_exists('\ElementsKit_Lite\ElementsKit_Menu_Walker') ? new \ElementsKit_Lite\ElementsKit_Menu_Walker() : '' )
                     ];
 
-					// Use an if statement to conditionally display the submenu indicator icon 
+					// Use an if statement to conditionally display the submenu indicator icon
 					// If do not use the  submenu indicator icon , Automatically the default icon will be applied
 					if(!empty($settings['elementskit_vertical_indicator_icon']['value'])) {
 						$args['submenu_indicator_icon'] = Icons_Manager::try_get_icon_html( $settings['elementskit_vertical_indicator_icon'], [ 'class' => 'ekit-submenu-indicator-icon', 'aria-hidden' => 'true' ] );
@@ -833,9 +844,10 @@ class ElementsKit_Widget_Vertical_Menu extends Widget_Base {
         } else { ?>
         <div class="container">
             <div class="alert alert-danger" role="alert">
-                <?php echo esc_html__('Please Select Menu', 'elementskit'); ?>  
+                <?php echo esc_html__('Please Select Menu', 'elementskit'); ?>
             </div>
         </div>
         <?php }
     }
+
 }

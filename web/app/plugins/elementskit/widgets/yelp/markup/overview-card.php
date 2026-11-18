@@ -24,7 +24,7 @@ $page_url = esc_url('https://yelp.com/') . $page_Info['pgt'] . esc_html__('/revi
 
             <!-- Start Rating stars -->
             <div class="ekit-review-overview--stars">
-				<?php echo $this->get_stars_rating($rating); ?>
+				<?php echo $this->get_stars_rating($rating); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Returns static star markup with no user data. ?>
             </div>
             <!-- End Rating stars -->
 

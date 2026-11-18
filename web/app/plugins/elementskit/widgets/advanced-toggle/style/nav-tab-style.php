@@ -2,16 +2,16 @@
     <div class="elemenetskit-toogle-controls-wraper-outer">
         <div class="elemenetskit-toogle-controls-wraper">
             <div class="elemenetskit-toggle-indicator"></div>
-            <ul class="nav nav-tabs elementkit-tab-nav">
+            <ul class="nav nav-tabs elementkit-tab-nav" role="tablist">
                 <?php 
                 foreach ($ekit_toggle_items as $i=>$toggle) {
                     $is_active = ($toggle['ekit_toggle_title_is_active'] == 'yes') ? ' active' : '';
                     $is_active = ($has_user_defined_active_toggle == false && $i == 0) ? ' active' : $is_active;
-					$indicator_bg = $item['ekit_toggle_indicator_bg_color'] ?? '';
+					$indicator_bg = $toggle['ekit_toggle_indicator_bg_color'] ?? '';
                 ?>
                     <li data-elementor_current_item="elementor-repeater-item-<?php echo esc_attr( $toggle[ '_id' ] ); ?>" class="elementor-repeater-item-<?php echo esc_attr( $toggle[ '_id' ] ); ?> <?php if ($toggle['ekit_toggle_title'] == '') { ?> ekit-tab-no-title <?php }; ?>">
                         <a class="elementskit-toggle-nav-link <?php echo esc_attr($is_active);?>" id="content-<?php echo esc_attr($toggle['_id'].$toggle_id); ?>-tab" data-ekit-toggle="tab" href="#content-<?php echo esc_attr($toggle['_id'].$toggle_id); ?>"
-                        aria-describedby="content-<?php echo esc_attr($toggle['_id'].$toggle_id); ?>" data-indicator-color="<?php echo esc_attr($indicator_bg);?>">
+                        role="tab" aria-controls="content-<?php echo esc_attr($toggle['_id'].$toggle_id); ?>" aria-selected="<?php echo (trim($is_active) === 'active') ? 'true' : 'false'; ?>" tabindex="<?php echo (trim($is_active) === 'active') ? '0' : '-1'; ?>" data-indicator-color="<?php echo esc_attr($indicator_bg);?>">
                             <?php if ($toggle['ekit_toggle_title'] !== '') { ?>
                                 <span class="elementskit-tab-title"><?php echo esc_html($toggle['ekit_toggle_title']); ?></span>
                             <?php }; ?>
@@ -28,8 +28,9 @@
         ?>
             <div 
             class="tab-pane elementkit-toggle-tab-pane elementor-repeater-item-<?php echo esc_attr( $toggle[ '_id' ] ); ?> <?php echo esc_attr($is_active);?>" 
-            id="content-<?php echo esc_attr($toggle['_id'].$toggle_id); ?>" 
+            id="content-<?php echo esc_attr($toggle['_id'].$toggle_id); ?>"
             role="tabpanel"
+            tabindex="0"
             aria-labelledby="content-<?php echo esc_attr($toggle['_id'].$toggle_id); ?>-tab">
                 <div class="animated fadeIn">
                     <?php 

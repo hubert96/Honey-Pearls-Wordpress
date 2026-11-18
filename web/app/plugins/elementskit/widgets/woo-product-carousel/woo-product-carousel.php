@@ -13,7 +13,6 @@ class ElementsKit_Widget_Woo_Product_Carousel extends Widget_Base {
 
 	public function __construct( $data = [], $args = null ) {
 		parent::__construct( $data, $args );
-		$this->add_script_depends('magnific-popup');
 	}
 
 	public function get_name() {
@@ -40,8 +39,12 @@ class ElementsKit_Widget_Woo_Product_Carousel extends Widget_Base {
         return 'https://wpmet.com/doc/woocommerce-product-carousel/';
     }
 
+	public function get_script_depends() {
+		return ['ekit-pro-woo-product-carousel', 'magnific-popup', 'swiper'];
+	}
+
 	public function get_style_depends() {
-		return ['swiper'];
+		return ['swiper','magnific-popup', 'ekit-pro-woo-product-carousel'];
 	}
 
     protected function is_dynamic_content(): bool {
@@ -1950,7 +1953,7 @@ class ElementsKit_Widget_Woo_Product_Carousel extends Widget_Base {
 					'type'		 => Controls_Manager::ICONS,
 					'fa4compatibility' => 'ekit_arrows_prev_icon',
 					'default' => [
-						'value' => 'fas fa-angle-left',
+						'value' => 'fas fa-chevron-left',
 						'library' => 'solid',
 					],
 					'condition' => [
@@ -1975,7 +1978,7 @@ class ElementsKit_Widget_Woo_Product_Carousel extends Widget_Base {
 					'type'		 => Controls_Manager::ICONS,
 					'fa4compatibility' => 'ekit_arrows_next_icon',
 					'default' => [
-						'value' => 'fas fa-angle-right',
+						'value' => 'fas fa-chevron-right',
 						'library' => 'solid',
 					],
 					'condition' => [
@@ -2132,7 +2135,7 @@ class ElementsKit_Widget_Woo_Product_Carousel extends Widget_Base {
 				'type'      => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}}  .ekit-slidenav-container .ekit-slidenav' => 'color: {{VALUE}};',
-					'{{WRAPPER}} .ekit-slidenav-container .ekit-slidenav svg path'	=> 'stroke: {{VALUE}}; fill: {{VALUE}};',
+					'{{WRAPPER}} .ekit-slidenav-container .ekit-slidenav svg'	=> 'fill: {{VALUE}};',
 				],
 				'condition' => [
 					'ekit_navigation' => [ 'arrows', 'both' ],
@@ -2156,7 +2159,7 @@ class ElementsKit_Widget_Woo_Product_Carousel extends Widget_Base {
 				'type'      => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}}  .ekit-slidenav-container .ekit-slidenav:hover' => 'color: {{VALUE}}',
-					'{{WRAPPER}} .ekit-slidenav-container .ekit-slidenav:hover svg path'	=> 'stroke: {{VALUE}}; fill: {{VALUE}};',
+					'{{WRAPPER}} .ekit-slidenav-container .ekit-slidenav:hover svg'	=> 'fill: {{VALUE}};',
 				],
 				'condition' => [
 					'ekit_navigation' => [ 'arrows', 'both' ],
@@ -2361,6 +2364,7 @@ class ElementsKit_Widget_Woo_Product_Carousel extends Widget_Base {
 					'selectors' => [
 						'{{WRAPPER}} .ekit-swiper-pagination .swiper-pagination-bullet' => 'background-color: {{VALUE}}',
 					],
+					'default'	=> '#f76b6a',
 					'condition' => [
 						'ekit_navigation' => [ 'dots', 'both' ],
 					],
@@ -3290,5 +3294,6 @@ class ElementsKit_Widget_Woo_Product_Carousel extends Widget_Base {
 			$this->render_footer();
         echo '</div>';
     }
+
 
 }

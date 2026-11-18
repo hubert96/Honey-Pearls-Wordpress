@@ -1,4 +1,197 @@
 == Changelog ==
+Version: 4.10.10 (17 November 2026)
+* Added: Event Calendar "Show Event Time" option to show or hide event time.
+* Added: Event Calendar "Time Position" option (Inline / Top) for Month view events.
+* Added: Event Calendar typography control for event time.
+* Added: Advanced Tab widget smooth content animations (Crossfade, Fade Up, Slide, Zoom, Blur) with duration and easing controls.
+* Added: Advanced Tab widget nav description with expand-on-active reveal and style controls.
+* Fixed: Event Calendar event time getting cut off when the event title is long.
+* Fixed: Advanced widgets content not rendering on first load until the editor is reloaded.
+* Fixed: Blog Posts widget thumbnail and content column sizing.
+
+Version: 4.10.9 (2 November 2026)
+* Added: Event Calendar price field with popup display and styling options.
+* Improved: Event Calendar with 12-hour and 24-hour time formats.
+* Improved: Event Calendar event styling with hover effects, title wrapping, and customization controls.
+* Fixed: Stylish List entrance animation issue both editor & frontend view.
+
+Version: 4.10.8 (20 October 2026)
+* Added: One Page Scroll navigation styles, now provided by ElementsKit Pro.
+* Added: Dropdown Indicator Icon control for the Nav Menu widget, now provided by ElementsKit Pro.
+* Fixed: Missing parent event content, links, and visibility settings in schedule popups in Event Calendar widget.
+* Improved: License requests now return a proper error response for users without sufficient permissions.
+* Security: License activation and revocation requests are now protected with nonce verification.
+* Fixed: Incorrect event timing, Full Day behavior, and overnight schedules in Event Calendar widget.
+* Fixed: Advanced Slider - Image Comparison widget not working on looped (cloned) slides
+* Fixed: Advanced Slider - Hotspot widget tooltips not positioned on the front-end
+
+Version: 4.10.7 (11 October 2026)
+* Added: Copy and Paste actions using Elementor's latest Context Menu API.
+* Added: Cross-domain content transfer using the Clipboard API with a manual paste fallback.
+* Improved: Copy and Paste compatibility with Containers, Flexbox, Grid, Div Block, and third-party Elementor widgets.
+* Improved: Added conflict-free keyboard shortcuts for Copy (`Ctrl+Alt+C`) and Paste (`Ctrl+Alt+V`).
+* Improved: Added guidance for configuring the Glass Morphism background effect.
+* Improved: ElementsKit Header Footer compatibility with ShopEngine templates.
+* Improved: Lite and Pro integration for PRO badges and automatic functional script loading when Pro is active.
+* Improved: Mouse Cursor widget icon rendering compatibility with inline SVG icons.
+* Fixed: WooCommerce checkout AJAX conflicts caused by Header Footer template rendering.
+* Fixed: Timeline widget SVG icon sizing and alignment issues.
+* Fixed: Interactive Links widget icon color controls not applying to font icons.
+* Fixed: Popup Modal widget SVG icon size and spacing controls.
+
+Version: 4.10.6 (29 September 2026)
+* Improved: Post title output escaping in the Blog Posts widget's Block and Grid With Thumb layouts.
+* Fixed: Stored XSS vulnerability in the Blog Posts widget's featured image alt attributes.
+* Fixed: Indicator conflict between the Advanced Toggle and Advanced Tab widgets.
+
+Version: 4.10.5 (21 September 2026)
+* Added: Control for editing the "Home" text in the Breadcrumb widget.
+* Added: Responsive image position control for the Blog Post widget.
+* Added: Fully styled video popup modal with autoplay, poster, close button, and keyboard dismissal support.
+* Added: Profile avatar in the Instagram post header with circle and square shape options.
+* Improved: The padding control labels and editor preview behavior in the Advanced Toggle widget.
+* Improved: The Instagram Feed reaction footer with typography, icon size, icon color, and text color controls.
+* Fixed: Advanced Toggle padding and indicator alignment with long button text.
+* Fixed: Instagram Feed display failure caused by token expiration.
+* Fixed: Expired images in the Facebook Feed widget.
+* Fixed: Facebook Feed widget post limit functionality.
+* Fixed: Image Swap styles not being applied on the frontend when using caching plugins.
+* Fixed: Yelp Review slider functionality.
+* Fixed: Yelp Review slider icon styles not being rendered on the frontend.
+* Fixed: Incorrect single-column display in Instagram grid and masonry layouts across devices.
+* Fixed: Broken video elements appearing instead of thumbnails with play buttons on Instagram video posts.
+* Fixed: Instagram Feed source icon linking to the media URL instead of the post permalink.
+* Fixed: Instagram Feed profile picture handling and compatibility with Instagram Graph API v21.0.
+
+Version: 4.10.4 (6 September 2026)
+* Added: Global Badge module support for containers.
+* Added: Responsive posts-per-row control for the Blog Posts widget.
+* Added: WooCommerce installation/activation notice for the Woo Mini Cart widget.
+* Improved: Translation support for accessibility labels, slider navigation announcements, and video frame titles.
+* Fixed: JavaScript string translation issues.
+
+Version: 4.10.3 (24 August 2026)
+* Added: Introduced an icon color control for the Behance Feed widget.
+* Fixed: Resolved issues with the YouTube Feed widget.
+* Fixed: Resolved an issue where hash-based URLs were not handled correctly.
+
+Version: 4.10.2 (11 August 2026)
+* Fixed: Issue with the Content Ticker widget not displaying correctly.
+* Fixed: Error in the Advanced Slider widget when using the arrow navigation with certain themes.
+* Fixed: Issue with the the Advanced Slider widget not displaying correctly.
+
+Version: 4.10.1 (11 August 2026)
+* Improved: Sticky Content request performance by preventing migration processing during normal page loads.
+* Fixed: Slow Elementor postmeta query triggered by the legacy Sticky Content migration.
+* Removed: Obsolete Sticky Content settings migration.
+
+Version: 4.10.0 (10 August 2026)
+* Added: Marquee module.
+* Added: Youtube Feed widget.
+* Added: Accessibility improvements for All widgets.
+* Improved: Frontend performance by loading widget CSS and JavaScript assets only when required, reducing frontend CSS by up to 40%.
+* Improved: CSS asset loading strategy, reducing Total Blocking Time (TBT) by up to 60%.
+* Improved: Largest Contentful Paint (LCP) by approximately 16% through optimized CSS loading.
+* Improved: Compatibility with Plugin Check (PCP).
+* Improved: Consolidated third-party libraries into shared assets and optimized widget and module dependency loading.
+* Improved: Button icon rendering, positioning, and spacing controls in the Image Hover Effect widget.
+* Improved: Added Classic Text and WYSIWYG editor toggle for Table widget body cells.
+* Fixed: Google Maps loading issue.
+* Fixed: Lottie animation support in the Badge module.
+* Fixed: Blog Post widget text domain issue.
+* Fixed: Next button pagination issue in the Data Table widget.
+* Fixed: Pinterest logo styling and circle size control issues.
+* Fixed: Swiper autoplay pause-on-hover behavior in slider-based widgets.
+* Fixed: Facebook Review widget slider and styling issues.
+
+Version: 4.5.3 (09 July 2026)
+* Added: Blog post widget equal height
+* Fixed: Google map is not loading properly
+
+Version: 4.5.2 (01 July 2026)
+* Fixed: Motion text alignment not working when animation is enabled
+* Improved: Removed Bootstrap dependency from widgets and modules, reducing file size by ~20KB.
+* Improved: Gallery widget default row and column spacing.
+
+Version: 4.5.1 (23 June 2026)
+* Fixed: Toggle effect not working in advanced toggle widget
+* Fixed: Audio player css is overwriting background control css
+* Fixed: Table widget pagination button css overwriting issue
+* Fixed: Video Gallery widget's layout & slider issue.
+* Fixed: Facebook Feed widget markup gone when token is expired
+
+Version: 4.5.0 (15 June 2026)
+* Added: New Event Calendar widget.
+* Added: Tooltip support for the Comparison Table widget.
+* Fixed: PHP deprecation in the Content Ticker widget by returning content instead of echoing it.
+* Fixed: PHP 8.2.27 deprecation warnings to ensure full compatibility with PHP 8.2.27.
+* Improved: Optimized frontend performance by loading widget JavaScript assets only when needed.
+* Improved: JavaScript asset loading strategy, reducing Total Blocking Time (TBT) by up to 50%.
+* Improved: Table widget loading performance in the editor by reducing render-blocking resources.
+* Improved: Performance of the Video Gallery and Image Gallery widgets.
+* Removed: Approximately ~11 MB of redundant Composer package data, reducing plugin size and improving performance.
+
+Version: 4.4.5 (19 May 2026)
+* Added: Stacked Cards widget
+* Added: Scroll Reveal module
+* Added: Add promo icon SVG markup and integrate into Modules
+* Added: New style controls for coverflow, cards effect in Advanced slider widget.
+* Added: New controls for category, tags, load more, and Dropdown Options in Advanced Search Widget.
+* Fixed: Motion Text markup and responsive issue fixes
+* Fixed: URL now displays HTTPS protocol correctly.
+* Improved: Motion Text add infinite-loop control
+* Improved: Price menu widget image and caption design Controls improvements
+
+Version: 4.4.0 (28 April 2026)
+* Added: Login form widget
+* Added: Register form widget
+* Added: Copyright widget
+* Fixed: Media playback is not stopping when closing the popup modal
+* Improved: Gallery widget new line-height control for gallery icon
+
+Version: 4.3.2 (15 April 2026)
+* Fixed: Singular and archive options disabled issue
+* Improved: Add editor notice and editor only styles in gallery widget
+
+Version: 4.3.1 (11 April 2026)
+* Fixed: SVG color not updating correctly in advanced tab widget
+* Fixed: Advanced Tab icons not displaying when Elementor inline font icons are enabled
+* Fixed: WooCommerce mini cart icon and text not clickable in off-canvas mode
+* Fixed: WooCommerce mini cart widget resets to 0 items after page navigation
+* Improved: WooCommerce mini cart widget compatibility
+* Improved: Minor bug fixes and general improvements
+
+Version: 4.3.0 (06 April 2026)
+Added: WooCommerce header footer conditions
+Added: Selectable HTML tag for image hover effect widget's title
+Added: New badge presets: blob and circle
+Added: Editor promotion for pro widgets
+Fixed: Creative button widget's SVG style issues
+Fixed: Slider not working in team carousel widget
+Fixed: Elementor SVG icon compatibility issues in audio player
+Improved: Escaping search terms in advanced search widget
+Improved: Archive conditions for header footer module
+Improved: Added accessibility attributes to advanced slider widget
+Improved: Audio player icon rendering (SVG, Font Awesome, custom)
+
+Version: 4.2.2 (23 February 2026)
+Fixed: Image width selector in stylish list widget
+Improved: Sanitize title in advanced tab widget
+Improved: Optimize JS loading for widgets and modules
+Improved: Optimize HTML tag sanitization
+Improved: Unit options in stylish list widget
+Improved: Icon and pagination dot color in product carousel
+
+Version: 4.2.1 (31 December 2025)
+Fixed: Compatibility issue between global badge module and icon widget
+
+Version: 4.2.0 (28 December 2025)
+Added: Global badge module
+Fixed: Corrected string formatting in update notification for Edd_Warper class
+Fixed: Adjusted `Posts Count` control settings in blog posts widget
+Improved: Improve accessibility and enhance screen reader support for stylish list widget
+Improved: Added timeline widget equal height
+
 Version: 4.1.2 (20 October 2025)
 Added: Controls for showing total search results label in advanced search widget
 Fixed: Correct SVG styling selector in pricing widget

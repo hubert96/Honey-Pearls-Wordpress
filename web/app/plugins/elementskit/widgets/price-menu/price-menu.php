@@ -33,6 +33,14 @@ class ElementsKit_Widget_Price_Menu extends Widget_Base {
 		return 'https://wpmet.com/doc/price-menu/';
 	}
 
+	public function get_style_depends() {
+		return ['ekit-pro-price-menu'];
+	}
+
+	public function get_script_depends() {
+		return ['ekit-pro-price-menu'];
+	}
+
     protected function is_dynamic_content(): bool {
         return false;
     }
@@ -119,6 +127,20 @@ class ElementsKit_Widget_Price_Menu extends Widget_Base {
 				],
 				'assets' => [
 					'styles' => [
+						[
+							'name' => 'swiper',
+							'conditions' => [
+								'terms' => [
+									[
+										'name' => 'ekit_price_menu_enable_slider',
+										'operator' => '===',
+										'value' => 'yes',
+									],
+								],
+							],
+						],
+					],
+					'scripts' => [
 						[
 							'name' => 'swiper',
 							'conditions' => [
@@ -652,6 +674,7 @@ class ElementsKit_Widget_Price_Menu extends Widget_Base {
 		$this->end_controls_section();
 
 		/** Style Section Start */
+
 		/** Item Style Section */
 		$this->start_controls_section(
 			'section_item_style',
@@ -988,6 +1011,96 @@ class ElementsKit_Widget_Price_Menu extends Widget_Base {
 			]
 		);
 
+		$this->add_responsive_control(
+			'ekit_price_menu_card_image_width',
+			[
+				'label' => esc_html__( 'Width', 'elementskit' ),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => [ 'px', 'em', 'rem', '%' ],
+				'range' => [
+					'px' => [ 'min' => 0, 'max' => 1000 ],
+				],
+				'selectors' => [
+					'{{WRAPPER}} .ekit-price-card-image img' => 'width: {{SIZE}}{{UNIT}};',
+				],
+				'condition' => [ 'ekit_price_menu_list_style' => 'card' ],
+			]
+		);
+
+		$this->add_responsive_control(
+			'ekit_price_menu_card_image_height',
+			[
+				'label' => esc_html__( 'Height', 'elementskit' ),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => [ 'px', 'em', 'rem', '%' ],
+				'range' => [
+					'px' => [ 'min' => 0, 'max' => 1000 ],
+				],
+				'selectors' => [
+					'{{WRAPPER}} .ekit-price-card-image img' => 'height: {{SIZE}}{{UNIT}};',
+				],
+				'condition' => [ 'ekit_price_menu_list_style' => 'card' ],
+			]
+		);
+
+		$this->add_responsive_control(
+			'ekit_price_menu_card_image_object_fit',
+			[
+				'label' => esc_html__( 'Object Fit', 'elementskit' ),
+				'type' => Controls_Manager::SELECT,
+				'options' => [
+					'' => esc_html__( 'Default', 'elementskit' ),
+					'cover' => esc_html__( 'Cover', 'elementskit' ),
+					'contain' => esc_html__( 'Contain', 'elementskit' ),
+					'fill' => esc_html__( 'Fill', 'elementskit' ),
+				],
+				'selectors' => [
+					'{{WRAPPER}} .ekit-price-card-image img' => 'object-fit: {{VALUE}};',
+				],
+				'condition' => [ 'ekit_price_menu_list_style' => 'card' ],
+			]
+		);
+
+		$this->add_responsive_control(
+			'ekit_price_menu_card_image_padding',
+			[
+				'label' => esc_html__( 'Padding', 'elementskit' ),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', 'em', 'rem', '%' ],
+				'range' => [
+					'px' => [ 'min' => 0, 'max' => 1000 ],
+				],
+				'selectors' => [
+					'{{WRAPPER}} .ekit-price-card-image img' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+				'condition' => [ 'ekit_price_menu_list_style' => 'card' ],
+				'separator' => 'before',
+			]
+		);
+
+		$this->add_responsive_control(
+			'ekit_price_menu_card_image_margin',
+			[
+				'label' => esc_html__( 'Margin', 'elementskit' ),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', 'em', 'rem', '%' ],
+				'selectors' => [
+					'{{WRAPPER}} .ekit-price-card-image img' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+				'condition' => [ 'ekit_price_menu_list_style' => 'card' ],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Border::get_type(),
+			[
+				'name' => 'ekit_price_menu_card_image_border',
+				'selector' => '{{WRAPPER}} .ekit-price-card-image img',
+				'condition' => [ 'ekit_price_menu_list_style' => 'card' ],
+				'separator' => 'before',
+			]
+		);
+
 		$this->add_control(
 			'ekit_price_menu_image_border_radius',
 			[
@@ -996,6 +1109,7 @@ class ElementsKit_Widget_Price_Menu extends Widget_Base {
 				'size_units' => ['px', '%'],
 				'selectors' => [
 					'{{WRAPPER}} .ekit-price-menu-image img' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					'{{WRAPPER}} .ekit-price-card-image img' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				],
 			]
 		);
@@ -1181,6 +1295,29 @@ class ElementsKit_Widget_Price_Menu extends Widget_Base {
 			]
 		);
 
+		$this->add_responsive_control(
+			'ekit_price_menu_card_caption_margin',
+			[
+				'label' => esc_html__( 'Margin', 'elementskit' ),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', 'em', 'rem', '%' ],
+				'selectors' => [
+					'{{WRAPPER}} .ekit-price-card-item .ekit-price-card-caption' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+				'condition' => [ 'ekit_price_menu_list_style' => 'card' ],
+				'separator' => 'after',
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Border::get_type(),
+			[
+				'name' => 'ekit_price_menu_card_caption_border',
+				'selector' => '{{WRAPPER}} .ekit-price-card-item .ekit-price-card-caption',
+				'condition' => [ 'ekit_price_menu_list_style' => 'card' ],
+			]
+		);
+
 		// title style 
 		$this->add_control(
 			'ekit_price_menu_title_heading',
@@ -1263,6 +1400,18 @@ class ElementsKit_Widget_Price_Menu extends Widget_Base {
 				'selectors' => [
 					'{{WRAPPER}} .ekit-price-menu-caption .ekit-price-menu-caption-description' => 'color: {{VALUE}};',
 					'{{WRAPPER}} .ekit-price-card-caption-header .ekit-price-card-caption-header-description' => 'color: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_control(
+			'ekit_price_menu_description_hover_color',
+			[
+				'label' => esc_html__('Hover Color', 'elementskit'),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .ekit-price-menu-item:hover .ekit-price-menu-caption .ekit-price-menu-caption-description' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .ekit-price-card-item:hover .ekit-price-card-caption-header .ekit-price-card-caption-header-description' => 'color: {{VALUE}};',
 				],
 			]
 		);
@@ -2203,4 +2352,5 @@ class ElementsKit_Widget_Price_Menu extends Widget_Base {
 			include Handler::get_dir().'/styles/'.$ekit_price_menu_list_style.'.php';
 		}
  	}
+	
 }

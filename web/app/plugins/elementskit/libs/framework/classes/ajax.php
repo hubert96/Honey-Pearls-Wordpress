@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace ElementsKit\Libs\Framework\Classes;
 
 use ElementsKit\Libs\Framework\Classes\License;
@@ -9,17 +9,20 @@ class Ajax extends \ElementsKit_Lite\Libs\Framework\Classes\Ajax{
 
     public function __construct() {
         parent::__construct();
-        
+
         add_action( 'wp_ajax_ekit_admin_license', [$this, 'elementskit_admin_license'] );
     }
 
     public function elementskit_admin_license() {
         if(!current_user_can('manage_options')){
-            return;
-        }      
-        $key = !isset($_POST['elementkit_pro_license_key']) ? '' : sanitize_text_field($_POST['elementkit_pro_license_key']);
-        $type2 = !isset($_GET['type']) ? '' : sanitize_text_field($_GET['type']);
-        $type = !isset($_POST['type']) ? '' : sanitize_text_field($_POST['type']);
+			wp_send_json_error( [ 'message' => esc_html__( 'Insufficient permissions.', 'elementskit' ) ], 403 );
+        }
+
+		check_ajax_referer( 'elementskit-license', 'elementskit_license_nonce' );
+
+        $key = !isset($_POST['elementkit_pro_license_key']) ? '' : sanitize_text_field(wp_unslash($_POST['elementkit_pro_license_key']));
+        $type2 = !isset($_GET['type']) ? '' : sanitize_text_field(wp_unslash($_GET['type']));
+        $type = !isset($_POST['type']) ? '' : sanitize_text_field(wp_unslash($_POST['type']));
         $type = ($type == '') ? $type2 : $type;
 
 
@@ -34,19 +37,23 @@ class Ajax extends \ElementsKit_Lite\Libs\Framework\Classes\Ajax{
                     $result['message'] = esc_html__('Your key is empty', 'elementskit');
                     echo $this->return_json($result); wp_die(); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                 }
-        
+
                 $o = License::instance()->activate( $key );
                 if ( is_object($o) ) {
                     $result = $o;
                 }
-            
+
             break;
             case 'revoke':
                 License::instance()->revoke();
-                wp_redirect('https://account.wpmet.com/?wpmet-screen=products'); exit;
+                add_filter( 'allowed_redirect_hosts', function( $hosts ) {
+                    $hosts[] = 'account.wpmet.com';
+                    return $hosts;
+                } );
+                wp_safe_redirect('https://account.wpmet.com/?wpmet-screen=products'); exit;
             break;
         }
-        
+
         echo $this->return_json($result); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         wp_die();
     }

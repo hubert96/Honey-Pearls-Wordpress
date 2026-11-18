@@ -35,6 +35,14 @@ class ElementsKit_Widget_Image_Swap extends Widget_Base {
         return 'https://wpmet.com/doc/image-swap/';
     }
 
+	public function get_style_depends() {
+		return ['ekit-pro-image-swap'];
+	}
+
+	public function get_script_depends() {
+		return ['ekit-pro-image-swap'];
+	}
+
     protected function is_dynamic_content(): bool {
         return false;
     }
@@ -468,11 +476,24 @@ class ElementsKit_Widget_Image_Swap extends Widget_Base {
         $this->add_link_attributes( 'link', $ekit_img_swap_link );
 
         /**
+         * Accessibility
+         *
+         * The wrapper is itself the swap control, and it keeps its tag and classes
+         * because existing CSS targets them — so when there is no link it takes
+         * role="button" rather than becoming one. The linked variant needs nothing
+         * added; it only needed the hardcoded tabindex="-1" taken away, which was
+         * removing the link from the tab order entirely.
+         */
+        $ekit_img_swap_a11y_attr = ( 'a' === $wrapper_tag )
+            ? ''
+            : ' role="button" tabindex="0" aria-label="' . esc_attr__( 'Swap image', 'elementskit' ) . '"';
+
+        /**
          * Markup
          */
         ?>
         <<?php echo esc_attr( $wrapper_tag ); ?> data-trigger="<?php echo esc_html($click_behavior); ?>" class="ekit-image-swap ekit-image-swap--<?php echo esc_attr( $ekit_img_swap_style . $change_behavior . $is_fixed_height);?> <?php echo esc_attr($click_behavior ) ;?>" 
-		<?php $this->print_render_attribute_string( 'link' ); ?> tabindex="-1">
+		<?php $this->print_render_attribute_string( 'link' ); ?><?php echo $ekit_img_swap_a11y_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped on assignment above. ?>>
             <?php
                 echo Group_Control_Image_Size::get_attachment_image_html( $settings, 'ekit_img_size', 'ekit_img_front' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                 echo Group_Control_Image_Size::get_attachment_image_html( $settings, 'ekit_img_size', 'ekit_img_back' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -496,4 +517,5 @@ class ElementsKit_Widget_Image_Swap extends Widget_Base {
             <?php
         }
     }
+	
 }

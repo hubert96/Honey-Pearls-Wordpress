@@ -37,33 +37,21 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
  
 define( 'AWAIKEN_PLUGINS_API_URI', 'https://awaikenthemes.com/wp-json/update-assets/v1/plugins/' );
-define( 'AWAIKEN_PLUGINS_URI', 'https://cdn.awaikenthemes.com/plugins/' );
-function backeri_json_error_license_invalid() {
-    echo '<div class="notice notice-error is-dismissible">
-        <p>' . esc_html__( 'Invalid license', 'backeri' ) . '</p>
-    </div>';
-}
-
-function backeri_json_error_notice() {
-    echo '<div class="notice notice-error is-dismissible">
-        <p>' . esc_html__( 'Unable to connect to Awaiken server. Failed to retrieve valid JSON data.', 'backeri' ) . '</p>
-    </div>';
-}
-
-function backeri_http_error_notice() {
-    echo '<div class="notice notice-error is-dismissible">
-		<p>' . esc_html__( 'Unable to connect to Awaiken server. Failed to fetch data from the server.', 'backeri' ) . '</p>
-    </div>';
-}
-
 function backeri_get_plugin_versions() {
 	
-	$transient_key = AWAIKEN_THEME_SLUG.'_plugin_versions_api_' . md5( AWAIKEN_PLUGINS_API_URI );
+	// "_v2": the cached format changed (shopengine-pro key), so do not reuse older cached values.
+	$transient_key = AWAIKEN_THEME_SLUG.'_plugin_versions_api_v2_' . md5( AWAIKEN_PLUGINS_API_URI );
 	$cached_response = get_transient( $transient_key );
 	
 	if ( $cached_response !== false ) {
         return $cached_response;
     }
+
+	// A recent call failed: do not retry on every request (this runs on every read of the update_plugins transient).
+	$fail_key = $transient_key . '_fail';
+	if ( get_transient( $fail_key ) ) {
+		return null;
+	}
 
 	// Get the JSON data from the specified URL using WordPress HTTP API
 	$license = trim( get_option( AWAIKEN_THEME_SLUG . '_license_key' ) );
@@ -73,17 +61,18 @@ function backeri_get_plugin_versions() {
 	if ( 'valid' !== $status ) return null;
 	
 	$api_params = array(
-				'at_action'  => 'update_plugin',
-				'url'        => home_url(),
-				'license'    => $license,
-				'item_id'    => AWAIKEN_ITEM_ID,
+				'at_action'   => 'update_plugin',
+				'url'         => home_url(),
+				'license'     => $license,
+				'item_id'     => AWAIKEN_ITEM_ID,
+				'api_version' => 2, // Secure plugin downloads (see inc/plugin-updates.php)
 			);
 	
 	$verify_ssl = (bool) apply_filters( 'awaiken_sl_api_request_verify_ssl', true );
 	$response   = wp_remote_post(
 					AWAIKEN_PLUGINS_API_URI,
 					array(
-						'timeout'   => 15,
+						'timeout'   => 8,
 						'sslverify' => $verify_ssl,
 						'body'      => $api_params,
 					)
@@ -92,40 +81,34 @@ function backeri_get_plugin_versions() {
 	// Check for a successful response
     if ( !is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
         $json_contents = wp_remote_retrieve_body( $response );
-		
 
         // Decode the JSON data
         $data = json_decode($json_contents, true);
 
         // Check if JSON decoding was successful and data structure is as expected
         if ( $data !== null && isset( $data['data'] ) ) {
-            // Access plugin versions and store them in separate variables
-            $elementskitVersion = $data['data']['elementskit'];
-			
-			$return = [
-                'elementskit' => $elementskitVersion,
-            ];
-			
-			set_transient( $transient_key, $return, 172800  );
+			$return = [];
 
-            return $return;
+			if ( ! empty( $data['data']['elementskit'] ) ) {
+				$return['elementskit'] = $data['data']['elementskit'];
+			}
 
+			if ( ! empty( $data['data']['shopengine-pro'] ) ) {
+				$return['shopengine-pro'] = $data['data']['shopengine-pro'];
+			}
+
+			// An empty list means the server has nothing to offer (e.g. no zip stored yet): treat it as a failure.
+			if ( ! empty( $return ) ) {
+				set_transient( $transient_key, $return, 12 * HOUR_IN_SECONDS );
+
+				return $return;
+			}
         }
-		else if ( $data !== null && isset( $data['license'] ) && $data['license'] === 'invalid' ) { 
-			// Show an admin notice if license invalid
-            add_action('admin_notices', 'backeri_json_error_license_invalid');
-            return null;
-		} 
-		else {
-            // Show an admin notice if JSON structure is unexpected
-            add_action('admin_notices', 'backeri_json_error_notice');
-            return null;
-        }
-    } else {
-        // Show an admin notice if the HTTP request fails
-        add_action('admin_notices', 'backeri_http_error_notice');
-        return null;
     }
+
+	// The API failed or did not return versions. Remember that for a few minutes.
+	set_transient( $fail_key, 1, 10 * MINUTE_IN_SECONDS );
+	return null;
 }
 require_once BACKERI_THEME_DIR . '/inc/class-tgm-plugin-activation.php';
 
@@ -156,13 +139,14 @@ function backeri_register_required_plugins() {
 	 
 	$plugin_versions = backeri_get_plugin_versions();
 	
-	if ( $plugin_versions !== null ) {
+	// Bundled zips, used when the license server has nothing to offer (no valid license, API down).
+	$elementskit_version 		= '4.10.7';
+	$elementskit_source_url 	= get_template_directory() . '/assets/plugins/elementskit-' . $elementskit_version . '.zip';
+
+	// Licensed: install through the license-checked download (see inc/plugin-updates.php).
+	if ( ! empty( $plugin_versions['elementskit'] ) && function_exists( 'backeri_plugin_package_url' ) ) {
 		$elementskit_version 		= $plugin_versions['elementskit'];
-		$elementskit_source_url 	= AWAIKEN_PLUGINS_URI . 'elementskit/elementskit-' . $elementskit_version . '.zip';
-	}
-	else{
-		$elementskit_source_url 	= get_template_directory() . '/assets/plugins/elementskit-4.1.2.zip';
-		$elementskit_version 		= '4.1.2';
+		$elementskit_source_url 	= backeri_plugin_package_url( 'elementskit' );
 	}
 
 	$plugins = array(
@@ -190,7 +174,7 @@ function backeri_register_required_plugins() {
 			'name'              => esc_html__('Backeri Theme Addons', 'backeri'), 
 			'slug'              => 'backeri-theme-addons',
 			'source'            => get_template_directory() . '/assets/plugins/backeri-theme-addons.zip', 
-			'version'			=> '1.0.0',
+			'version'			=> '1.0.1',
 			'required'          => true, 
 		),
 		array(

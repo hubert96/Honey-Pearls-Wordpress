@@ -35,13 +35,16 @@ class ElementsKit_Widget_Protected_Content extends Widget_Base {
     public function get_categories() {
         return Handler::get_categories();
     }
-    
 	public function get_keywords() {
 		return Handler::get_keywords();
 	}
 
 	public function get_help_url() {
 		return "https://wpmet.com/doc/protected-content";
+	}
+
+	public function get_style_depends() {
+		return ['ekit-pro-protected-content'];
 	}
 
 	protected function is_dynamic_content(): bool {
@@ -141,7 +144,7 @@ class ElementsKit_Widget_Protected_Content extends Widget_Base {
 				'type' => Controls_Manager::SELECT,
 				'options' => [
 					'roles' => esc_html__('User Role', 'elementskit'),
-					'password' => esc_html__('Password', 'elementskit'),				
+					'password' => esc_html__('Password', 'elementskit'),
 				],
 				'default' => 'password'
 			]
@@ -160,7 +163,7 @@ class ElementsKit_Widget_Protected_Content extends Widget_Base {
 				],
 				'condition'	=> [
 					'ekit_pc_protection_type'	=> 'roles'
-				]				
+				]
             ]
 		);
 
@@ -174,11 +177,11 @@ class ElementsKit_Widget_Protected_Content extends Widget_Base {
 					'active' => true
 				],
 				'condition'	=> [
-					'ekit_pc_protection_type'	=> 'password'	
+					'ekit_pc_protection_type'	=> 'password'
 				]
 			]
-		);	
-			
+		);
+
 		$this->add_control(
 			'ekit_pc_show_content',
 			[
@@ -194,7 +197,6 @@ class ElementsKit_Widget_Protected_Content extends Widget_Base {
 				]
 			]
 		);
-		
 		$this->add_control(
 			'ekit_pc_enable_cookie',
 			[
@@ -218,7 +220,7 @@ class ElementsKit_Widget_Protected_Content extends Widget_Base {
 				'type' => Controls_Manager::SELECT,
 				'options' => [
 					'time' => esc_html__('Time', 'elementskit'),
-					'days' => esc_html__('Days', 'elementskit'),				
+					'days' => esc_html__('Days', 'elementskit'),
 				],
 				'default' => 'time',
 				'condition' => [
@@ -349,7 +351,7 @@ class ElementsKit_Widget_Protected_Content extends Widget_Base {
 			'ekit_pc_submit_text',
 			[
 				'label' => esc_html__('Submit text', 'elementskit'),
-				'type' => Controls_Manager::TEXT,	
+				'type' => Controls_Manager::TEXT,
 				'default' => esc_html__('Submit', 'elementskit'),
 				'placeholder' => esc_html__('Submit', 'elementskit'),
 				'dynamic' => ['active'   => true,],
@@ -358,7 +360,7 @@ class ElementsKit_Widget_Protected_Content extends Widget_Base {
 
 		$this->end_controls_section();
 
-		// error message start	
+		// error message start
 		$this->start_controls_section(
 			'ekit_pc_warning_message_section',
 			[
@@ -507,7 +509,7 @@ class ElementsKit_Widget_Protected_Content extends Widget_Base {
 				'size_units' => [ 'px', '%', 'em', 'custom' ],
 				'selectors' => [
 					'{{WRAPPER}} .ekit-protected-content .protected-content' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				],				
+				],
 			]
 		);
 
@@ -557,13 +559,13 @@ class ElementsKit_Widget_Protected_Content extends Widget_Base {
 				],
 				'selectors' => [
 					'{{WRAPPER}} .ekit-protected-content .protected-content-message' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				],				
+				],
 			]
 		);
 
 		$this->end_controls_section();
 
-		// Form Style section 
+		// Form Style section
 		$this->start_controls_section(
 			'ekit_pc_form_field_style',
 			[
@@ -578,7 +580,7 @@ class ElementsKit_Widget_Protected_Content extends Widget_Base {
 				'type' => Controls_Manager::SLIDER,
 				'label' => esc_html__('Width', 'elementskit'),
 				'size_units' => [ 'px', '%', 'em', 'custom' ],
-				'range' => [					
+				'range' => [
 					'px' => [
 						'min' => 100,
 						'max' => 1200,
@@ -628,8 +630,8 @@ class ElementsKit_Widget_Protected_Content extends Widget_Base {
 			]
 		);
 
-		$this->start_controls_tabs( 
-			'ekit_pc_form_input_tabs' 
+		$this->start_controls_tabs(
+			'ekit_pc_form_input_tabs'
 		);
 		$this->start_controls_tab(
 			'ekit_pc_form_tab_input',
@@ -745,10 +747,10 @@ class ElementsKit_Widget_Protected_Content extends Widget_Base {
 				'separator' => "before",
 				'selectors' => [
 					'{{WRAPPER}} .ekit-protected-content .password' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				],				
+				],
 			]
 		);
-		
+
 		$this->add_responsive_control(
 			'ekit_pc_form_input_margin',
 			[
@@ -765,14 +767,14 @@ class ElementsKit_Widget_Protected_Content extends Widget_Base {
 				],
 				'selectors' => [
 					'{{WRAPPER}} .ekit-protected-content .password' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				],				
+				],
 			]
 		);
 
 		$this->end_controls_section();
 
 
-		// Submit Button Style section 
+		// Submit Button Style section
 		$this->start_controls_section(
 			'ekit_pc_submit_button_style',
 			[
@@ -797,8 +799,8 @@ class ElementsKit_Widget_Protected_Content extends Widget_Base {
 			]
 		);
 
-		$this->start_controls_tabs( 
-			'ekit_pc_form_button_tabs' 
+		$this->start_controls_tabs(
+			'ekit_pc_form_button_tabs'
 		);
 		$this->start_controls_tab(
 			'ekit_pc_form_tab_button',
@@ -917,10 +919,10 @@ class ElementsKit_Widget_Protected_Content extends Widget_Base {
 				'separator' => "before",
 				'selectors' => [
 					'{{WRAPPER}} .ekit-protected-content .protected-content-submit' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				],				
+				],
 			]
 		);
-		
+
 		$this->add_responsive_control(
 			'ekit_pc_button_margin',
 			[
@@ -937,13 +939,13 @@ class ElementsKit_Widget_Protected_Content extends Widget_Base {
 				],
 				'selectors' => [
 					'{{WRAPPER}} .ekit-protected-content .protected-content-submit' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				],				
+				],
 			]
 		);
 
 		$this->end_controls_section();
 
-		// Warning Style section 
+		// Warning Style section
 		$this->start_controls_section(
 			'ekit_pc_warning_message_style',
 			[
@@ -987,7 +989,7 @@ class ElementsKit_Widget_Protected_Content extends Widget_Base {
 				],
 				'selectors' => [
 					'{{WRAPPER}} .ekit-protected-content .protected-content-warning' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				],				
+				],
 			]
 		);
 
@@ -1028,14 +1030,12 @@ class ElementsKit_Widget_Protected_Content extends Widget_Base {
 		if($ekit_pc_enable_cookie === 'yes' && isset($_COOKIE['protection_content_' . $this->get_id()])) {
 			$validate = true;
 		}
-	
 		// render content
 		if (($this->is_editor() && $ekit_pc_show_content === 'yes') || $validate) {
 			$this->get_protected_content($settings);
 		} elseif ($ekit_pc_protection_type === 'password') {
 			$this->get_protected_form($settings);
 		}
-	
 		// show warning message
 		if ($this->is_editor() && $ekit_pc_show_warning === 'yes' ||
 			(!$this->is_editor() && $ekit_pc_protection_type === 'roles' && !$validate) ||
@@ -1047,7 +1047,6 @@ class ElementsKit_Widget_Protected_Content extends Widget_Base {
 
 	public function set_cookie($settings) {
 		extract($settings);
-	
 		if ($ekit_pc_enable_cookie === 'yes') {
 			$expiry_time = 0;
 			if ($ekit_pc_cookie === 'time') {
@@ -1055,7 +1054,7 @@ class ElementsKit_Widget_Protected_Content extends Widget_Base {
 			} elseif ($ekit_pc_cookie === 'days') {
 				$expiry_time = (int)$ekit_pc_cookie_days * 24 * 60 * 60 * 1000; // Convert days to milliseconds
 			}
-	
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $expiry_time is (int)-cast and get_id() is the widget ID; both safe inside inline script.
 			echo "<script>
 				var pcDate = new Date();
 				pcDate.setTime(pcDate.getTime() + parseInt($expiry_time));
@@ -1071,7 +1070,7 @@ class ElementsKit_Widget_Protected_Content extends Widget_Base {
 		<?php if($ekit_pc_message_source === 'text') :
 				echo wp_kses($ekit_pc_message_text, \ElementsKit_Lite\Utils::get_kses_array());
 			elseif($ekit_pc_message_source === 'elementor_template' && !empty($ekit_pc_message_template)) :
-				echo Plugin::$instance->frontend->get_builder_content_for_display( $ekit_pc_message_template, false );
+				echo \ElementsKit_Lite\Utils::render_elementor_content( $ekit_pc_message_template, false ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Returns trusted rendered Elementor template markup.
 			endif; ?>
 		</div>
 		<div class="protected-content-form">
@@ -1081,6 +1080,7 @@ class ElementsKit_Widget_Protected_Content extends Widget_Base {
 					<input type="hidden" name="<?php echo esc_attr('nonce_' . $this->get_id()); ?>"
 						value="<?php echo esc_attr(wp_create_nonce('protected_form_nonce')); ?>">
 					<input type="password" name="<?php echo esc_attr('password_' . $this->get_id()); ?>" class="password"
+						aria-label="<?php echo esc_attr__( 'Password', 'elementskit' ); ?>"
 						placeholder="<?php echo esc_attr($ekit_pc_input_text); ?>">
 					<input type="submit" name="submit" value="<?php echo esc_attr($ekit_pc_submit_text); ?>"
 						class="protected-content-submit">
@@ -1106,10 +1106,10 @@ class ElementsKit_Widget_Protected_Content extends Widget_Base {
 			<?php if($ekit_pc_content_type === 'custom_content') :
 					echo wp_kses($ekit_pc_protected_content, \ElementsKit_Lite\Utils::get_kses_array());
 				elseif($ekit_pc_content_type === 'elementor_template') :
-					echo Plugin::$instance->frontend->get_builder_content_for_display( $ekit_pc_elementor_template, false );
+					echo \ElementsKit_Lite\Utils::render_elementor_content( $ekit_pc_elementor_template, false ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Returns trusted rendered Elementor template markup.
 				endif; ?>
 		</div>
-	<?php 
+	<?php
 	}
 
 	// Get list of user role for protected content widget start

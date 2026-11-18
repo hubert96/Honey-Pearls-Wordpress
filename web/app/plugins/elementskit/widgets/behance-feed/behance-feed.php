@@ -618,6 +618,14 @@ class ElementsKit_Widget_Behance_Feed extends Widget_Base {
             '.ekit-feed-header-behance .ekit-feed-header--location', 
             ['margin', 'shadow']
         );
+
+        // Make SVG icon fill follow text color by default (SVG doesn't inherit `color`)
+        $this->update_control( 'user_desc_color', [
+            'selectors' => [
+                '{{WRAPPER}} .ekit-feed-header-behance .ekit-feed-header--location'     => 'color: {{VALUE}}',
+                '{{WRAPPER}} .ekit-feed-header-behance .ekit-feed-header--location svg' => 'fill: {{VALUE}}',
+            ],
+        ]);
         
         // Icon Heading
 		$this->add_control( 'user_desc_icon_heading', [
@@ -638,20 +646,31 @@ class ElementsKit_Widget_Behance_Feed extends Widget_Base {
             'label_block' => true
         ]);
 
-        // ekit_behance_feed_profile_picture_margin_right
+        // Icon color — defaults to text color, overrides when explicitly set
+        $this->add_control( 'user_desc_icon_color', [
+            'label'     => esc_html__('Color', 'elementskit'),
+            'type'      => Controls_Manager::COLOR,
+            'selectors' => [
+                '{{WRAPPER}} .ekit-feed-header-behance .ekit-feed-header--location i'   => 'color: {{VALUE}}',
+                '{{WRAPPER}} .ekit-feed-header-behance .ekit-feed-header--location svg' => 'fill: {{VALUE}}',
+            ],
+        ]);
+
+        // Margin Right
         $this->add_responsive_control( 'user_desc_icon_margin_right', [
-            'label' => esc_html__( 'Margin Right', 'elementskit' ),
-            'type' => Controls_Manager::SLIDER,
-            'size_units' => [ 'px', 'em' ],
-            'range' => [
+            'label'          => esc_html__( 'Margin Right', 'elementskit' ),
+            'type'           => Controls_Manager::SLIDER,
+            'size_units'     => [ 'px', 'em' ],
+            'range'          => [
                 'px' => [ 'min' => 0, 'max' => 32, 'step' => 1 ],
                 'em' => [ 'min' => 0, 'max' => 2, 'step' => 0.1 ],
             ],
-            'default' => [ 'unit' => 'px', 'size' => 4 ],
+            'default'        => [ 'unit' => 'px', 'size' => 4 ],
             'tablet_default' => [ 'unit' => 'px', 'size' => 4 ],
             'mobile_default' => [ 'unit' => 'px', 'size' => 4 ],
-            'selectors' => [
-                '{{WRAPPER}} .ekit-feed-header-behance .ekit-feed-header--location i' => "margin-right: {{SIZE}}{{UNIT}};",
+            'selectors'      => [
+                '{{WRAPPER}} .ekit-feed-header-behance .ekit-feed-header--location i'   => 'margin-right: {{SIZE}}{{UNIT}};',
+                '{{WRAPPER}} .ekit-feed-header-behance .ekit-feed-header--location svg' => 'margin-right: {{SIZE}}{{UNIT}};',
             ],
         ]);
     }
@@ -871,7 +890,8 @@ class ElementsKit_Widget_Behance_Feed extends Widget_Base {
 				'label'     => esc_html__('Icon Color', 'elementskit'),
 				'type'      => Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} .ekit-feed-item-behance .ekit-feed-item--cover .ekit-feed-item--go-arrow a :is(i, svg)' => 'color: {{VALUE}}; fill: {{VALUE}}',
+					'{{WRAPPER}} .ekit-feed-item-behance .ekit-feed-item--cover .ekit-feed-item--go-arrow a i' => 'color: {{VALUE}}',
+					'{{WRAPPER}} .ekit-feed-item-behance .ekit-feed-item--cover .ekit-feed-item--go-arrow a svg' => 'fill: {{VALUE}}',
 				],
 			]
 		);
@@ -981,6 +1001,10 @@ class ElementsKit_Widget_Behance_Feed extends Widget_Base {
             ]
 		);
     }
+
+	public function get_style_depends() {
+		return ['ekit-feeds-common', 'ekit-layout-responsive', 'ekit-pro-behance-feed'];
+	}
 
 	protected function register_controls() {
 

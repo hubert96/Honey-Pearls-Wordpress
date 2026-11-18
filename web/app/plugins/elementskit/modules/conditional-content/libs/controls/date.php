@@ -7,7 +7,7 @@ class Date extends Repeater_Control_Base {
 
     function get_control(Repeater $repeater, $condition)
     {
-        $default = date('d-m-Y');
+        $default = gmdate('d-m-Y');
         $repeater->add_control($this->PREFIX . 'condition_date', [
             'type' => Controls_Manager::DATE_TIME,
             'default' => $default,

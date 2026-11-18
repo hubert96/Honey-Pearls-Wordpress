@@ -2,8 +2,8 @@
 Contributors: trustindex
 Donate link: https://www.trustindex.io/prices/
 Tags: facebook, feed, widget, posts, gallery
-Tested up to: 6.9
-Stable tag: 1.7.8
+Tested up to: 7.1
+Stable tag: 1.8.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Plugin Name: Widgets for Social Post Feed
@@ -12,7 +12,7 @@ Plugin URI: https://wordpress.org/plugins/widgets-for-social-post-feed/
 Author: Trustindex.io <support@trustindex.io>
 Author URI: https://www.trustindex.io/
 Text Domain: widgets-for-social-post-feed
-Version: 1.7.8
+Version: 1.8.3
 
 Facebook Feed Widgets. Display your Facebook feed on your website to increase engagement, sales and SEO.
 
@@ -87,12 +87,12 @@ To maintain the free version of the plugin and offer quick support, we provide a
 
 Why not display your other feeds, too? Check out our other free feed plugins:
 
-* <a href="https://wordpress.org/plugins/social-photo-feed-widget/" target="_blank">Instagram feed</a>
-* <a href="https://wordpress.org/plugins/widgets-for-youtube-video-feed/" target="_blank">Youtube feed</a>
 * <a href="https://wordpress.org/plugins/widgets-for-google-feed/" target="_blank">Google feed</a>
-* <a href="https://wordpress.org/plugins/widgets-for-twitter-feed/" target="_blank">Twitter feed</a>
-* <a href="https://wordpress.org/plugins/widgets-for-tiktok-video-feed/" target="_blank">Tiktok feed</a>
+* <a href="https://wordpress.org/plugins/social-photo-feed-widget/" target="_blank">Instagram feed</a>
 * <a href="https://wordpress.org/plugins/widgets-for-pinterest-feed/" target="_blank">Pinterest feed</a>
+* <a href="https://wordpress.org/plugins/widgets-for-tiktok-video-feed/" target="_blank">Tiktok feed</a>
+* <a href="https://wordpress.org/plugins/widgets-for-twitter-feed/" target="_blank">Twitter feed</a>
+* <a href="https://wordpress.org/plugins/widgets-for-youtube-video-feed/" target="_blank">Youtube feed</a>
 
 ### Why do I need this Facebook feed plugin?
 

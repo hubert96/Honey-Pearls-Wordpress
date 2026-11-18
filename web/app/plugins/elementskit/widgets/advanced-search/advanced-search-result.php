@@ -98,11 +98,11 @@ class Advanced_Search_Result
 		if ($result->have_posts()) : ?>
 			<div data-posts-count="<?php echo esc_attr($result->found_posts);?>">
 				<span class="ekit-search-total">
-					<?php echo sprintf(
+					<?php echo esc_html( sprintf(
 						$settings['resultLabel'],
 						number_format_i18n($result->found_posts),
-						esc_html($search_term),
-					); ?>
+						$search_term
+					) ); ?>
 				</span>
 				<ul>
 					<?php while ($result->have_posts()) : $result->the_post();
@@ -117,17 +117,17 @@ class Advanced_Search_Result
 								<div class="ekit-result-content">
 									<?php if ($settings['showThumbnail'] === 'yes') : ?>
 										<div class="ekit-result-thumb">
-											<img src="<?php echo is_array($image) ? current($image) : Utils::get_placeholder_image_src() ?>" alt="<?php echo esc_attr_e($alt, 'elementskit'); ?>">
+											<img src="<?php echo esc_url( is_array($image) ? current($image) : Utils::get_placeholder_image_src() ) ?>" alt="<?php echo esc_attr($alt); ?>">
 										</div>
 									<?php endif; ?>
 									<div class="ekit-result-title-and-excerpt">
-										<h4 class="ekit-result-title"> <?php echo esc_html__($title, 'elementskit'); ?> </h4>
+										<h4 class="ekit-result-title"> <?php echo esc_html($title); ?> </h4>
 										<?php if ($settings['showContent'] === 'yes') : ?>
-											<p class="ekit-result-excerpt"> <?php echo wp_trim_words($excerpt, 12, '...'); ?> </p>
+											<p class="ekit-result-excerpt"> <?php echo esc_html( wp_trim_words($excerpt, 12, '...') ); ?> </p>
 										<?php endif; ?>
 									</div>
 								</div>
-								<?php echo $settings['searchIcon']; ?>
+								<?php echo wp_kses($settings['searchIcon'], \ElementsKit_Lite\Utils::get_kses_array()); ?>
 							</a>
 						</li>
 
@@ -137,7 +137,10 @@ class Advanced_Search_Result
 				</ul>
 			</div>
 		<?php else :; ?>
-			<?php self::get_no_search_found($search_term, $settings); ?>
+			<div data-search-found="<?php echo esc_attr($search_term); ?>">
+				<!-- <?php self::get_no_search_found($search_term, $settings); ?> -->
+				<p><?php echo esc_html($settings['noResultFound']); ?></p>
+			</div>
 		<?php endif;
 	}
 	public function get_no_search_found($search_term, $settings)
@@ -152,7 +155,7 @@ class Advanced_Search_Result
 					</path>
 				</svg>
 			</div>
-			<p class="ekit-no-result-title">No results for "<strong> <?php echo esc_html__($search_term, 'elementskit'); ?> </strong>"</p>
+			<p class="ekit-no-result-title">No results for "<strong> <?php echo esc_html($search_term); ?> </strong>"</p>
 			<div class="ekit-search-keyword-help">
 				<p class="ekit-search-help">Try searching for:</p>
 				<?php
@@ -171,11 +174,16 @@ class Advanced_Search_Result
 					}
 					$keyword        = ucfirst(str_replace('_', ' ', $key));
 					$data_id        = uniqid();
-					$keyword_html   = sprintf('<li><a href="javascript:void(0)" class="ekit-keyword" id="%2$s" data-id="%2$s" data-keyword="%1$s">%1$s</a></li>', $keyword, $data_id);
+					$keyword_html   = sprintf(
+						'<li><a href="javascript:void(0)" class="ekit-keyword" id="%2$s" data-id="%2$s" data-keyword="%1$s">%3$s</a></li>',
+						esc_attr($keyword),
+						esc_attr($data_id),
+						esc_html($keyword)
+					);
 					$popular_keywords_html .= $keyword_html;
 				}
 				if (! empty($popular_keywords_html)) : ?>
-					<ul class="ekit-keyword-list"> <?php echo $popular_keywords_html; ?> </ul>
+					<ul class="ekit-keyword-list"> <?php echo $popular_keywords_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Built from esc_attr()/esc_html() escaped parts above; href="javascript:void(0)" must survive kses. ?> </ul>
 				<?php endif; ?>
 			</div>
 		</div>

@@ -62,7 +62,7 @@ class Export_Screen {
 			}
 
 
-			header('Content-disposition: attachment; filename=widget_export.' . date('Y-m-d') . '.json');
+			header('Content-disposition: attachment; filename=widget_export.' . gmdate('Y-m-d') . '.json');
 			header("Content-type: application/json; charset=utf-8");
 			echo json_encode($exported);
 			exit();

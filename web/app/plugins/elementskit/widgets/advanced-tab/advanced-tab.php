@@ -36,6 +36,14 @@ class ElementsKit_Widget_Advanced_Tab extends Widget_Base {
         return 'https://wpmet.com/doc/advanced-tab/';
     }
 
+	public function get_style_depends() {
+		return ['ekit-tab', 'ekit-pro-advanced-tab'];
+	}
+
+	public function get_script_depends() {
+		return ['ui-slim','ekit-pro-advanced-tab'];
+	}
+
     protected function is_dynamic_content(): bool {
         return true;
     }
@@ -445,6 +453,99 @@ class ElementsKit_Widget_Advanced_Tab extends Widget_Base {
             ]
         );
 
+        $this->add_control(
+            'ekit_tab_motion_heading',
+            [
+                'label'     => esc_html__( 'Smooth Motion', 'elementskit' ),
+                'type'      => Controls_Manager::HEADING,
+                'separator' => 'before',
+            ]
+        );
+
+        $this->add_control(
+            'ekit_tab_desc_reveal',
+            [
+                'label'        => esc_html__( 'Expand Description on Active', 'elementskit' ),
+                'description'  => esc_html__( 'Each tab\'s Description stays folded and slides open under the active tab title.', 'elementskit' ),
+                'type'         => Controls_Manager::SWITCHER,
+                'label_on'     => esc_html__( 'Yes', 'elementskit' ),
+                'label_off'    => esc_html__( 'No', 'elementskit' ),
+                'return_value' => 'yes',
+                'default'      => 'yes',
+            ]
+        );
+
+        $this->add_control(
+            'ekit_tab_content_animation',
+            [
+                'label'   => esc_html__( 'Content Animation', 'elementskit' ),
+                'type'    => Controls_Manager::SELECT,
+                'default' => '',
+                'options' => [
+                    ''           => esc_html__( 'Default', 'elementskit' ),
+                    'crossfade'  => esc_html__( 'Crossfade', 'elementskit' ),
+                    'fade-up'    => esc_html__( 'Fade Up', 'elementskit' ),
+                    'slide'      => esc_html__( 'Slide', 'elementskit' ),
+                    'zoom'       => esc_html__( 'Zoom', 'elementskit' ),
+                    'blur'       => esc_html__( 'Blur', 'elementskit' ),
+                    'none'       => esc_html__( 'None', 'elementskit' ),
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'ekit_tab_crossfade_notice',
+            [
+                'type'            => Controls_Manager::RAW_HTML,
+                'raw'             => esc_html__( 'Crossfade stacks every tab content in the same spot, so the content area takes the height of the tallest tab.', 'elementskit' ),
+                'content_classes' => 'elementor-panel-alert elementor-panel-alert-info',
+                'condition'       => [
+                    'ekit_tab_content_animation' => 'crossfade',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'ekit_tab_motion_duration',
+            [
+                'label'      => esc_html__( 'Duration (ms)', 'elementskit' ),
+                'type'       => Controls_Manager::SLIDER,
+                'size_units' => [ 'px' ],
+                'range'      => [
+                    'px' => [
+                        'min'  => 100,
+                        'max'  => 2000,
+                        'step' => 50,
+                    ],
+                ],
+                'default'    => [
+                    'size' => 500,
+                ],
+                'selectors'  => [
+                    '{{WRAPPER}} .elementkit-tab-wraper' => '--ekit-tab-motion-duration: {{SIZE}}ms;',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'ekit_tab_motion_easing',
+            [
+                'label'     => esc_html__( 'Easing', 'elementskit' ),
+                'type'      => Controls_Manager::SELECT,
+                'default'   => 'cubic-bezier(0.22, 1, 0.36, 1)',
+                'options'   => [
+                    'cubic-bezier(0.22, 1, 0.36, 1)'    => esc_html__( 'Smooth', 'elementskit' ),
+                    'cubic-bezier(0.65, 0, 0.35, 1)'    => esc_html__( 'Ease In Out', 'elementskit' ),
+                    'cubic-bezier(0.34, 1.56, 0.64, 1)' => esc_html__( 'Back Out', 'elementskit' ),
+                    'ease'                              => esc_html__( 'Ease', 'elementskit' ),
+                    'linear'                            => esc_html__( 'Linear', 'elementskit' ),
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .elementkit-tab-wraper' => '--ekit-tab-motion-easing: {{VALUE}};',
+                ],
+            ]
+        );
+
         $repeater = new Repeater();
         $repeater->add_control(
             'ekit_tab_title', [
@@ -462,6 +563,19 @@ class ElementsKit_Widget_Advanced_Tab extends Widget_Base {
                 'label' => esc_html__('Sub Title', 'elementskit'),
                 'type' => Controls_Manager::TEXT,
 				'dynamic' => [
+					'active' => true,
+				],
+                'label_block' => true,
+            ]
+        );
+
+        $repeater->add_control(
+            'ekit_tab_description', [
+                'label'       => esc_html__( 'Description', 'elementskit' ),
+                'description' => esc_html__( 'Shown under the title. With "Expand Description on Active" on, it opens only for the active tab.', 'elementskit' ),
+                'type'        => Controls_Manager::TEXTAREA,
+                'rows'        => 3,
+				'dynamic'     => [
 					'active' => true,
 				],
                 'label_block' => true,
@@ -815,6 +929,8 @@ class ElementsKit_Widget_Advanced_Tab extends Widget_Base {
                 'default' => '#2575fc',
                 'selectors' => [
                     '{{WRAPPER}} .elementkit-tab-nav .elementkit-nav-link' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .elementskit-tab-icon i' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .elementskit-tab-icon svg' => 'fill: {{VALUE}};',
                 ],
             ]
         );
@@ -825,8 +941,8 @@ class ElementsKit_Widget_Advanced_Tab extends Widget_Base {
                 'label' =>esc_html__( 'Icon Color', 'elementskit' ),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .elementkit-tab-nav .elementkit-nav-link span.elementskit-tab-icon' => 'color: {{VALUE}};',
-                    '{{WRAPPER}} .elementkit-tab-nav .elementkit-nav-link span.elementskit-tab-icon path'    => 'stroke: {{VALUE}}; fill: {{value}}'
+                    '{{WRAPPER}} .elementkit-tab-nav .elementkit-nav-link .elementskit-tab-icon i' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .elementkit-tab-nav .elementkit-nav-link .elementskit-tab-icon svg' => 'fill: {{VALUE}};'
                 ],
             ]
         );
@@ -896,6 +1012,8 @@ class ElementsKit_Widget_Advanced_Tab extends Widget_Base {
                 'default' => '#000',
                 'selectors' => [
                     '{{WRAPPER}} .elementkit-tab-nav .elementkit-nav-link.active' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .elementkit-nav-link.active .elementskit-tab-icon svg' => 'fill: {{VALUE}};',
+                    '{{WRAPPER}} .elementkit-nav-link.active .elementskit-tab-icon i' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -905,8 +1023,8 @@ class ElementsKit_Widget_Advanced_Tab extends Widget_Base {
                 'label' =>esc_html__( 'Icon Color', 'elementskit' ),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .elementkit-tab-nav .elementkit-nav-link.active span.elementskit-tab-icon' => 'color: {{VALUE}} !important;',
-                    '{{WRAPPER}} .elementkit-tab-nav .elementkit-nav-link.active span.elementskit-tab-icon path'    => 'stroke: {{VALUE}}; fill: {{value}}'
+                    '{{WRAPPER}} .elementkit-tab-nav .elementkit-nav-link.active .elementskit-tab-icon i' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .elementkit-tab-nav .elementkit-nav-link.active .elementskit-tab-icon svg' => 'fill: {{VALUE}};'
                 ],
             ]
         );
@@ -1013,6 +1131,64 @@ class ElementsKit_Widget_Advanced_Tab extends Widget_Base {
             ]
         );
 
+
+        $this->end_controls_section();
+
+        // Nav description
+        $this->start_controls_section(
+            'ekit_tab_nav_desc_section_setting', [
+                'label' => esc_html__( 'Nav Description', 'elementskit' ),
+                'tab'   => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name'     => 'ekit_tab_desc_typography',
+                'selector' => '{{WRAPPER}} .elementkit-tab-nav .ekit-tab-desc-text',
+            ]
+        );
+
+        $this->add_control(
+            'ekit_tab_desc_color',
+            [
+                'label'     => esc_html__( 'Color', 'elementskit' ),
+                'type'      => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .elementkit-tab-nav .ekit-tab-desc-text' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'ekit_tab_desc_color_active',
+            [
+                'label'     => esc_html__( 'Active Color', 'elementskit' ),
+                'type'      => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .elementkit-tab-nav .elementkit-nav-link.active .ekit-tab-desc-text' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'ekit_tab_desc_spacing',
+            [
+                'label'      => esc_html__( 'Spacing', 'elementskit' ),
+                'type'       => Controls_Manager::SLIDER,
+                'size_units' => [ 'px' ],
+                'range'      => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 50,
+                    ],
+                ],
+                'selectors'  => [
+                    '{{WRAPPER}} .elementkit-tab-nav .ekit-tab-desc-text' => 'margin-top: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
 
         $this->end_controls_section();
 
@@ -2306,33 +2482,25 @@ class ElementsKit_Widget_Advanced_Tab extends Widget_Base {
             }
         }
 
+        $motion_classes = [];
+        // Only when some tab has a description, so existing widgets keep their nav layout.
+        if ( ( $ekit_tab_desc_reveal ?? '' ) === 'yes' && ! empty( array_filter( array_column( $ekit_tab_items, 'ekit_tab_description' ) ) ) ) {
+            $motion_classes[] = 'ekit-tab-desc-reveal';
+        }
+        $content_animation = $ekit_tab_content_animation ?? '';
+        if ( in_array( $content_animation, [ 'crossfade', 'fade-up', 'slide', 'zoom', 'blur', 'none' ], true ) ) {
+            $motion_classes[] = 'ekit-tab-motion ekit-tab-anim-' . $content_animation;
+        }
+
         ?>
-        <div class="elementkit-tab-wraper <?php echo esc_attr($ekit_tab_style == 'vertical' ? 'vertical' : ''); ?> <?php if ($ekit_tab_fill_full_width != 'yes') : ?> elementskit-fitcontent-tab <?php endif; ?>">
-            <ul class="<?php echo esc_attr($nav_wrapper_class); ?>">
+        <div class="elementkit-tab-wraper <?php echo esc_attr($ekit_tab_style == 'vertical' ? 'vertical' : ''); ?> <?php if ($ekit_tab_fill_full_width != 'yes') : ?> elementskit-fitcontent-tab <?php endif; ?> <?php echo esc_attr( implode( ' ', $motion_classes ) ); ?>">
+            <ul class="<?php echo esc_attr($nav_wrapper_class); ?>" role="tablist"<?php echo ($ekit_tab_style == 'vertical') ? ' aria-orientation="vertical"' : ''; ?>>
                 <?php foreach ($ekit_tab_items as $i=>$tab) :
                     $is_active = ($tab['ekit_tab_title_is_active'] == 'yes') ? ' active' : '';
                     $is_active = ($has_user_defined_active_tab == false && $i == 0) ? ' active' : $is_active;
 
-                    if(isset($tab['ekit_tab_title_icon_type']) && $tab['ekit_tab_title_icon_type'] == 'icon' && $tab['ekit_tab_title_icons'] != ''){
-                       
-                        // new icon
-                        $migrated = isset( $tab['__fa4_migrated']['ekit_tab_title_icons'] );
-                        // Check if its a new widget without previously selected icon using the old Icon control
-                        $is_new = empty( $tab['ekit_tab_title_icon'] );
-                        if ( $is_new || $migrated ) {
-                            // new icon
-                            if ($tab['ekit_tab_title_icons']['library'] == 'svg' && !empty( $tab['ekit_tab_title_icons']['value']['url'] )) {
-                                ob_start();
-                                    Icons_Manager::render_icon( $tab['ekit_tab_title_icons'], [ 'aria-hidden' => 'true' ] );
-                                $icon_html = '<span class="elementskit-tab-icon">' . ob_get_clean() . '</span>';
-
-                            } else {
-                                $icon_html = !empty($tab['ekit_tab_title_icons']['value']) ? '<span class="'. esc_attr( $tab['ekit_tab_title_icons']['value'] ) .' elementskit-tab-icon" aria-hidden="true"></span>' : '';
-                            }
-                        } else {
-                            $icon_html = '<span class="'. esc_attr($tab['ekit_tab_title_icon']) .' elementskit-tab-icon" aria-hidden="true"></span>';
-                        }
-
+                    if(isset($tab['ekit_tab_title_icon_type']) && $tab['ekit_tab_title_icon_type'] == 'icon' && $tab['ekit_tab_title_icons'] != '') {
+                        $icon_html = '<span class="elementskit-tab-icon">' .  Icons_Manager::try_get_icon_html( $tab['ekit_tab_title_icons'], [ 'aria-hidden' => 'true' ] ) . '</span>';
                     } else {
                         $icon_html = '';
                     }
@@ -2344,9 +2512,9 @@ class ElementsKit_Widget_Advanced_Tab extends Widget_Base {
 
                     // URL Hash id
                     $handler_id = (($tab['ekit_tab_title']) != '' ? strtolower(preg_replace("![^a-z0-9]+!i", "-", $tab['ekit_tab_title'])) : ('tab-'.$tab['_id']));
-                    
+
                     $tab_link = '#content-'.$tab['_id'].$tab_id;
-                    // added javascript: for OceanWP theme to fix scroll to top issue 
+                    // added javascript: for OceanWP theme to fix scroll to top issue
                     if(wp_get_theme() == "OceanWP") {
                         $tab_link = 'javascript:content-'.$tab['_id'].$tab_id;
                     }
@@ -2367,7 +2535,10 @@ class ElementsKit_Widget_Advanced_Tab extends Widget_Base {
 							'data-ekit-toggle' => 'tab',
 							'data-target' => '#content-' . esc_attr($tab['_id'] . $tab_id),
 							'data-ekit-toggle-trigger' => esc_attr($ekit_tab_trigger_type),
-							'aria-describedby' => 'content-' . esc_attr($tab['_id'] . $tab_id),
+							'role' => 'tab',
+							'aria-controls' => 'content-' . esc_attr($tab['_id'] . $tab_id),
+							'aria-selected' => (trim($is_active) === 'active') ? 'true' : 'false',
+							'tabindex' => (trim($is_active) === 'active') ? '0' : '-1',
 							'href' => esc_url($tab_link),
 						]
 					);
@@ -2379,7 +2550,10 @@ class ElementsKit_Widget_Advanced_Tab extends Widget_Base {
                                 <?php if ($tab['ekit_tab_sub_title'] != '') { ?>
                                 <p class="elementskit-tab-sub-title"><?php echo esc_html($tab['ekit_tab_sub_title']); ?></p>
                                 <?php }; ?>
-                                <span class="elementskit-tab-title"><?php $this->print_unescaped_setting( 'ekit_tab_title', 'ekit_tab_items', $i );?></span>
+                                <span class="elementskit-tab-title"><?php echo \ElementsKit_Lite\Utils::kses( $tab['ekit_tab_title'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Utils::kses() escapes via wp_kses. ?></span>
+                                <?php if ( ! empty( $tab['ekit_tab_description'] ) ) : ?>
+                                <span class="ekit-tab-desc"><span class="ekit-tab-desc-inner"><span class="ekit-tab-desc-text"><?php echo \ElementsKit_Lite\Utils::kses( $tab['ekit_tab_description'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Utils::kses() escapes via wp_kses. ?></span></span></span>
+                                <?php endif; ?>
                             </div>
                         </a>
                     </li>
@@ -2404,6 +2578,7 @@ class ElementsKit_Widget_Advanced_Tab extends Widget_Base {
 							],
 							'role' => 'tabpanel',
 							'aria-labelledby' => 'content-' . esc_attr($tab['_id'] . $tab_id) . '-tab',
+							'tabindex' => '0',
 						]
 					);
 					?>
@@ -2411,7 +2586,7 @@ class ElementsKit_Widget_Advanced_Tab extends Widget_Base {
 						<div class="animated fadeIn">
 							<?php
 								// @codingStandardsIgnoreStart
-									echo Widget_Area_Utils::parse( $tab['ekit_tab_content'], $this->get_id(), $tab['_id'], $ekit_ajax_template, $i+1 ); 
+									echo Widget_Area_Utils::parse( $tab['ekit_tab_content'], $this->get_id(), $tab['_id'], $ekit_ajax_template, $i+1 );
 								// @codingStandardsIgnoreEnd
 							?>
 						</div>
@@ -2421,4 +2596,5 @@ class ElementsKit_Widget_Advanced_Tab extends Widget_Base {
         </div>
     <?php
     }
+
 }

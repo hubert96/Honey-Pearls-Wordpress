@@ -16,6 +16,21 @@ class ElementsKit_Widget_Woo_Mini_Cart extends Widget_Base {
         
 	}
 
+	public function get_style_depends() {
+		return ['ekit-pro-woo-mini-cart'];
+	}
+
+    public function get_script_depends() {
+        $deps = ['ekit-pro-woo-mini-cart'];
+
+        if ( class_exists( 'WooCommerce' ) ) {
+            $deps[] = 'wc-add-to-cart';
+            $deps[] = 'wc-cart-fragments';
+        }
+
+        return $deps;
+    }
+
 	public function get_name() {
         return Handler::get_name();
     }
@@ -57,6 +72,27 @@ class ElementsKit_Widget_Woo_Mini_Cart extends Widget_Base {
 				'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
 			]
 		);
+
+		if (! class_exists( 'WooCommerce' )) {
+			$this->add_control(
+				'ekit_woo_mini_cart_notice',
+				[
+					'label' => esc_html__('Notice', 'elementskit'),
+					'type' => Controls_Manager::RAW_HTML,
+					'raw' => sprintf(
+						'<span style="border-left: 3px solid #FFB900; display: inline-block; padding: 5px;"> <b>%1$s</b> %2$s <a %3$s> %4$s </a> %5$s </span>',
+						esc_html__('WooCommerce', 'elementskit'),
+						esc_html__('plugin is currently not installed or activated on your website. Please ensure that you have installed and activated', 'elementskit'),
+						'href="' . esc_url(admin_url('plugin-install.php?s=woocommerce&tab=search&type=term')) . '" target="_blank" rel="noopener noreferrer"',
+						esc_html__('WooCommerce', 'elementskit'),
+						esc_html__('plugin before proceeding.', 'elementskit')
+					),
+					'content_classes' => '',
+					'show_label' => false,
+					'label_block' => false,
+				]
+			);
+		}
 
 		$this->add_control(
 			'ekit_woo_mini_cart_icons',
@@ -227,7 +263,7 @@ class ElementsKit_Widget_Woo_Mini_Cart extends Widget_Base {
                     'selectors' => [
                         '{{WRAPPER}} .ekit-dropdown-back' => 'color: {{VALUE}};',
                         '{{WRAPPER}} .ekit-dropdown-back .amount' => 'color: {{VALUE}};',
-                        '{{WRAPPER}} .ekit-dropdown-back svg path'  => 'stroke: {{VALUE}}; fill: {{VALUE}};',
+                        '{{WRAPPER}} .ekit-dropdown-back svg'  => 'fill: {{VALUE}};',
                     ],
                 ]
             );
@@ -265,7 +301,7 @@ class ElementsKit_Widget_Woo_Mini_Cart extends Widget_Base {
                     'type'      => Controls_Manager::COLOR,
                     'selectors' => [
                         '{{WRAPPER}} .ekit-dropdown-back:hover' => 'color: {{VALUE}};',
-                        '{{WRAPPER}} .ekit-dropdown-back:hover svg path'  => 'stroke: {{VALUE}}; fill: {{VALUE}};',
+                        '{{WRAPPER}} .ekit-dropdown-back:hover svg'  => 'fill: {{VALUE}};',
                     ],
                 ]
             );
@@ -1219,15 +1255,22 @@ class ElementsKit_Widget_Woo_Mini_Cart extends Widget_Base {
 
     protected function render() {
         if(class_exists( 'WooCommerce' )) {
+			if ( function_exists( 'wc_load_cart' ) && ! is_object( WC()->cart ) ) {
+				wc_load_cart();
+			}
+
             echo '<div class="ekit-wid-con" >';
                 $this->render_raw();
             echo '</div>';
+        } else {
+            echo '<div class="elemenetskit-alert-info">' . esc_html__( 'Please install and activate WooCommerce plugin to work this widget.', 'elementskit' ) . '</div>';
         }
     }
     
     protected function render_raw(){
 
         $settings = $this->get_settings();
+		$cart = ( function_exists( 'WC' ) && WC()->cart ) ? WC()->cart : null;
         ?>
 
         <div class="ekit-mini-cart">
@@ -1255,8 +1298,8 @@ class ElementsKit_Widget_Woo_Mini_Cart extends Widget_Base {
                 <div class="ekit-basket-item-count" style="display: inline;">
                     <span class="ekit-cart-items-count count">
                         <?php
-                            echo (( WC()->cart != '' ) ? '<span class="ekit-cart-content-count">'. WC()->cart->get_cart_contents_count() .'</span>' : '' );
-                            echo (( WC()->cart != '' ) ? '<span class="ekit-cart-content-separator"> - </span>' . WC()->cart->get_cart_total() : '' );
+							echo ( $cart ? '<span class="ekit-cart-content-count">' . esc_html( $cart->get_cart_contents_count() ) . '</span>' : '' );
+							echo ( $cart ? '<span class="ekit-cart-content-separator"> - </span>' . $cart->get_cart_total() : '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- WC_Cart::get_cart_total() returns wc_price() HTML.
                         ?>
                     </span>
                 </div>
@@ -1264,13 +1307,13 @@ class ElementsKit_Widget_Woo_Mini_Cart extends Widget_Base {
                 <div class="ekit-mini-cart-container">
                     <div class="mini-cart-header">
                         <ul>
-                            <li><span class="ekit-cart-count"><?php echo (( WC()->cart != '' ) )?  WC()->cart->get_cart_contents_count() : '' ; ?></span> <?php esc_html_e( 'items', 'elementskit' ); ?></li>
+							<li><span class="ekit-cart-count"><?php echo $cart ? esc_html( $cart->get_cart_contents_count() ) : ''; ?></span> <?php esc_html_e( 'items', 'elementskit' ); ?></li>
                             <li><a href="<?php echo esc_url( wc_get_cart_url() ); ?>"><?php esc_html_e( 'view cart', 'elementskit' ); ?></a></li>
                         </ul>
                     </div>
                     <div class="ekit-dropdown-menu ekit-dropdown-menu-mini-cart">
                         <div class="widget_shopping_cart_content">
-                            <?php (( WC()->cart != '' ) ? woocommerce_mini_cart() : '' ); ?>
+							<?php $cart ? woocommerce_mini_cart() : ''; ?>
                         </div>
                     </div>
                 </div>

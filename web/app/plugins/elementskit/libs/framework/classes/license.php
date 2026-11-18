@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace ElementsKit\Libs\Framework\Classes;
 use ElementsKit\Libs\Framework\Classes\Utils;
 
@@ -38,7 +38,7 @@ class License{
             update_option('__validate_oppai__', $o->oppai);
             Utils::instance()->save_option('license_key', $o->key);
         }
-        
+
         return $o;
     }
     public function revoke(){
@@ -48,7 +48,7 @@ class License{
 
         delete_option('__validate_oppai__');
         Utils::instance()->save_option('license_key', '');
-        
+
         return true;
     }
     public function com_validate($data = []){
@@ -59,20 +59,20 @@ class License{
         $data['action'] = 'activate';
         $data['v'] = \ElementsKit::version();
         $url = \ElementsKit::api_url() . 'license?' . http_build_query($data);
-        
+
         $args = array(
             'timeout'     => 60,
             'redirection' => 3,
             'httpversion' => '1.0',
             'blocking'    => true,
             'sslverify'   => true,
-        ); 
+        );
 
         $res = wp_remote_get( $url, $args );
 
         return (object) json_decode(
             (string) $res['body']
-        ); 
+        );
     }
 
     public function com_revoke($data = []){
@@ -80,14 +80,14 @@ class License{
         $data['action'] = 'revoke';
         $data['v'] = \ElementsKit::version();
         $url = \ElementsKit::api_url() . 'license?' . http_build_query($data);
-        
+
         $args = array(
             'timeout'     => 10,
             'redirection' => 3,
             'httpversion' => '1.0',
             'blocking'    => true,
             'sslverify'   => true,
-        ); 
+        );
 
         $res = wp_remote_get( $url, $args );
 
@@ -110,7 +110,7 @@ class License{
             $status = 'valid';
         }
         $this->global_var_cache_set( 'elementskit_license_status', $status );
-        
+
         return $status;
     }
 

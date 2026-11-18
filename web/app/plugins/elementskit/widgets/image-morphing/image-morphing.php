@@ -32,9 +32,15 @@ class ElementsKit_Widget_Image_Morphing extends Widget_Base {
         return "https://wpmet.com/doc/image-morphing";
     }
 
-	public function get_script_depends() {
-		return ['animejs'];
+	public function get_style_depends() {
+		return ['ekit-pro-image-morphing'];
 	}
+
+	public function get_script_depends() {
+		return ['animejs', 'ekit-pro-image-morphing'];
+	}
+
+	
 
     protected function is_dynamic_content(): bool {
         return false;
@@ -789,7 +795,7 @@ class ElementsKit_Widget_Image_Morphing extends Widget_Base {
                 'type' => Controls_Manager::COLOR,
                 'default' => '#BB004B',
                 'selectors' => [
-					'{{WRAPPER}} .ekit-morphing-wrapper svg path' => 'stroke: {{VALUE}};',
+					'{{WRAPPER}} .ekit-morphing-wrapper svg' => 'fill: {{VALUE}};',
 				],
                 'condition' => [
                     'ekit_morphing_color_show_stroke' =>['yes']

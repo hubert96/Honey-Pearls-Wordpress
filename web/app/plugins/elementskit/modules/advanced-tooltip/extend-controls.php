@@ -1,6 +1,8 @@
 <?php
 namespace Elementor;
 use Elementor\Modules\DynamicTags\Module as TagsModule;
+use ElementsKit_Lite\Utils;
+
 class ElementsKit_Extend_Advanced_Tooltip {
 	private $url   = '';
 	public function __construct() {
@@ -70,7 +72,7 @@ class ElementsKit_Extend_Advanced_Tooltip {
 		$element->start_controls_section(
 			'ekit_adv_tooltip',
 			[
-				'label'	=> esc_html__('ElementsKit Advanced Tooltip', 'elementskit'),
+				'label'	=> ( method_exists( Utils::class, 'get_promo_icon' ) ? Utils::get_promo_icon() : 'ElementsKit' ) . esc_html__('Advanced Tooltip', 'elementskit'),
 				'tab'	=> Controls_Manager::TAB_ADVANCED,
 			]
 		);

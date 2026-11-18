@@ -15,6 +15,12 @@ class Register_Modules {
 
 
 		return array_merge($list, [
+			'onepage-scroll' => [
+				'slug'              => 'onepage-scroll',
+				'package'           => 'free',
+				'title'             => 'Onepage Scroll',
+				'base_class_name'   => '\\ElementsKit\\Modules\\Onepage_Scroll\\Init',
+			],
 			'parallax' => [
 				'slug'              => 'parallax',
 				'package'           => 'pro',
@@ -104,6 +110,28 @@ class Register_Modules {
 				'package'           => 'pro',
 				'title'             => 'Liquid Glass',
 				'base_class_name'   => '\ElementsKit\Modules\Liquid_Glass\Init',
+				'attributes'        => array( 'new' ),
+			],
+			'badge' => [
+				'slug'              => 'badge',
+				'package'           => 'pro',
+				'title'             => 'Global Badge',
+				'base_class_name'   => '\ElementsKit\Modules\Badge\Init',
+				'attributes'        => array( 'new' ),
+			],
+			'scroll-reveal' => [
+				'slug'              => 'scroll-reveal',
+				'package'           => 'pro',
+				'title'             => 'Scroll Reveal',
+				'base_class_name'   => '\ElementsKit\Modules\Scroll_Reveal\Init',
+				'attributes'        => array( 'new' ),
+			],
+			'marquee' => [
+				'slug'              => 'marquee',
+				'package'           => 'pro',
+				'title'             => 'Marquee (Anything)',
+				'base_class_name'   => '\ElementsKit\Modules\Marquee\Init',
+				'attributes'        => array( 'new' ),
 			],
 		]);
 	}

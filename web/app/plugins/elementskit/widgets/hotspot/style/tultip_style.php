@@ -1,6 +1,10 @@
-
+<?php
+	$ekit_hotspot_is_active   = ( $ekit_hotspot_all_time_show_hide == 'yes' ) || ( isset($location['ekit_hotspot_active']) && $location['ekit_hotspot_active'] == 'yes' );
+	$ekit_hotspot_content_id  = 'ekit-hotspot-content-' . $location['_id'];
+	$ekit_hotspot_label       = ( isset($location['ekit_hotspot_title']) && $location['ekit_hotspot_title'] !== '' ) ? $location['ekit_hotspot_title'] : esc_html__( 'Hotspot', 'elementskit' );
+?>
 <div class="ekit-location elementor-repeater-item-<?php echo esc_attr( $location[ '_id' ] ); ?> <?php echo esc_attr($ekit_hotspot_tigger_on_hover_or_click == 'yes' ? 'ekit-location-on-hover' : 'ekit-location-on-hover click'); ?> <?php echo esc_attr($ekit_hotspot_all_time_show_hide == 'yes' ? 'ekit-all-activated active' : ''); ?>  <?php echo ($ekit_hotspot_all_time_show_hide != 'yes' && $location['ekit_hotspot_active'] == 'yes') ? 'active' : ''; ?>">
-    <div class="ekit-location_outer">
+    <div class="ekit-location_outer" id="<?php echo esc_attr($ekit_hotspot_content_id); ?>">
         <div class="<?php echo esc_attr($ekit_hotspot_location_wraper_image_position); ?> ekit-location_inner">
             
             <?php
@@ -28,7 +32,7 @@
             <?php endif; ?>
         </div>
     </div>
-    <div class="ekit-location_indicator">
+    <div class="ekit-location_indicator" role="button" tabindex="0" aria-expanded="<?php echo $ekit_hotspot_is_active ? 'true' : 'false'; ?>" aria-controls="<?php echo esc_attr($ekit_hotspot_content_id); ?>" aria-label="<?php echo esc_attr($ekit_hotspot_label); ?>">
         <?php if ($ekit_hotspot_show_glow == 'yes') { ?>
             <div class="ekit_hotspot_pulse_1"></div>
             <div class="ekit_hotspot_pulse_2"></div>

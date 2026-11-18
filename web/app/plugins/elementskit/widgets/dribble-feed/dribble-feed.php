@@ -20,6 +20,10 @@ class ElementsKit_Widget_Dribble_Feed extends Widget_Base {
 	}
 
 
+	public function get_style_depends() {
+		return ['ekit-feeds-common', 'ekit-pro-dribble-feed'];
+	}
+
 	public function get_script_depends() {
 		return ['ekit-dribble-feed-script-handle'];
 	}

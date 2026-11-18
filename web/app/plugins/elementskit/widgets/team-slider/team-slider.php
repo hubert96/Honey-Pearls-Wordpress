@@ -10,6 +10,10 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
 
     public $base;
 
+    public function __construct( $data = [], $args = null ) {
+		parent::__construct( $data, $args );
+	}
+
     public function get_name() {
         return Handler::get_name();
     }
@@ -34,8 +38,12 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
         return 'https://wpmet.com/doc/team-carousel-slider';
     }
 
+	public function get_script_depends() {
+		return ['ekit-pro-team-slider', 'magnific-popup', 'swiper'];
+	}
+
 	public function get_style_depends() {
-		return ['swiper'];
+		return ['swiper', 'magnific-popup', 'ekit-team', 'ekit-pro-team-slider'];
 	}
 
     protected function is_dynamic_content(): bool {
@@ -110,7 +118,7 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
                 'return_value' => 'yes',
                 'default' => '',
                 'condition' => [
-                    'ekit_team_style' => ['overlay_circle', 'long_height_hover'] 
+                    'ekit_team_style' => ['overlay_circle', 'long_height_hover']
                 ]
             ]
         );
@@ -157,7 +165,7 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
 		);
 
         $repeater = new Repeater();
-  
+
         // start tab for content
         $repeater->start_controls_tabs(
             'content_tabs'
@@ -276,7 +284,7 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
 			[
 				'label' => esc_html__('Link URL', 'elementskit'),
 				'type' => Controls_Manager::URL,
-				'placeholder' => esc_html__('https://wpmet.com', 'elementskit'),		
+				'placeholder' => esc_html__('https://wpmet.com', 'elementskit'),
 				'dynamic' => [
 					'active' => true,
 				],
@@ -407,7 +415,7 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
 
         $repeater->end_controls_tab();
 
-        $repeater->end_controls_tabs();  
+        $repeater->end_controls_tabs();
 
 
         $this->add_control(
@@ -908,7 +916,7 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
                 'condition' => $content_stable_condition
             ]
         );
-        
+
         $this->add_group_control(
             Group_Control_Border::get_type(),
             [
@@ -966,7 +974,7 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
                 'condition' => $content_stable_condition
             ]
         );
-        
+
         $this->add_control(
             'team_hover_animation',
             [
@@ -974,7 +982,7 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
                 'type'          => Controls_Manager::HOVER_ANIMATION,
             ]
         );
-    
+
         $this->add_responsive_control(
             'overlay_height',
             [
@@ -1026,7 +1034,7 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
 
 		$this->end_controls_tab();
         $this->end_controls_tabs();
-        
+
         $this->add_control(
             'content_tabs_after',
             [
@@ -1083,7 +1091,7 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
                     'ekit_team_style' => 'hover_info'
                 ]
 			]
-		);    
+		);
 
         $this->add_responsive_control(
 			'ekit_team_content_padding',
@@ -1175,7 +1183,7 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
 
         $this->add_group_control(
             Group_Control_Image_Size::get_type(),
-            [   
+            [
                 'name' => 'ekit_team_image_size',
                 'default' => 'large',
             ]
@@ -1370,7 +1378,7 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
 				],
 			]
         );
-        
+
         $this->add_responsive_control(
 			'ekit_team_top_icon_padding',
 			[
@@ -1409,7 +1417,7 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
                 'selector' => '{{WRAPPER}} .profile-icon > i, {{WRAPPER}} .profile-icon > svg',
             ]
         );
-        
+
 		$this->add_responsive_control(
             'ekit_team_top_icon_fsize',
             [
@@ -1444,7 +1452,7 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
 				'default' => 'yes',
 			]
 		);
-        
+
 		$this->add_responsive_control(
             'ekit_team_top_icon_width',
             [
@@ -1469,7 +1477,7 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
                 ],
             ]
         );
-        
+
 		$this->add_responsive_control(
             'ekit_team_top_icon_height',
             [
@@ -1494,7 +1502,7 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
                 ],
             ]
         );
-        
+
 		$this->add_responsive_control(
             'ekit_team_top_icon_lheight',
             [
@@ -1563,7 +1571,7 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
             );
 
             $this->end_controls_tab();
-            
+
             $this->start_controls_tab(
                 'ekit_team_top_icon_colors_hover',
                 [
@@ -2083,7 +2091,7 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
             ]
         );
 
-		$this->end_controls_section(); 
+		$this->end_controls_section();
 
         // Social Styles
         $this->start_controls_section(
@@ -2410,7 +2418,7 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
         //end hover tab
 
         $this->end_controls_tabs();
-        
+
         // border radius
 		$this->add_responsive_control(
             'ekit_socialmedai_list_border_radius',
@@ -3298,7 +3306,7 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
                 'selector' => '{{WRAPPER}} .ekit-team-modal-close',
             ]
         );
- 
+
         $this->add_group_control(
             Group_Control_Box_Shadow::get_type(),
             [
@@ -3494,7 +3502,7 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
 
         $this->end_controls_section();
 
-        /** Arrow Style Section */  
+        /** Arrow Style Section */
         $this->start_controls_section(
 			'ekit_team_section_navigation',
 			[
@@ -3792,7 +3800,7 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
 
 		$this->end_controls_section();
 
-		/** Dot Style Section */ 
+		/** Dot Style Section */
 		$this->start_controls_section(
 			'ekit_team_navigation_dot',
 			[
@@ -4110,16 +4118,16 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
 								<?php if ($settings['ekit_team_chose_popup'] == 'yes') : ?>
 									</a>
 								<?php endif; ?>
-				
+
 								<?php include Handler::get_dir() . 'parts/content.php'; ?>
 
-								<?php if($settings['ekit_team_socail_enable'] == 'yes') : ?>                       
+								<?php if($settings['ekit_team_socail_enable'] == 'yes') : ?>
 									<?php include Handler::get_dir() . 'parts/social-list.php'; ?>
 								<?php endif; ?>
 							</div>
 
 							<?php if(!in_array($ekit_team_style, ['default'])): ?> </div> <?php endif; ?>
-							
+
 							<?php if ( $settings['ekit_team_chose_popup'] == 'yes' || $settings['ekit_team_chose_button_popup'] == 'yes' ) {
 								include Handler::get_dir() . 'parts/popup.php';
 							} ?>
@@ -4143,9 +4151,9 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
 									<?php endif; ?>
 
 									<?php if(isset($settings['ekit_team_socail_enable']) && $settings['ekit_team_socail_enable'] == 'yes') { ?>
-										<?php include Handler::get_dir() . 'parts/social-list.php'; 
+										<?php include Handler::get_dir() . 'parts/social-list.php';
 									} ?>
-								</div>   
+								</div>
 
 								<?php if($ekit_team_style == 'overlay_content_hover' || $ekit_team_style == 'overlay_details') : ?>
 									<div class="profile-body ekit-none overlay-content-hover <?php if($ekit_team_content_stable == 'yes' && isset($ekit_team_content_text_align)) { echo esc_attr($ekit_team_content_text_align);} ?>">
@@ -4158,17 +4166,17 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
 													<?php echo esc_html( $ekit_team_member['name'] ); ?>
 											<?php endif; ?>
 										</h2>
-										<p class="profile-designation"> 
+										<p class="profile-designation">
 											<?php echo esc_html( $ekit_team_member['position'] ); ?>
 										</p>
 									</div>
-								<?php endif; ?>                             
+								<?php endif; ?>
 							</div>
 
 							<?php if($ekit_team_content_stable == 'yes') : ?>
 								<?php include Handler::get_dir() . 'parts/content.php'; ?>
 							<?php endif; ?>
-							
+
 							<?php if(!in_array($ekit_team_style, ['overlay', 'overlay_content_hover'])): ?> </div> <?php endif; ?>
 
 							<?php if ( $settings['ekit_team_chose_popup'] == 'yes' || $settings['ekit_team_chose_button_popup'] == 'yes' ) {
@@ -4187,7 +4195,7 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
 									</div>
 
 									<?php include Handler::get_dir() . 'parts/content.php'; ?>
-					
+
 								</div>
 							</div>
 
@@ -4205,7 +4213,7 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
 				<?php if($ekit_team_show_arrow == 'yes') : ?>
 					<div class="elementor-swiper-button ekit-team-slider-button-prev">
 						<?php if($ekit_team_arrow_type == 'icon') :
-							Icons_Manager::render_icon( $ekit_team_slider_left_arrow_icon, [ 'aria-hidden' => 'true' ]); 
+							Icons_Manager::render_icon( $ekit_team_slider_left_arrow_icon, [ 'aria-hidden' => 'true' ]);
 						elseif($ekit_team_arrow_type == 'text') : ?>
 							<span><?php echo esc_html($ekit_team_arrow_left_text); ?></span>
 						<?php else :
@@ -4220,7 +4228,7 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
 							<span><?php echo esc_html($ekit_team_arrow_right_text); ?></span>
 						<?php else : ?>
 							<span><?php echo esc_html($ekit_team_arrow_right_text); ?></span>
-							<?php Icons_Manager::render_icon( $ekit_team_slider_right_arrow_icon, [ 'aria-hidden' => 'true' ]); 
+							<?php Icons_Manager::render_icon( $ekit_team_slider_right_arrow_icon, [ 'aria-hidden' => 'true' ]);
 						endif; ?>
 					</div>
 				<?php endif; ?>
@@ -4228,4 +4236,5 @@ class ElementsKit_Widget_Team_Slider extends Widget_Base {
 		</div>
 		<?php
 	}
+
 }

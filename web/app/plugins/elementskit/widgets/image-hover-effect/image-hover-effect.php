@@ -33,6 +33,10 @@ class ElementsKit_Widget_Image_Hover_Effect extends Widget_Base {
         return 'https://wpmet.com/doc/elementor-image-hover-effect/';
     }
 
+	public function get_style_depends() {
+		return ['ekit-pro-image-hover-effect'];
+	}
+
     protected function is_dynamic_content(): bool {
         return false;
     }
@@ -303,6 +307,29 @@ class ElementsKit_Widget_Image_Hover_Effect extends Widget_Base {
 		);
 
 		$this->add_control(
+			'ekit_hover_title_tag',
+			[
+				'label' => esc_html__( 'Title HTML Tag', 'elementskit' ),
+				'type' => Controls_Manager::SELECT,
+				'options' => [
+					'h1' => 'H1',
+					'h2' => 'H2',
+					'h3' => 'H3',
+					'h4' => 'H4',
+					'h5' => 'H5',
+					'h6' => 'H6',
+					'div' => 'div',
+					'span' => 'span',
+					'p' => 'p',
+				],
+				'default' => 'h2',
+				'condition' => [
+					'ekit_hover_effect!' => ['ekit_effect_swap','ekit_effect_glitch'],
+				],
+			]
+		);
+
+		$this->add_control(
 			'ekit_hover_title_switch',
 			[
 				'label' => esc_html__('Show Title on Hover?', 'elementskit'),
@@ -513,6 +540,54 @@ class ElementsKit_Widget_Image_Hover_Effect extends Widget_Base {
 				'dynamic' => [
 					'active' => true,
 				],
+			]
+		);
+
+		$this->add_control(
+			'ekit_image_button_icon',
+			[
+				'label' => esc_html__( 'Icon', 'elementskit' ),
+				'fa4compatibility' => 'ekit_image_button_icon_old',
+				'type' => Controls_Manager::ICONS,
+				'default' => [
+					'value' => 'eicon-chevron-left',
+					'library' => 'eicons',
+				],
+				'condition' => ['ekit_hover_image_btn' => 'yes']
+			]
+		);
+
+		$this->add_control(
+			'ekit_image_button_icon_position',
+			[
+				'label' => esc_html__( 'Icon Position', 'elementskit' ),
+				'type' => Controls_Manager::SELECT,
+				'options' => [
+					'left'  => esc_html__( 'Left', 'elementskit' ),
+					'right' => esc_html__( 'Right', 'elementskit' ),
+				],
+				'default' => 'left',
+				'condition' => ['ekit_hover_image_btn' => 'yes'],
+				'selectors_dictionary' => [
+					'left'  => 'row',
+					'right' => 'row-reverse',
+				],
+				'selectors' => [
+					'{{WRAPPER}} .ekit-wid-con .ekit_image_hover a:not([href]):not([tabindex])' => 'flex-direction: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_responsive_control(
+			'ekit_image_button_icon_spacing',
+			[
+				'label' => esc_html__( 'Spacing', 'elementskit' ),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => [ 'px', 'em', '%' ],
+				'selectors' => [
+					'{{WRAPPER}} .ekit_image_caption_button ' => 'gap: {{SIZE}}{{UNIT}};',
+				],
+				'condition' => ['ekit_hover_image_btn' => 'yes'],
 			]
 		);
 
@@ -1350,11 +1425,12 @@ class ElementsKit_Widget_Image_Hover_Effect extends Widget_Base {
         $this->add_responsive_control(
             'ekit_image_box_button_text_color',
             [
-                'label' => esc_html__( 'Text Color', 'elementskit' ),
+                'label' => esc_html__( 'Color', 'elementskit' ),
                 'type' => Controls_Manager::COLOR,
                 'default' => '',
                 'selectors' => [
                     '{{WRAPPER}} .ekit_image_hover .elementskit-btn' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .ekit_image_caption_button :is(i, svg)' => 'fill: {{VALUE}};',
                 ],
             ]
         );
@@ -1715,6 +1791,8 @@ class ElementsKit_Widget_Image_Hover_Effect extends Widget_Base {
         $settings = $this->get_settings_for_display();
         extract($settings);
 
+		$ekit_hover_title_tag = \Elementor\Utils::validate_html_tag($ekit_hover_title_tag);
+
 		// image effect class
         $image_hover_class = "";
         switch($ekit_hover_effect) {
@@ -1904,16 +1982,25 @@ class ElementsKit_Widget_Image_Hover_Effect extends Widget_Base {
 				$this->image_link($ekit_hover_link); 
 				?>
 				<div class="ekit_image_caption <?php echo esc_attr($hover_text_class.' '.$hoverAnimatedClass); ?>">
-					<h2 class="ekit_image_caption_title <?php echo esc_attr($title_show.' '.$title_stable_switch.' '.$entranceAnimatedClass); ?>" data-settings="<?php echo esc_attr(json_encode($entranceAnimationData)); ?>">
-						<?php echo wp_kses( \ElementsKit_Lite\Utils::kspan($ekit_hover_title), \ElementsKit_Lite\Utils::get_kses_array()); ?>
-					</h2>
+					<?php	
+					echo sprintf(
+						'<%1$s class="ekit_image_caption_title %2$s" data-settings="%3$s">%4$s</%1$s>',
+						esc_attr($ekit_hover_title_tag),
+						esc_attr($title_show.' '.$title_stable_switch.' '.$entranceAnimatedClass),
+						esc_attr(json_encode($entranceAnimationData)),
+						wp_kses( \ElementsKit_Lite\Utils::kspan($ekit_hover_title), \ElementsKit_Lite\Utils::get_kses_array())
+					); 
+					?>
 					<p class="ekit_image_caption_description <?php echo esc_attr($description_show.' '.$description_stable_switch.' '.$entranceAnimatedClass); ?>" data-settings="<?php echo esc_attr(json_encode($entranceAnimationData)); ?>">
 						<?php echo esc_html($ekit_hover_description);?>
 					</p>
 					<?php if($ekit_hover_image_btn == 'yes'): ?>	
 						<a class="elementskit-btn ekit_image_caption_button <?php echo esc_attr($button_show.' '.$button_stable_switch.' '.$entranceAnimatedClass); ?>" data-settings="<?php echo esc_attr(json_encode($entranceAnimationData)); ?>" <?php $this->print_render_attribute_string( 'ekit_image_button_link' ); ?>>
-							<?php echo esc_html($ekit_image_button_text); ?>
-						</a>		
+							<?php 
+							  	 Icons_Manager::render_icon( $settings['ekit_image_button_icon'], [ 'aria-hidden' => 'true' ] );
+			                     echo esc_html( $ekit_image_button_text );
+							?>
+						</a>
 					<?php endif; ?>
 				</div>
 			</div>
@@ -1940,15 +2027,24 @@ class ElementsKit_Widget_Image_Hover_Effect extends Widget_Base {
 					<div class="ekit_overlay_inner"></div>
 					<?php $this->image_link($ekit_hover_link); ?>
 					<div class="ekit_image_caption <?php echo esc_attr($hover_text_class.' '.$hoverAnimatedClass); ?>" >
-						<h2 class="ekit_image_caption_title <?php echo esc_attr($title_show.' '.$title_stable_switch.' '.$entranceAnimatedClass); ?>" data-settings="<?php echo esc_attr(json_encode($entranceAnimationData)); ?>">
-							<?php echo wp_kses( \ElementsKit_Lite\Utils::kspan($ekit_hover_title), \ElementsKit_Lite\Utils::get_kses_array())?>
-						</h2>
+						<?php	
+						echo sprintf(
+							'<%1$s class="ekit_image_caption_title %2$s" data-settings="%3$s">%4$s</%1$s>',
+							esc_attr($ekit_hover_title_tag),
+							esc_attr($title_show.' '.$title_stable_switch.' '.$entranceAnimatedClass),
+							esc_attr(json_encode($entranceAnimationData)),
+							wp_kses( \ElementsKit_Lite\Utils::kspan($ekit_hover_title), \ElementsKit_Lite\Utils::get_kses_array())
+						); 
+						?>
 						<p class="ekit_image_caption_description <?php echo esc_attr($description_show.' '.$description_stable_switch.' '.$entranceAnimatedClass); ?>" data-settings="<?php echo esc_attr(json_encode($entranceAnimationData)); ?>">
 							<?php echo esc_html($ekit_hover_description);?>
 						</p>
 						<?php if($ekit_hover_image_btn == 'yes'): ?>	
 							<a class="elementskit-btn ekit_image_caption_button <?php echo esc_attr($button_show.' '.$button_stable_switch.' '.$entranceAnimatedClass); ?>" <?php $this->print_render_attribute_string( 'ekit_image_button_link' ); ?> data-settings="<?php echo esc_attr(json_encode($entranceAnimationData));?>">
-								<?php echo esc_html($ekit_image_button_text); ?>
+								<?php 
+									Icons_Manager::render_icon( $settings['ekit_image_button_icon'], [ 'aria-hidden' => 'true' ] );
+									echo esc_html( $ekit_image_button_text );
+								?>
 							</a>		
 						<?php endif; ?>		
 					</div>			

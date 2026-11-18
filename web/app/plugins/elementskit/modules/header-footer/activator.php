@@ -1,286 +1,436 @@
-<?php 
+<?php
 namespace ElementsKit\Modules\Header_Footer;
 
 defined( 'ABSPATH' ) || exit;
 
 class Activator {
-    public static $instance = null;
+	public static $instance = null;
 
-    protected $templates;
-    public $header_template;
-    public $footer_template;
+	protected $templates;
+	public $header_template;
+	public $footer_template;
 
-    protected $current_theme;
-    protected $current_template;
+	protected $current_theme;
+	protected $current_template;
+	protected $post_type = 'elementskit_template';
 
-    protected $post_type = 'elementskit_template';
+	public function __construct() {
+		// ShopEngine resolves replacement templates at priority 999. Only defer our
+		// hooks when it is active; otherwise retain the original default priority.
+		$priority = $this->is_shopengine_active() ? 1000 : 10;
+		add_action( 'wp', array( $this, 'hooks' ), $priority );
+	}
 
-    public function __construct() {
-        add_action( 'wp', array( $this, 'hooks' ) );
-    }
+	/**
+	 * Check whether ShopEngine is active on the current site or network.
+	 *
+	 * @return bool
+	 */
+	private function is_shopengine_active() {
+		return \ElementsKit_Lite\Utils::ekit_is_plugin_active( 'shopengine/shopengine.php' );
+	}
 
-    public function hooks(){
-        $this->current_template = basename(get_page_template_slug());
-        if($this->current_template == 'elementor_canvas'){
-            return;
-        }
-
-        $this->current_theme = get_template();
-
-        switch($this->current_theme){
-            case 'astra':
-              new Theme_Hooks\Astra(self::template_ids());
-            break;
-
-			case 'neve':
-				new Theme_Hooks\Neve( self::template_ids() );
-				break;
-
-            case 'generatepress':  case 'generatepress-child':
-              new Theme_Hooks\Generatepress(self::template_ids());
-            break;
-
-            case 'oceanwp': case 'oceanwp-child':
-              new Theme_Hooks\Oceanwp(self::template_ids());
-            break;
-
-            case 'bb-theme':  case 'bb-theme-child':
-              new Theme_Hooks\Bbtheme(self::template_ids());
-            break;
-
-            case 'genesis':  case 'genesis-child':
-              new Theme_Hooks\Genesis(self::template_ids());
-            break;
-
-            case 'twentynineteen':
-              new Theme_Hooks\TwentyNineteen(self::template_ids());
-            break;
-
-            case 'my-listing': case 'my-listing-child':
-              new Theme_Hooks\MyListing(self::template_ids());
-            break;
-            
-            case 'houzez':
-                new Theme_Hooks\Houzez(self::template_ids());
-            break;
-
-            default:
-              new Theme_Hooks\Theme_Support(self::template_ids());
-            break;
-        }
-        
-    }
-
-    public static function template_ids(){
-        $cached = wp_cache_get( 'elementskit_template_ids' );
-		if ( false !== $cached ) {
-			return $cached;
-        }
-        
-        $instance = self::instance();
-        $instance->the_filter();
-
-        $ids = [
-            $instance->header_template,
-            $instance->footer_template,
-        ];
-
-        if($instance->header_template != null){
-			\ElementsKit\Utils::render_elementor_content_css($instance->header_template);
+	public function hooks() {
+		// Header/footer replacement is only for full HTML responses. Running it for
+		// WooCommerce endpoints such as update_order_review can contaminate the JSON
+		// response and leave checkout sections permanently blocked.
+		if (
+			wp_doing_ajax()
+			|| ( defined( 'WC_DOING_AJAX' ) && WC_DOING_AJAX )
+			|| ( defined( 'REST_REQUEST' ) && REST_REQUEST )
+		) {
+			return;
 		}
 
-		if($instance->footer_template != null){
+		$this->current_template = basename( (string) $this->get_effective_page_template_slug() );
+
+		if ($this->current_template === 'elementor_canvas') {
+			return;
+		}
+
+		$this->current_theme = get_template();
+
+		switch ($this->current_theme) {
+			case 'astra':
+				new Theme_Hooks\Astra(self::template_ids());
+				break;
+
+			case 'neve':
+				new Theme_Hooks\Neve(self::template_ids());
+				break;
+
+			case 'generatepress':
+			case 'generatepress-child':
+				new Theme_Hooks\Generatepress(self::template_ids());
+				break;
+
+			case 'oceanwp':
+			case 'oceanwp-child':
+				new Theme_Hooks\Oceanwp(self::template_ids());
+				break;
+
+			case 'bb-theme':
+			case 'bb-theme-child':
+				new Theme_Hooks\Bbtheme(self::template_ids());
+				break;
+
+			case 'genesis':
+			case 'genesis-child':
+				new Theme_Hooks\Genesis(self::template_ids());
+				break;
+
+			case 'twentynineteen':
+				new Theme_Hooks\TwentyNineteen(self::template_ids());
+				break;
+
+			case 'my-listing':
+			case 'my-listing-child':
+				new Theme_Hooks\MyListing(self::template_ids());
+				break;
+
+			case 'houzez':
+				new Theme_Hooks\Houzez(self::template_ids());
+				break;
+
+			default:
+				new Theme_Hooks\Theme_Support(self::template_ids());
+		}
+	}
+
+	/**
+	 * Get the page template that actually owns the current response.
+	 *
+	 * WooCommerce conditionals continue to point at the product or assigned WC page
+	 * when ShopEngine replaces its content. In that case, respect the selected
+	 * ShopEngine template's layout instead of the queried object's layout.
+	 *
+	 * @return string|false
+	 */
+	private function get_effective_page_template_slug() {
+		if ( class_exists( '\\ShopEngine\\Core\\Page_Templates\\Hooks\\Base_Content' ) ) {
+			$shopengine_content = \ShopEngine\Core\Page_Templates\Hooks\Base_Content::instance();
+			$template_id        = isset( $shopengine_content->prod_tpl_id ) ? absint( $shopengine_content->prod_tpl_id ) : 0;
+
+			if ( $template_id ) {
+				return get_page_template_slug( $template_id );
+			}
+		}
+
+		return get_page_template_slug();
+	}
+
+	public static function template_ids() {
+		$cached = wp_cache_get('elementskit_template_ids');
+		if ($cached !== false) {
+			return $cached;
+		}
+
+		$instance = self::instance();
+		$instance->run_conditions();
+
+		$ids = [
+			$instance->header_template,
+			$instance->footer_template,
+		];
+
+		if ($instance->header_template) {
+			\ElementsKit\Utils::render_elementor_content_css($instance->header_template);
+		}
+		if ($instance->footer_template) {
 			\ElementsKit\Utils::render_elementor_content_css($instance->footer_template);
 		}
 
-        wp_cache_set( 'elementskit_template_ids', $ids );
-        return $ids;
-    }
+		wp_cache_set('elementskit_template_ids', $ids);
+		return $ids;
+	}
 
+	/**
+	 * Main condition handler
+	 */
+	protected function run_conditions() {
+		$this->templates = get_posts([
+			'posts_per_page' => -1,
+			'orderby'        => 'id',
+			'order'          => 'DESC',
+			'post_status'    => 'publish',
+			'post_type'      => $this->post_type,
+			'meta_query'     => [
+				[
+					'key'     => 'elementskit_template_activation',
+					'value'   => 'yes',
+					'compare' => '=',
+				],
+			],
+		]);
 
-    protected function the_filter(){
-        $arg = [
-            'posts_per_page'   => -1,
-            'orderby'          => 'id',
-            'order'            => 'DESC',
-            'post_status'      => 'publish',
-            'post_type'        => $this->post_type,
-            'meta_query' => [
-                [
-                    'key'     => 'elementskit_template_activation',
-                    'value'   => 'yes',
-                    'compare' => '=',
-                ],
-            ],
-        ];
-        $this->templates = get_posts($arg);
+		if (!is_admin()) {
+			$this->match([
+				['key' => 'condition_a', 'value' => 'entire_site']
+			]);
+		}
 
-        // entire site
-        if(!is_admin()){
-            $filters = [[
-                'key'     => 'condition_a',
-                'value'   => 'entire_site',
-            ]];
-            $this->get_header_footer($filters);
-        }
+		/** -----------------------
+		 * ENTIRE SHOP CONDITION (WooCommerce)
+		 * ---------------------- */
+		if (class_exists('WooCommerce') && !is_admin()) {
+			if (is_shop() || is_product_category() || is_product_tag() || is_product() ||
+				is_cart() || is_checkout() || is_account_page() || is_woocommerce() ||
+				(is_search() && isset($_GET['post_type']) && $_GET['post_type'] === 'product')) {
+				$this->match([
+					['key' => 'condition_a', 'value' => 'entire_shop']
+				]);
+			}
+		}
 
-        // all archive
-        if(is_archive()){
-            $filters = [[
-                'key'     => 'condition_a',
-                'value'   => 'archive',
-            ]];
-            $this->get_header_footer($filters);
-        }
+		/** -----------------------
+		 * ARCHIVE CONDITIONS
+		 * ---------------------- */
 
-        // all singular
-        if(is_page() || is_single() || is_404()){
-            $filters = [
-                [
-                    'key'     => 'condition_a',
-                    'value'   => 'singular',
-                ],
-                [
-                    'key'     => 'condition_singular',
-                    'value'   => 'all',
-                ]
-            ];
-            $this->get_header_footer($filters);
-        }
-        
-        // all pages, all posts, 404 page
-        if(is_page()){
-            $filters = [
-                [
-                    'key'     => 'condition_a',
-                    'value'   => 'singular',
-                ],
-                [
-                    'key'     => 'condition_singular',
-                    'value'   => 'all_pages',
-                ]
-            ];
-            $this->get_header_footer($filters);
-        }elseif(is_single()){
-            $filters = [
-                [
-                    'key'     => 'condition_a',
-                    'value'   => 'singular',
-                ],
-                [
-                    'key'     => 'condition_singular',
-                    'value'   => 'all_posts',
-                ]
-            ];
-            $this->get_header_footer($filters);
-        }elseif(is_404()){
-            $filters = [
-                [
-                    'key'     => 'condition_a',
-                    'value'   => 'singular',
-                ],
-                [
-                    'key'     => 'condition_singular',
-                    'value'   => '404page',
-                ]
-            ];
-            $this->get_header_footer($filters);
-        }
+		if (is_archive() || is_search() || is_post_type_archive() || is_home()) {
+			// All Archives Legacy
+			$this->match([
+				['key' => 'condition_a', 'value' => 'archive'],
+				['key' => 'condition_archive', 'value' => '']
+			]);
 
-        // singular selective
-        if(is_page() || is_single()){
-            $filters = [
-                [
-                    'key'     => 'condition_a',
-                    'value'   => 'singular',
-                ],
-                [
-                    'key'     => 'condition_singular',
-                    'value'   => 'selective',
-                ],
-                [
-                    'key'     => 'condition_singular_id',
-                    'value'   => get_the_ID(),
-                ]
-            ];
-            $this->get_header_footer($filters);
-        }
+			// All Archives
+			$this->match([
+				['key' => 'condition_a', 'value' => 'archive'],
+				['key' => 'condition_archive', 'value' => 'all_archive']
+			]);
 
-        // homepage
-        if(is_home() || is_front_page()){
-            $filters = [
-                [
-                    'key'     => 'condition_a',
-                    'value'   => 'singular',
-                ],
-                [
-                    'key'     => 'condition_singular',
-                    'value'   => 'front_page',
-                ]
-            ];
-            $this->get_header_footer($filters);
-        }
-    }
+			// Date Archives
+			if (is_date()) {
+				$this->match([
+					['key' => 'condition_a', 'value' => 'archive'],
+					['key' => 'condition_archive', 'value' => 'date_archive']
+				]);
+			}
 
-    protected function get_header_footer($filters){
-        $template_id = array();
+			// Author Archives
+			if (is_author()) {
+				$this->match([
+					['key' => 'condition_a', 'value' => 'archive'],
+					['key' => 'condition_archive', 'value' => 'author_archive']
+				]);
+			}
 
-        if($this->templates != null){
-            foreach($this->templates as $template){
-                $template = $this->get_full_data($template);
-                $match_found = true;
+			// Blog Post Archives (fixed)
+			if ((is_home() && !is_front_page()) || is_category() || is_tag()) {
+				$this->match([
+					['key' => 'condition_a', 'value' => 'archive'],
+					['key' => 'condition_archive', 'value' => 'post_archive'],
+				]);
+			}
 
-                // WPML Language Check
-                if ( defined( 'ICL_LANGUAGE_CODE' ) ):
-                    $current_lang = apply_filters( 'wpml_post_language_details', NULL, $template['ID'] );
+			// Category
+			if (is_category()) {
+				$this->match([
+					['key' => 'condition_a', 'value' => 'archive'],
+					['key' => 'condition_archive', 'value' => 'category'],
+					['key' => 'condition_archive_id', 'value' => get_queried_object_id()],
+				]);
+			}
 
-                    if ( !empty($current_lang) && !$current_lang['different_language'] && ($current_lang['language_code'] == ICL_LANGUAGE_CODE) ):
-                        $template_id[ $template['type'] ] = $template['ID'];
-                    endif;
-                endif;
-                
-                foreach($filters as $filter){
-                    if($filter['key'] == 'condition_singular_id'){
-                        $ids = explode(',', $template[$filter['key']]);
-                        if(!in_array($filter['value'], $ids)){
-                            $match_found = false;
-                        }
-                    }elseif($template[$filter['key']] != $filter['value']){
-                        $match_found = false;
-                    }
-                    if( $filter['key'] == 'condition_a' && $template[$filter['key']] == 'singular' && count($filters) < 2){
-                        $match_found = false;
-                    }
-                }
+			// Tag
+			if (is_tag()) {
+				$this->match([
+					['key' => 'condition_a', 'value' => 'archive'],
+					['key' => 'condition_archive', 'value' => 'post_tag'],
+					['key' => 'condition_archive_id', 'value' => get_queried_object_id()],
+				]);
+			}
 
-                if($match_found == true){
-                    if($template['type'] == 'header'){
-                        $this->header_template = isset( $template_id['header'] ) ? $template_id['header'] : $template['ID'];
-                    }
-                    if($template['type'] == 'footer'){
-                        $this->footer_template = isset( $template_id['footer'] ) ? $template_id['footer'] : $template['ID'];
-                    }
-                }
-            }
-        }
-    }
+			/** WooCommerce Conditions */
+			if (class_exists('WooCommerce')) {
 
-    protected function get_full_data($post){
-        if($post != null){
-            return array_merge((array)$post, [
-                'type' => get_post_meta($post->ID, 'elementskit_template_type', true),
-                'condition_a' => get_post_meta($post->ID, 'elementskit_template_condition_a', true),
-                'condition_singular' => get_post_meta($post->ID, 'elementskit_template_condition_singular', true),
-                'condition_singular_id' => get_post_meta($post->ID, 'elementskit_template_condition_singular_id', true),
-            ]);
-        }
-    }
+				// Product Archive (fixed & expanded)
+				if (is_shop() || is_post_type_archive('product') || is_product_category() || is_product_tag()) {
+					$this->match([
+						['key' => 'condition_a', 'value' => 'archive'],
+						['key' => 'condition_archive', 'value' => 'product_archive'],
+					]);
+				}
 
-    public static function instance() {
-        if ( is_null( self::$instance ) ) {
-            self::$instance = new self();
-        }
+				// Shop page
+				if (is_shop()) {
+					$this->match([
+						['key' => 'condition_a', 'value' => 'archive'],
+						['key' => 'condition_archive', 'value' => 'shop_page']
+					]);
+				}
 
-        return self::$instance;
-    }
+				// Product category
+				if (is_product_category()) {
+					$this->match([
+						['key' => 'condition_a', 'value' => 'archive'],
+						['key' => 'condition_archive', 'value' => 'product_cat'],
+						['key' => 'condition_archive_id', 'value' => get_queried_object_id()],
+					]);
+				}
+
+				// Product tag
+				if (is_product_tag()) {
+					$this->match([
+						['key' => 'condition_a', 'value' => 'archive'],
+						['key' => 'condition_archive', 'value' => 'product_tag'],
+						['key' => 'condition_archive_id', 'value' => get_queried_object_id()],
+					]);
+				}
+
+				// Product brand
+				if (is_tax('product_brand')) {
+					$this->match([
+						['key' => 'condition_a', 'value' => 'archive'],
+						['key' => 'condition_archive', 'value' => 'product_brand'],
+						['key' => 'condition_archive_id', 'value' => get_queried_object_id()],
+					]);
+				}
+			}
+		}
+
+		/** SEARCH CONDITIONS */
+		if (is_search()) {
+			$this->match([
+				['key' => 'condition_a', 'value' => 'archive'],
+				['key' => 'condition_archive', 'value' => 'search_result']
+			]);
+
+			if (class_exists('WooCommerce') && isset($_GET['post_type']) && $_GET['post_type'] === 'product') {
+				$this->match([
+					['key' => 'condition_a', 'value' => 'archive'],
+					['key' => 'condition_archive', 'value' => 'product_search']
+				]);
+			}
+		}
+
+		/** -----------------------
+		 *  SINGULAR CONDITIONS
+		 * ---------------------- */
+
+		if (is_page() || is_single() || is_404()) {
+			$this->match([
+				['key' => 'condition_a', 'value' => 'singular'],
+				['key' => 'condition_singular', 'value' => 'all']
+			]);
+		}
+
+		if (is_page()) {
+			$this->match([
+				['key' => 'condition_a', 'value' => 'singular'],
+				['key' => 'condition_singular', 'value' => 'all_pages']
+			]);
+		}
+
+		if (is_single()) {
+			$this->match([
+				['key' => 'condition_a', 'value' => 'singular'],
+				['key' => 'condition_singular', 'value' => 'all_posts']
+			]);
+		}
+
+		if (is_404()) {
+			$this->match([
+				['key' => 'condition_a', 'value' => 'singular'],
+				['key' => 'condition_singular', 'value' => '404page']
+			]);
+		}
+
+		// Selective Pages
+		if (is_page() || is_single()) {
+			$this->match([
+				['key' => 'condition_a', 'value' => 'singular'],
+				['key' => 'condition_singular', 'value' => 'selective'],
+				['key' => 'condition_singular_id', 'value' => get_the_ID()]
+			]);
+		}
+
+		// Homepage
+		if (is_home() || is_front_page()) {
+			$this->match([
+				['key' => 'condition_a', 'value' => 'singular'],
+				['key' => 'condition_singular', 'value' => 'front_page']
+			]);
+		}
+	}
+
+	/**
+	 * Core matching function
+	 */
+	protected function match($filters) {
+		foreach ($this->templates as $template) {
+
+			$template = $this->get_full_data($template);
+			$match = true;
+
+			foreach ($filters as $filter) {
+
+				$key = $filter['key'];
+				$value = $filter['value'];
+
+				if ($key === 'condition_singular_id') {
+					$ids = array_map('trim', explode(',', $template[$key]));
+					if (!in_array($value, $ids)) {
+						$match = false;
+					}
+				}
+				elseif ($key === 'condition_archive_id') {
+
+					if (empty($template[$key])) {
+						continue; // matches all
+					}
+
+					$ids = array_map('trim', explode(',', $template[$key]));
+
+					if (!in_array($value, $ids)) {
+						$match = false;
+					}
+				}
+				else {
+					if ($template[$key] != $value) {
+						$match = false;
+					}
+				}
+			}
+
+			/**
+			 * Filter the match result for template conditions.
+			 *
+			 * Allows extending condition matching logic from external code.
+			 *
+			 * @param bool   $match    Whether the template matches the current conditions.
+			 * @param array  $template The template data being checked.
+			 * @param array  $filters  The condition filters being applied.
+			 */
+			$match = apply_filters('elementskit/template/condition_match', $match, $template, $filters);
+
+			if ($match) {
+				if ($template['type'] === 'header') {
+					$this->header_template = $template['ID'];
+				}
+				if ($template['type'] === 'footer') {
+					$this->footer_template = $template['ID'];
+				}
+			}
+		}
+	}
+
+	protected function get_full_data($post) {
+		return [
+			'ID'                    => $post->ID,
+			'type'                  => get_post_meta($post->ID, 'elementskit_template_type', true),
+			'condition_a'           => get_post_meta($post->ID, 'elementskit_template_condition_a', true),
+			'condition_singular'    => get_post_meta($post->ID, 'elementskit_template_condition_singular', true),
+			'condition_singular_id' => get_post_meta($post->ID, 'elementskit_template_condition_singular_id', true),
+			'condition_archive'     => get_post_meta($post->ID, 'elementskit_template_condition_archive', true),
+			'condition_archive_id'  => get_post_meta($post->ID, 'elementskit_template_condition_archive_id', true),
+		];
+	}
+
+	public static function instance() {
+		if (self::$instance === null) {
+			self::$instance = new self();
+		}
+		return self::$instance;
+	}
 }

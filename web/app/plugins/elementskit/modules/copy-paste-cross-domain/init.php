@@ -47,17 +47,26 @@ class Init {
 
         if (is_admin()) {
 
-            wp_enqueue_script('ekit-xd-copy-paste-editor-defer', $this->url . 'assets/js/ekit-copy-paste.js', ['elementor-editor'], \ElementsKit::version(), true);
+            wp_enqueue_script(
+                'ekit-xd-copy-paste-editor-defer',
+                $this->url . 'assets/js/ekit-copy-paste.js',
+                [ 'jquery', 'elementor-editor' ],
+                filemtime($this->dir . 'assets/js/ekit-copy-paste.js'),
+                true
+            );
 
             wp_localize_script('ekit-xd-copy-paste-editor-defer', 'ekit_cp_xd', [
                 'ajaxurl'  => admin_url('admin-ajax.php'),
                 'adminurl' => admin_url('admin.php'),
                 'message'  => [
+                    'copy_title'  => esc_html__('ElementsKit Copy', 'elementskit'),
+                    'paste_title' => esc_html__('ElementsKit Paste', 'elementskit'),
                     'copy'        => esc_html__('Element copied successfully!', 'elementskit'),
                     'import_wait' => esc_html__('Processing media import! Please wait', 'elementskit'),
                     'paste'       => esc_html__('Element pasted successfully!', 'elementskit'),
                     'error'       => esc_html__('Something went wrong!', 'elementskit'),
                     'empty_copy'  => esc_html__('No copied element found!', 'elementskit'),
+					'paste_prompt' => esc_html__('Paste the copied ElementsKit element data below:', 'elementskit'),
                     'storage_key' => 'ekit-cross-domain-key',
                 ],
             ]);
@@ -65,4 +74,5 @@ class Init {
         }
 
     }
+
 }

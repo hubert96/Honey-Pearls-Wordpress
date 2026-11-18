@@ -35,6 +35,14 @@ class ElementsKit_Widget_Motion_Text extends Widget_Base {
         return 'https://wpmet.com/doc/motion-text/';
     }
 
+	public function get_style_depends() {
+		return ['ekit-pro-motion-text'];
+	}
+
+	public function get_script_depends() {
+		return ['ekit-pro-motion-text'];
+	}
+
     protected function is_dynamic_content(): bool {
         return false;
     }
@@ -139,32 +147,40 @@ class ElementsKit_Widget_Motion_Text extends Widget_Base {
 		$this->add_control(
 			'ekit_motion_text_motions',
 			[
-				'label' => esc_html__( 'Motion Animation', 'elementskit' ),
-				'type' => Controls_Manager::SELECT,
+				'label'   => esc_html__( 'Motion Animation', 'elementskit' ),
+				'type'    => Controls_Manager::SELECT,
 				'options' => [
-					'none' => 'None',
-					'RevealInTop' => 'Reveal In Top',
-					'RevealInBottom' => 'Reveal In Bottom',
-					'RevealInLeft' => 'Reveal In Left',
-					'RevealInRight' => 'Reveal In Right',
-					'RainDrop' => 'Rain Drop',
-					'lightning' => 'Lightning',
-					'JoltZoom' => 'Jolt Zoom',
-					'Magnify' => 'Magnify',
-					'Beat' => 'Beat',
-					'FadeIn' => 'Fade In',
-					'FadeInLeft' => 'Fade In Left',
-					'FadeInRight' => 'Fade In Right',
-					'FadeInTop' => 'Fade In Up',
-					'FadeInBottom' => 'Fade In Down',
-					'oaoRotateIn' => 'One after One Rotate In',
-					'oaoRotateXIn' => 'One after One Rotate X In',
-					'oaoRotateYIn' => 'One after One Rotate Y In'
+					'none'          => esc_html__( 'None', 'elementskit' ),
+
+					// Reveal
+					'RevealInTop'    => esc_html__( 'Reveal — Top', 'elementskit' ),
+					'RevealInBottom' => esc_html__( 'Reveal — Bottom', 'elementskit' ),
+					'RevealInLeft'   => esc_html__( 'Reveal — Left', 'elementskit' ),
+					'RevealInRight'  => esc_html__( 'Reveal — Right', 'elementskit' ),
+
+					// Entrance
+					'FadeIn'         => esc_html__( 'Fade In', 'elementskit' ),
+					'FadeInLeft'     => esc_html__( 'Fade In — Left', 'elementskit' ),
+					'FadeInRight'    => esc_html__( 'Fade In — Right', 'elementskit' ),
+					'FadeInTop'      => esc_html__( 'Fade In — Top', 'elementskit' ),
+					'FadeInBottom'   => esc_html__( 'Fade In — Bottom', 'elementskit' ),
+
+					// Attention
+					'Beat'           => esc_html__( 'Beat', 'elementskit' ),
+					'Magnify'        => esc_html__( 'Magnify', 'elementskit' ),
+					'JoltZoom'       => esc_html__( 'Jolt Zoom', 'elementskit' ),
+					'lightning'      => esc_html__( 'Lightning', 'elementskit' ),
+					'RainDrop'       => esc_html__( 'Rain Drop', 'elementskit' ),
+
+					// One After One
+					'oaoRotateIn'    => esc_html__( 'One by One — Rotate In', 'elementskit' ),
+					'oaoRotateXIn'   => esc_html__( 'One by One — Rotate X In', 'elementskit' ),
+					'oaoRotateYIn'   => esc_html__( 'One by One — Rotate Y In', 'elementskit' ),
 				],
-				'default' => 'none',
+				'default'   => 'none',
 				'condition' => [
-					'ekit_motion_enable_switch' => 'yes'
-				]
+					'ekit_motion_enable_switch' => 'yes',
+				],
 			]
 		);
 
@@ -288,6 +304,28 @@ class ElementsKit_Widget_Motion_Text extends Widget_Base {
 				]
 			]
 		);
+		$this->add_control(
+			'ekit_motion_infinite_loop',
+			[
+				'label'        => esc_html__( 'Infinite Loop', 'elementskit' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'label_on'     => esc_html__( 'Yes', 'elementskit' ),
+				'label_off'    => esc_html__( 'No', 'elementskit' ),
+				'return_value' => 'yes',
+				'default'      => 'no',
+				// Only meaningful when animation is actually on
+				'condition'    => [
+					'ekit_motion_enable_switch'  => 'yes',
+					'ekit_motion_text_motions!' => ['RevealInTop', 'RevealInBottom', 'RevealInLeft', 'RevealInRight'],
+				],
+				// When on, override animation-iteration-count to infinite
+				'selectors'    => [
+					'{{WRAPPER}} .ekit_animation.ekit-infinite .ekit-letter' => 'animation-iteration-count: infinite;',
+					'{{WRAPPER}} .ekit_animation.ekit-infinite'              => 'animation-iteration-count: infinite;',
+					'{{WRAPPER}} .ekit-infinite .elementkit_background_reveal_bg' => 'animation-iteration-count: infinite;',
+				],
+			]
+		);
 
 		$this->end_controls_section();
 
@@ -358,79 +396,82 @@ class ElementsKit_Widget_Motion_Text extends Widget_Base {
         echo '</div>';
     }
 
-    protected function render_raw( ) {
-		$settings = $this->get_settings();
+	protected function render_raw() {
+		$settings = $this->get_settings_for_display();
 
-		// Sanitize Title Tag
-		$options_ekit_motion_text_sub_title_tag = array_keys([
-			'h1' => 'H1',
-			'h2' => 'H2',
-			'h3' => 'H3',
-			'h4' => 'H4',
-			'h5' => 'H5',
-			'h6' => 'H6',
-			'div' => 'div',
-			'span' => 'span',
-			'p' => 'p',
-		]);
-		$title_tag = \ElementsKit_Lite\Utils::esc_options($settings['ekit_motion_text_sub_title_tag'], $options_ekit_motion_text_sub_title_tag, 'h2');
-
+		$title_tag  = \Elementor\Utils::validate_html_tag( $settings['ekit_motion_text_sub_title_tag'] );
 		$title_text = $settings['ekit_motion_text_content_text'];
-		$url = $settings['ekit_motion_text_sub_title_website_link']['url'];
-		if ( ! empty( $settings['ekit_motion_text_sub_title_website_link']['url'] ) ) {
-			$this->add_link_attributes( 'button', $settings['ekit_motion_text_sub_title_website_link'] );
-		}
-		// motion main class
-		$motion_main_class = '';
-		// anim class
-		$anim_motion_class = '';
-		// reveal anim skiping
-		$reveal_anim_skip = '/^Reveal/';
-		$background_reveal_wraper_class = '';
-		// text spilit or not class add
-		$ekit_text_spilit_class = '';
-		// one by one anim skiping
-		$onebyone_anim_skip = '/^oao/';
-		$ekit_text_spilit_one_by_one_class = '';
-		if ($settings['ekit_motion_enable_switch'] == 'yes' && $settings['ekit_motion_text_motions'] != 'none') {
-			// declear anim motion class
-			$anim_motion_class = 'ekit-'.$settings['ekit_motion_text_motions'];
-			// declear motion main class
-			$motion_main_class = 'ekit_animation';
-			// reveal anim skip
-			if (preg_match($reveal_anim_skip, $settings['ekit_motion_text_motions'])) {
-				$background_reveal_wraper_class = 'background_reveal_anim';
-			}
-			// reveal anim match
-			if (!(preg_match($reveal_anim_skip, $settings['ekit_motion_text_motions']))) {
-				$ekit_text_spilit_class = 'ekit_'.$settings['ekit_motion_text_motions_spilit'];
-			}
-			// one by one preg match
-			if(preg_match($onebyone_anim_skip, $settings['ekit_motion_text_motions'])){
-				$ekit_text_spilit_one_by_one_class = 'ekit_char_based';
-			}
-		}
-		$animation_delay_char_based = '';
-		if (($settings['ekit_motion_text_motions_spilit'] == 'char_based') && $settings['ekit_motion_enable_switch'] == 'yes' && $settings['ekit_motion_text_motions'] != 'none') {
-			$animation_delay_char_based = $settings['ekit_motion_text_animation_delay_char_based']['size'];
+		$url        = $settings['ekit_motion_text_sub_title_website_link']['url'];
+
+		// Classes & Conditions — guard missing or null settings to avoid warnings
+		$motion_setting = isset( $settings['ekit_motion_text_motions'] ) ? (string) $settings['ekit_motion_text_motions'] : '';
+		$motion_spilit  = isset( $settings['ekit_motion_text_motions_spilit'] ) ? (string) $settings['ekit_motion_text_motions_spilit'] : '';
+		$enable_switch  = isset( $settings['ekit_motion_enable_switch'] ) ? $settings['ekit_motion_enable_switch'] : 'no';
+		$infinite_loop  = isset( $settings['ekit_motion_infinite_loop'] ) ? $settings['ekit_motion_infinite_loop'] : 'no';
+
+		$motion_enabled = (
+			$enable_switch === 'yes' &&
+			$motion_setting !== 'none'
+		);
+
+		// Check for specific animation types (only run preg_match when we have a string)
+		$is_reveal   = $motion_setting !== '' && preg_match( '/^Reveal/', $motion_setting ) === 1;
+		$is_onebyone = $motion_setting !== '' && preg_match( '/^oao/', $motion_setting ) === 1;
+
+		// Animation Class
+		$animation_class = $motion_enabled ? 'ekit-' . $motion_setting : '';
+		$split_class     = ( ! $is_reveal && $motion_enabled ) ? 'ekit_' . $motion_spilit : '';
+		$infinite_class  = ( $infinite_loop === 'yes' && $motion_enabled ) ? 'ekit-infinite' : '';
+		$wrapper_class   = $is_reveal ? 'background_reveal_anim' : '';
+
+		$char_class = ( $is_onebyone || $motion_spilit === 'char_based' ) && $motion_enabled ? 'ekit_char_based' : '';
+
+		// Delay for Char Based Animation
+		$delay = ( $motion_spilit === 'char_based' && $motion_enabled ) ? ( $settings['ekit_motion_text_animation_delay_char_based']['size'] ?? '' ) : '';
+
+		// Attributes
+		$this->add_render_attribute('title', 'class', [
+			'ekit_motion_text_title',
+			$motion_enabled ? 'ekit_animation' : '',
+			$split_class,
+			$char_class,
+			$infinite_class,
+		]);
+
+		$this->add_render_attribute('title', 'data-ekit-animation-delay-s', '10');
+		$this->add_render_attribute('title', 'data-animate-class', $animation_class);
+
+		$this->add_render_attribute('text', 'class', 'ekit_motion_text');
+		$this->add_render_attribute('text', 'data-ekit-animation-delay', $delay);
+
+		if ( ! empty( $url ) ) {
+			$this->add_link_attributes( 'link', $settings['ekit_motion_text_sub_title_website_link'] );
 		}
 		?>
+
 		<div class="elementskit_motion_text_wraper">
-			<?php if($title_text != '') : ?>
-			<div class="ekit_motion_text_inner_wraper <?php echo esc_attr($background_reveal_wraper_class); ?>" >
-			<?php
-				echo '<'. esc_attr($title_tag) .' class="ekit_motion_text_title '. esc_attr($motion_main_class) .' '. esc_attr($ekit_text_spilit_class) .' '. esc_attr($ekit_text_spilit_one_by_one_class) .'" data-ekit-animation-delay-s="10" data-animate-class="'. esc_attr( $anim_motion_class ) .'">';
-				if ($url !== '') {
-					echo '<a '. $this->get_render_attribute_string( 'button' ) .'><span class="ekit_motion_text" data-ekit-animation-delay="'. esc_attr($animation_delay_char_based).'">'. wp_kses($title_text, \ElementsKit_Lite\Utils::get_kses_array()) .'</span></a>';
-				} else {
-					echo '<span class="ekit_motion_text" data-ekit-animation-delay="'.esc_attr($animation_delay_char_based).'">'. wp_kses($title_text, \ElementsKit_Lite\Utils::get_kses_array()).'</span>';
-				} ?>
-				<?php echo '</'. esc_attr($title_tag) .'>';
-			?>
-			<?php if(preg_match($reveal_anim_skip, $settings['ekit_motion_text_motions'])) : ?>
-			<div class="elementkit_background_reveal_bg"></div>
-			<?php endif;?>
-			<?php endif; ?>
+			<div class="ekit_motion_text_inner_wraper <?php echo esc_attr( $wrapper_class ); ?>">
+
+				<<?php echo esc_attr( $title_tag ); ?> <?php echo $this->get_render_attribute_string('title'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Elementor escapes render attribute strings. ?>>
+
+					<?php if ( ! empty( $url ) ) : ?>
+						<a <?php echo $this->get_render_attribute_string('link'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Elementor escapes render attribute strings. ?>>
+					<?php endif; ?>
+
+					<span <?php echo $this->get_render_attribute_string('text'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Elementor escapes render attribute strings. ?>>
+						<?php echo wp_kses( $title_text, \ElementsKit_Lite\Utils::get_kses_array() ); ?>
+					</span>
+
+					<?php if ( ! empty( $url ) ) : ?>
+						</a>
+					<?php endif; ?>
+
+				</<?php echo esc_attr( $title_tag ); ?>>
+
+				<?php if ( $is_reveal ) : ?>
+					<div class="elementkit_background_reveal_bg"></div>
+				<?php endif; ?>
+
 			</div>
 		</div>
 

@@ -13,7 +13,7 @@ class Init {
 
         // get current module's url
 		$this->url = \ElementsKit::plugin_url() . 'modules/sticky-content/';
-		
+
 		// Register frontend scripts
 		add_action( 'elementor/frontend/before_register_scripts', [ $this, 'register_frontend_scripts' ] );
 
@@ -23,7 +23,7 @@ class Init {
 		// calling the sticky controls
 		new \Elementor\ElementsKit_Extend_Sticky();
 	}
-	
+
 	public function include_files(){
 		include $this->dir . 'extend-controls.php';
 	}
@@ -46,7 +46,7 @@ class Init {
 				'elementskit-sticky-content' => [
 					'src' => $this->url . 'assets/js/elementskit-sticky-content.js',
 					'version' => \ElementsKit::version(),
-					'dependencies' => [],
+					'dependencies' => ['elementor-frontend'],
 					'in_footer' => true,
 				],
 			],

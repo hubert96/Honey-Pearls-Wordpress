@@ -2,6 +2,7 @@
 namespace Elementor;
 
 use Elementor\Controls_Manager;
+use ElementsKit_Lite\Utils;
 
 defined('ABSPATH') || die();
 
@@ -59,7 +60,7 @@ class ElementsKit_Liquid_Glass {
 		$element->start_controls_section(
 			'elementskit_liquid_glass_section',
 			[
-				'label' => esc_html__( 'Elementskit Liquid Glass', 'elementskit' ),
+				'label' => ( method_exists( Utils::class, 'get_promo_icon' ) ? Utils::get_promo_icon() : 'ElementsKit' ) . esc_html__( 'Liquid Glass', 'elementskit' ),
 				'tab' => Controls_Manager::TAB_ADVANCED,
 			]
 		);

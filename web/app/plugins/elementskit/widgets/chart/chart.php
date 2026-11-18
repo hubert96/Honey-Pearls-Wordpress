@@ -5,46 +5,58 @@ namespace Elementor;
 use \Elementor\ElementsKit_Widget_Chart_Handler as Handler;
 use \ElementsKit_Lite\Modules\Controls\Controls_Manager as ElementsKit_Controls_Manager;
 
-if(!defined('ABSPATH')) {
+if (!defined('ABSPATH')) {
 	exit;
 }
 
-class ElementsKit_Widget_Chart extends Widget_Base {
+class ElementsKit_Widget_Chart extends Widget_Base
+{
 	use \ElementsKit_Lite\Widgets\Widget_Notice;
 
 	public $base;
 
-	public function __construct( $data = [], $args = null ) {
-		parent::__construct( $data, $args );
-		$this->add_script_depends('chart-kit-js');
+	public function get_script_depends()
+	{
+		$deps = ['chart-kit-js', 'ekit-pro-chart'];
+		return $deps;
 	}
 
-	public function get_name() {
+	public function get_name()
+	{
 		return Handler::get_name();
 	}
 
 
-	public function get_title() {
+	public function get_title()
+	{
 		return Handler::get_title();
 	}
 
 
-	public function get_icon() {
+	public function get_icon()
+	{
 		return Handler::get_icon();
 	}
 
 
-	public function get_categories() {
+	public function get_categories()
+	{
 		return Handler::get_categories();
 	}
 
-	public function get_keywords() {
+	public function get_keywords()
+	{
 		return Handler::get_keywords();
 	}
 
-    public function get_help_url() {
-        return 'https://wpmet.com/doc/advanced-chart/';
-    }
+	public function get_help_url()
+	{
+		return 'https://wpmet.com/doc/advanced-chart/';
+	}
+
+	public function get_style_depends() {
+		return ['ekit-pro-chart'];
+	}
 
     protected function is_dynamic_content(): bool {
         return false;
@@ -54,7 +66,8 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 
 		/*Data Section*/
 		$this->start_controls_section(
-			'ekit_chart_data_section', [
+			'ekit_chart_data_section',
+			[
 				'label' => esc_html__('Data ', 'elementskit'),
 			]
 		);
@@ -63,7 +76,8 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 
 		$chartRepeterCate = new Repeater();
 		$chartRepeterCate->add_control(
-			'ekit_chart_label', [
+			'ekit_chart_label',
+			[
 				'label'       => esc_html__('Name', 'elementskit'),
 				'type'        => Controls_Manager::TEXT,
 				'default'     => esc_html__('January', 'elementskit'),
@@ -95,7 +109,8 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 		// repeter 1
 		$chartRepeter = new Repeater();
 		$chartRepeter->add_control(
-			'ekit_chart_data_label', [
+			'ekit_chart_data_label',
+			[
 				'label'       => esc_html__('Label', 'elementskit'),
 				'type'        => Controls_Manager::TEXT,
 				'default'     => esc_html__('Label #1', 'elementskit'),
@@ -106,7 +121,8 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 			]
 		);
 		$chartRepeter->add_control(
-			'ekit_chart_data_set', [
+			'ekit_chart_data_set',
+			[
 				'label'       => esc_html__('Data', 'elementskit'),
 				'type'        => Controls_Manager::TEXT,
 				'default'     => '10,23,15',
@@ -132,7 +148,8 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 		);
 
 		$chartRepeter->add_control(
-			'ekit_chart_data_bar_back_color', [
+			'ekit_chart_data_bar_back_color',
+			[
 				'label'       => esc_html__('Background Color', 'elementskit'),
 				'type'        => Controls_Manager::COLOR,
 				'default'     => 'rgba(242,41,91,0.48)',
@@ -140,7 +157,8 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 		);
 
 		$chartRepeter->add_control(
-			'ekit_chart_data_bar_border_color', [
+			'ekit_chart_data_bar_border_color',
+			[
 				'label'       => esc_html__('Border Color', 'elementskit'),
 				'type'        => Controls_Manager::COLOR,
 				'default'     => 'rgba(242,41,91,0.48)',
@@ -157,14 +175,16 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 			]
 		);
 		$chartRepeter->add_control(
-			'ekit_chart_data_bar_back_color_hover', [
+			'ekit_chart_data_bar_back_color_hover',
+			[
 				'label'       => esc_html__('Background Color', 'elementskit'),
 				'type'        => Controls_Manager::COLOR,
 			]
 		);
 
 		$chartRepeter->add_control(
-			'ekit_chart_data_bar_border_color_hover', [
+			'ekit_chart_data_bar_border_color_hover',
+			[
 				'label'       => esc_html__('Border Color', 'elementskit'),
 				'type'        => Controls_Manager::COLOR,
 			]
@@ -175,7 +195,8 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 		// end tabs section
 
 		$chartRepeter->add_control(
-			'ekit_chart_data_bar_border_width', [
+			'ekit_chart_data_bar_border_width',
+			[
 				'label'       => esc_html__('Border Width', 'elementskit'),
 				'type'        => Controls_Manager::NUMBER,
 				'default'     => '1',
@@ -222,7 +243,8 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 		// repeter 2
 		$chartRepeter2 = new Repeater();
 		$chartRepeter2->add_control(
-			'ekit_chart_data_label', [
+			'ekit_chart_data_label',
+			[
 				'label'       => esc_html__('Label', 'elementskit'),
 				'type'        => Controls_Manager::TEXT,
 				'default'     => esc_html__('Label #1', 'elementskit'),
@@ -231,7 +253,8 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 		);
 
 		$chartRepeter2->add_control(
-			'ekit_chart_data_set2', [
+			'ekit_chart_data_set2',
+			[
 				'label'       => esc_html__('Data', 'elementskit'),
 				'type'        => Controls_Manager::TEXT,
 				'default'     => '10',
@@ -253,7 +276,8 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 		);
 
 		$chartRepeter2->add_control(
-			'ekit_chart_data_bar_back_color', [
+			'ekit_chart_data_bar_back_color',
+			[
 				'label'       => esc_html__('Background Color', 'elementskit'),
 				'type'        => Controls_Manager::COLOR,
 				'default'     => 'rgba(242,41,91,0.48)',
@@ -261,7 +285,8 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 		);
 
 		$chartRepeter2->add_control(
-			'ekit_chart_data_bar_border_color', [
+			'ekit_chart_data_bar_border_color',
+			[
 				'label'       => esc_html__('Border Color', 'elementskit'),
 				'type'        => Controls_Manager::COLOR,
 				'default'     => 'rgba(242,41,91,0.48)',
@@ -278,14 +303,16 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 			]
 		);
 		$chartRepeter2->add_control(
-			'ekit_chart_data_bar_back_color_hover', [
+			'ekit_chart_data_bar_back_color_hover',
+			[
 				'label'       => esc_html__('Background Color', 'elementskit'),
 				'type'        => Controls_Manager::COLOR,
 			]
 		);
 
 		$chartRepeter2->add_control(
-			'ekit_chart_data_bar_border_color_hover', [
+			'ekit_chart_data_bar_border_color_hover',
+			[
 				'label'       => esc_html__('Border Color', 'elementskit'),
 				'type'        => Controls_Manager::COLOR,
 			]
@@ -296,7 +323,8 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 		// end tabs section
 
 		$chartRepeter2->add_control(
-			'ekit_chart_data_bar_border_width', [
+			'ekit_chart_data_bar_border_width',
+			[
 				'label'       => esc_html__('Border Width', 'elementskit'),
 				'type'        => Controls_Manager::NUMBER,
 				'default'     => '1',
@@ -345,7 +373,8 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 
 		/*Account Settings*/
 		$this->start_controls_section(
-			'ekit_chart_settings', [
+			'ekit_chart_settings',
+			[
 				'label' => esc_html__('Settings ', 'elementskit'),
 			]
 		);
@@ -441,7 +470,7 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 			'ekit_charts_disable_legends_filter',
 			[
 				'label'   => esc_html__('Disable Legends Filter', 'elementskit'),
-				'description' => esc_html__( 'If enabled, the user cannot click items on the legend to show/hide chart elements.', 'elementskit' ),
+				'description' => esc_html__('If enabled, the user cannot click items on the legend to show/hide chart elements.', 'elementskit'),
 				'type'    => Controls_Manager::SWITCHER,
 				'default' => '',
 				'condition'   => ['ekit_charts_show_legend' => 'yes'],
@@ -467,7 +496,8 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 
 		// start title style here
 		$this->start_controls_section(
-			'ekit_chart_section_style_chart', [
+			'ekit_chart_section_style_chart',
+			[
 				'label'     => esc_html__('Chart', 'elementskit'),
 				'tab'       => Controls_Manager::TAB_STYLE,
 				'condition' => ['ekit_chart_style' => ['line', 'pie', 'bubble', 'radar']],
@@ -540,7 +570,8 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 
 		// start label style
 		$this->start_controls_section(
-			'ekit_chart_section_style_label', [
+			'ekit_chart_section_style_label',
+			[
 				'label'     => esc_html__('Categories', 'elementskit'),
 				'tab'       => Controls_Manager::TAB_STYLE,
 				'condition' => ['ekit_charts_show_lavel' => 'yes'],
@@ -600,7 +631,8 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 
 		// start legend style
 		$this->start_controls_section(
-			'ekit_chart_section_style_legend', [
+			'ekit_chart_section_style_legend',
+			[
 				'label'     => esc_html__('Legend', 'elementskit'),
 				'tab'       => Controls_Manager::TAB_STYLE,
 				'condition' => ['ekit_charts_show_legend' => 'yes'],
@@ -708,7 +740,8 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 
 		// start tooltips style
 		$this->start_controls_section(
-			'ekit_chart_section_style_tooltip', [
+			'ekit_chart_section_style_tooltip',
+			[
 				'label'     => esc_html__('Tooltip', 'elementskit'),
 				'tab'       => Controls_Manager::TAB_STYLE,
 				'condition' => ['ekit_charts_show_tooltips' => 'yes'],
@@ -801,7 +834,8 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 
 		// start title style here
 		$this->start_controls_section(
-			'ekit_chart_section_style_title', [
+			'ekit_chart_section_style_title',
+			[
 				'label'     => esc_html__('Title', 'elementskit'),
 				'tab'       => Controls_Manager::TAB_STYLE,
 				'condition' => ['ekit_charts_show_title' => 'yes'],
@@ -898,7 +932,8 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 
 		// start animation style
 		$this->start_controls_section(
-			'ekit_chart_section_style_animation', [
+			'ekit_chart_section_style_animation',
+			[
 				'label' => esc_html__('Animation', 'elementskit'),
 				'tab'   => Controls_Manager::TAB_STYLE,
 			]
@@ -968,91 +1003,93 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 		$this->start_controls_section(
 			'ekit_chart_section_style_res',
 			[
-				'label' => esc_html__( 'Responsive', 'elementskit' ),
+				'label' => esc_html__('Responsive', 'elementskit'),
 				'tab'	=> Controls_Manager::TAB_STYLE,
 			]
 		);
-			/**
-			 * Control: Enable/Disable
-			 */
-			$this->add_control(
-				'ekit_chart_res',
-				[
-					'label'		=> esc_html__( 'Responsive Layout', 'elementskit' ),
-					'type'		=> Controls_Manager::SWITCHER,
-					'selectors'	=> [
-						'{{WRAPPER}} .ekit-wid-con'	=> 'overflow: auto;',
-						'{{WRAPPER}} .ekit-chart' => 'position: relative; margin: 0 auto;',
-					],
-				]
-			);
+		/**
+		 * Control: Enable/Disable
+		 */
+		$this->add_control(
+			'ekit_chart_res',
+			[
+				'label'		=> esc_html__('Responsive Layout', 'elementskit'),
+				'type'		=> Controls_Manager::SWITCHER,
+				'selectors'	=> [
+					'{{WRAPPER}} .ekit-wid-con'	=> 'overflow: auto;',
+					'{{WRAPPER}} .ekit-chart' => 'position: relative; margin: 0 auto;',
+				],
+			]
+		);
 
-			/**
-			 * Control: Width
-			 */
-			$this->add_responsive_control(
-				'ekit_chart_res_width',
-				[
-					'label'		=> esc_html__( 'Width (px)', 'elementskit' ),
-					'type'		=> Controls_Manager::SLIDER,
-					'range'		=> [
-						'px'	=> [
-							'min' => 0,
-							'max' => 1600
-						]
-					],
-					'default'	=> [
-						'size'	=> '800',
-					],
-					'selectors'	=> [
-						'{{WRAPPER}} .ekit-chart' => 'width: {{SIZE}}px;',
-					],
-					'condition'	=> [
-						'ekit_chart_res' => 'yes',
-					],
-					'separator'	=> 'before',
-				]
-			);
+		/**
+		 * Control: Width
+		 */
+		$this->add_responsive_control(
+			'ekit_chart_res_width',
+			[
+				'label'		=> esc_html__('Width (px)', 'elementskit'),
+				'type'		=> Controls_Manager::SLIDER,
+				'range'		=> [
+					'px'	=> [
+						'min' => 0,
+						'max' => 1600
+					]
+				],
+				'default'	=> [
+					'size'	=> '800',
+				],
+				'selectors'	=> [
+					'{{WRAPPER}} .ekit-chart' => 'width: {{SIZE}}px;',
+				],
+				'condition'	=> [
+					'ekit_chart_res' => 'yes',
+				],
+				'separator'	=> 'before',
+			]
+		);
 
-			/**
-			 * Control: Height
-			 */
-			$this->add_responsive_control(
-				'ekit_chart_res_height',
-				[
-					'label'		=> esc_html__( 'Height (px)', 'elementskit' ),
-					'type'		=> Controls_Manager::SLIDER,
-					'range'		=> [
-						'px'	=> [
-							'min' => 0,
-							'max' => 1600
-						]
-					],
-					'default'	=> [
-						'size'	=> '400',
-					],
-					'selectors'	=> [
-						'{{WRAPPER}} .ekit-chart' => 'height: {{SIZE}}px;',
-					],
-					'condition'	=> [
-						'ekit_chart_res' => 'yes',
-					],
-				]
-			);
+		/**
+		 * Control: Height
+		 */
+		$this->add_responsive_control(
+			'ekit_chart_res_height',
+			[
+				'label'		=> esc_html__('Height (px)', 'elementskit'),
+				'type'		=> Controls_Manager::SLIDER,
+				'range'		=> [
+					'px'	=> [
+						'min' => 0,
+						'max' => 1600
+					]
+				],
+				'default'	=> [
+					'size'	=> '400',
+				],
+				'selectors'	=> [
+					'{{WRAPPER}} .ekit-chart' => 'height: {{SIZE}}px;',
+				],
+				'condition'	=> [
+					'ekit_chart_res' => 'yes',
+				],
+			]
+		);
 		$this->end_controls_section();
 
 		$this->insert_pro_message();
 	}
 
 
-	protected function render() {
+	protected function render()
+	{
 		echo '<div class="ekit-wid-con" >';
 		$this->render_raw();
 		echo '</div>';
 	}
 
 
-	protected function render_raw() {
+	protected function render_raw()
+	{
 
 		$settings = $this->get_settings_for_display();
 		extract($settings);
@@ -1061,8 +1098,8 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 
 		$dataChartArray = [];
 
-		if(is_array($ekit_charts_labels_data) && sizeof($ekit_charts_labels_data)):
-			foreach($ekit_charts_labels_data AS $labelsData):
+		if (is_array($ekit_charts_labels_data) && sizeof($ekit_charts_labels_data)):
+			foreach ($ekit_charts_labels_data as $labelsData):
 				$dataChartArray['labels'][] = $labelsData['ekit_chart_label'];
 			endforeach;
 		endif;
@@ -1070,15 +1107,15 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 		$backColor = [];
 
 		// set data
-		if(in_array($ekit_chart_style, array('pie', 'doughnut', 'polarArea'))) {
+		if (in_array($ekit_chart_style, array('pie', 'doughnut', 'polarArea'))) {
 			$backgroundColor      = [];
 			$backgroundColorHover = [];
 			$borderColor          = [];
 			$borderColorHover     = [];
 			$dataChart            = [];
 			$chartLabel           = [];
-			if(is_array($ekit_charts_data_set2) && sizeof($ekit_charts_data_set2)):
-				foreach($ekit_charts_data_set2 AS $DataChart):
+			if (is_array($ekit_charts_data_set2) && sizeof($ekit_charts_data_set2)):
+				foreach ($ekit_charts_data_set2 as $DataChart):
 
 					$backgroundColor[]      = $DataChart['ekit_chart_data_bar_back_color'];
 					$backgroundColorHover[] = strlen($DataChart['ekit_chart_data_bar_back_color_hover']) > 0 ? $DataChart['ekit_chart_data_bar_back_color_hover'] : $DataChart['ekit_chart_data_bar_back_color'];
@@ -1100,8 +1137,8 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 			];
 			$dataChartArray['labels']     = $chartLabel;
 		} else {
-			if(is_array($ekit_charts_data_set) && sizeof($ekit_charts_data_set)):
-				foreach($ekit_charts_data_set AS $DataChart):
+			if (is_array($ekit_charts_data_set) && sizeof($ekit_charts_data_set)):
+				foreach ($ekit_charts_data_set as $DataChart):
 					$backgroundColor      = $DataChart['ekit_chart_data_bar_back_color'];
 					$backgroundColorHover = $DataChart['ekit_chart_data_bar_back_color_hover'];
 					$borderColor          = $DataChart['ekit_chart_data_bar_border_color'];
@@ -1124,55 +1161,55 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 			endif;
 		}
 
-		$dataLabelsJson = wp_json_encode(array_filter($dataChartArray['labels']));
-		$dataJson       = wp_json_encode(array_filter($dataChartArray['datasets']));
-
-		// start options
 		$options = [];
 
-		// Title options
-		if($ekit_charts_show_title == 'yes') {
-			$options['title'] = [
-				'display'    => true,
-				'position'   => strlen($ekit_charts_title_align) > 0 ? $ekit_charts_title_align : 'top',
-				'fontSize'   => $ekit_charts_title_text_font_size,
-				'fontColor'  => $ekit_charts_title_text_font_color,
-				'fontStyle'  => $ekit_charts_title_text_font_style,
-				'padding'    => $ekit_charts_title_text_font_padding,
-				'lineHeight' => $ekit_charts_title_text_font_line_height,
-				'text'       => $ekit_charts_title_text,
+		// Title
+		if ($ekit_charts_show_title == 'yes') {
+			$options['plugins']['title'] = [
+				'display'  => true,
+				'position' => strlen($ekit_charts_title_align) > 0 ? $ekit_charts_title_align : 'top',
+				'color'    => $ekit_charts_title_text_font_color,
+				'font'     => [
+					'size'   => (int) $ekit_charts_title_text_font_size,
+					'weight' => $ekit_charts_title_text_font_style,
+				],
+				'padding'  => (int) $ekit_charts_title_text_font_padding,
+				'text'     => $ekit_charts_title_text,
 			];
 		}
 
-		// animations options
+		// Animation
 		$options['animation'] = [
-			'duration'   => $ekit_chart_section_style_animation_duration,
-			'easing'     => $ekit_chart_section_style_animation_style,
-			'onProgress' => 'function(animation) {progress.value = animation.animationObject.currentStep / animation.animationObject.numSteps;}',
-			'onComplete' => 'function() {window.setTimeout(function() { progress.value = 0;}, ' . $ekit_chart_section_style_animation_duration . ');',
+			'duration' => (int) $ekit_chart_section_style_animation_duration,
+			'easing'   => $ekit_chart_section_style_animation_style,
 		];
 
-		// tooltip options options
-		if($ekit_charts_show_tooltips == 'yes') {
-			if($ekit_charts_tooltips_back_color) {
-				$options['tooltips'] = [
+		// Tooltip
+		if ($ekit_charts_show_tooltips == 'yes') {
+			if ($ekit_charts_tooltips_back_color) {
+				$options['plugins']['tooltip'] = [
+					'enabled'         => true,
 					'backgroundColor' => $ekit_charts_tooltips_back_color,
 					'intersect'       => true,
 					'mode'            => 'nearest',
-					'titleFontSize'   => $ekit_charts_tooltips_title_font_size,
-					'titleFontColor'  => $ekit_charts_tooltips_title_font_color,
-					'titleFontStyle'  => $ekit_charts_tooltips_title_font_style,
-					'bodyFontSize'    => $ekit_charts_tooltips_body_font_size,
-					'bodyFontColor'   => $ekit_charts_tooltips_body_font_color,
-					'bodyFontStyle'   => $ekit_charts_tooltips_body_font_style,
+					'titleFont'       => [
+						'size'   => (int) $ekit_charts_tooltips_title_font_size,
+						'weight' => $ekit_charts_tooltips_title_font_style,
+					],
+					'titleColor'      => $ekit_charts_tooltips_title_font_color,
+					'bodyFont'        => [
+						'size'   => (int) $ekit_charts_tooltips_body_font_size,
+						'weight' => $ekit_charts_tooltips_body_font_style,
+					],
+					'bodyColor'       => $ekit_charts_tooltips_body_font_color,
 				];
 			}
 		} else {
-			$options['tooltips'] = ['enabled' => false];
+			$options['plugins']['tooltip'] = ['enabled' => false];
 		}
 
-		//Elements optins
-		if(in_array($ekit_chart_style, array('line', 'radar', 'bubble'))) {
+		// Elements
+		if (in_array($ekit_chart_style, array('line', 'radar', 'bubble'))) {
 			$options['elements']['point'] = [
 				'radius'           => 5,
 				'pointStyle'       => $ekit_chart_section_style_chart_point_style,
@@ -1181,17 +1218,15 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 				'hoverBorderWidth' => 4,
 			];
 		}
-		if(in_array($ekit_chart_style, array('line'))) {
+		if (in_array($ekit_chart_style, array('line'))) {
 			$options['elements']['line'] = [
 				'tension'        => $ekit_chart_section_style_line_chart_tension,
 				'borderCapStyle' => 'butt',
 				'fill'           => $ekit_chart_section_style_line_chart_fill,
 				'stepped'        => isset($ekit_chart_section_style_line_chart_stepped) && $ekit_chart_section_style_line_chart_stepped == 'yes' ? false : true,
-
 			];
 		}
-
-		if(in_array($ekit_chart_style, array('pie'))) {
+		if (in_array($ekit_chart_style, array('pie'))) {
 			$options['elements']['arc'] = [
 				'backgroundColor' => 'rgba(0, 0, 0, 0.1)',
 				'borderColor'     => 'rgba(0, 0, 0, 0.1)',
@@ -1200,117 +1235,86 @@ class ElementsKit_Widget_Chart extends Widget_Base {
 			];
 		}
 
-		// legend options
-		if($ekit_charts_show_legend == 'yes') {
-			if($ekit_charts_legend_align) {
-				$options['legend'] = [
+		// Legend
+		if ($ekit_charts_show_legend == 'yes') {
+			if ($ekit_charts_legend_align) {
+				$options['plugins']['legend'] = [
+					'display'  => true,
 					'position' => $ekit_charts_legend_align,
 					'labels'   => [
-						'boxWidth'      => $ekit_charts_legend_box_width,
-						'fontColor'     => $ekit_charts_legend_font_color,
-						'fontSize'      => $ekit_charts_legend_font_size,
-						'fontStyle'     => $ekit_charts_legend_font_style,
-						'padding'       => $ekit_charts_legend_padding,
-						'usePointStyle' => (isset($ekit_charts_legend_point_style) & $ekit_charts_legend_point_style == 'yes') ? true : false,
+						'boxWidth'      => (int) $ekit_charts_legend_box_width,
+						'color'         => $ekit_charts_legend_font_color,
+						'font'          => [
+							'size'   => (int) $ekit_charts_legend_font_size,
+							'weight' => $ekit_charts_legend_font_style,
+						],
+						'padding'       => (int) $ekit_charts_legend_padding,
+						'usePointStyle' => (isset($ekit_charts_legend_point_style) && $ekit_charts_legend_point_style == 'yes') ? true : false,
 					],
 				];
 			}
-
-			// Check if Clickable is set to 'yes'
-			if ($ekit_charts_disable_legends_filter == 'yes') {
-				// Add the onClick handler
-				$options['legend']['onClick'] = 'function(e) { e.stopPropagation(); }';
-			}
 		} else {
-			$options['legend'] = ['display' => false];
+			$options['plugins']['legend'] = ['display' => false];
 		}
 
-		// gridline options
-		if(!in_array($ekit_chart_style, array('doughnut', 'pie', 'polarArea'))) {
-			$ticksArray = [
+		// Scales
+		if (!in_array($ekit_chart_style, array('doughnut', 'pie', 'polarArea'))) {
+			$gridConfig = ($ekit_charts_grid_lines == 'yes')
+				? ['color' => $ekit_charts_grid_color]
+				: ['display' => false];
+
+			$ticksV4 = [
 				'display'     => ($ekit_charts_show_lavel) ? true : false,
 				'beginAtZero' => true,
-				'fontColor'   => $ekit_charts_label_font_color,
-				'fontSize'    => $ekit_charts_label_font_size,
-				'fontStyle'   => $ekit_charts_label_font_style,
-				'padding'     => $ekit_charts_label_padding,
+				'color'       => $ekit_charts_label_font_color,
+				'font'        => [
+					'size'   => (int) $ekit_charts_label_font_size,
+					'weight' => $ekit_charts_label_font_style,
+				],
+				'padding'     => (int) $ekit_charts_label_padding,
 			];
 
-			if($ekit_charts_grid_lines == 'yes') {
-				$options['scales']['yAxes'] = [
-					[
-						'ticks'     => $ticksArray,
-						'gridLines' => [
-							'drawBorder' => false,
-							'color'      => $ekit_charts_grid_color,
-						],
-					],
-				];
-				$options['scales']['xAxes'] = [
-					[
-						'ticks'     => $ticksArray,
-						'gridLines' => [
-							'drawBorder' => false,
-							'color'      => $ekit_charts_grid_color,
-						],
-					],
-				];
-			} else {
-				$options['scales']['yAxes'] = [
-					[
-						'ticks'     => $ticksArray,
-						'gridLines' => [
-							'display' => false,
-						],
-					],
-				];
-				$options['scales']['xAxes'] = [
-					[
-						'ticks'     => $ticksArray,
-						'gridLines' => [
-							'display' => false,
-						],
-					],
-				];
-			}
+			$options['scales']['y'] = [
+				'ticks'  => $ticksV4,
+				'grid'   => $gridConfig,
+				'border' => ['display' => false],
+			];
+			$options['scales']['x'] = [
+				'ticks'  => $ticksV4,
+				'grid'   => $gridConfig,
+				'border' => ['display' => false],
+			];
 		}
 
-		if(in_array($ekit_chart_style, array('doughnut'))) {
-			$options['cutoutPercentage'] = 50;
-		}
-		if(in_array($ekit_chart_style, array('pie'))) {
-			$options['cutoutPercentage'] = 0;
+		// Cutout
+		if ($ekit_chart_style === 'doughnut') {
+			$options['cutout'] = '50%';
 		}
 
-		// extra plugin
-		$options['plugins'] = [
-			'deferred' => [
-				'xOffset' => 150,
-				'yOffset' => '50%',
-				'delay'   => 300,
-			],
+		// Deferred plugin
+		$options['plugins']['deferred'] = [
+			'xOffset' => 150,
+			'yOffset' => '50%',
+			'delay'   => 300,
 		];
 
-		$opionsJson = wp_json_encode(array_filter($options));
-		?>
-		<div class="ekit-chart">
+		$disable_legend_filter = ($ekit_charts_show_legend === 'yes' && $ekit_charts_disable_legends_filter === 'yes') ? 'true' : 'false';
+
+		$chart_settings = [
+			'type'     => $ekit_chart_style,
+			'labels'   => array_filter($dataChartArray['labels']),
+			'datasets' => array_filter($dataChartArray['datasets']),
+			'options'  => array_filter($options),
+		];
+
+		$chart_settings_json = \ElementsKit_Lite\Utils::render( wp_json_encode( $chart_settings ) );
+
+?>
+		<div class="ekit-chart" data-disable-legend-filter="<?php echo esc_attr($disable_legend_filter); ?>" data-settings="<?php echo esc_attr($chart_settings_json); ?>">
 			<canvas id="<?php echo esc_attr($Chart_id); ?>"></canvas>
 		</div>
-
-		<script type="text/javascript">
-            jQuery(function ($) {
-                var ekitChartId = document.querySelector('#<?php echo esc_attr($Chart_id); ?>'),
-					ekitChart = new Chart(ekitChartId, {
-                    type: '<?php echo esc_js($ekit_chart_style);?>',
-                    data: {
-                        labels: <?php echo \ElementsKit_Lite\Utils::render($dataLabelsJson); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>,
-                        datasets: <?php echo \ElementsKit_Lite\Utils::render($dataJson); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-                    },
-                    options: <?php echo \ElementsKit_Lite\Utils::render($opionsJson);// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-                });
-            });
-		</script>
-		<?php
+<?php
 	}
+
 
 }

@@ -37,6 +37,14 @@ class ElementsKit_Widget_Flip_Box extends Widget_Base {
         return 'https://wpmet.com/doc/flip-box/';
     }
 
+	public function get_style_depends() {
+		return ['ekit-pro-flip-box'];
+	}
+
+	public function get_script_depends() {
+		return ['ekit-pro-flip-box'];
+	}
+
     protected function register_controls() {
         // Flip Box
         $this->start_controls_section(
@@ -2558,24 +2566,12 @@ class ElementsKit_Widget_Flip_Box extends Widget_Base {
         $settings = $this->get_settings_for_display();
         extract($settings);
 
-        $options_ekit_flip_title_tag = array_keys([
-			'h1' => 'H1',
-			'h2' => 'H2',
-			'h3' => 'H3',
-			'h4' => 'H4',
-			'h5' => 'H5',
-			'h6' => 'H6',
-			'div' => 'div',
-			'span' => 'span',
-			'p' => 'p',
-		]);
-
         if ( ! empty( $settings['ekit_flip_back_button_url']['url'] ) ) {
 			$this->add_link_attributes( 'ekit_flip_back_button_url', $settings['ekit_flip_back_button_url'] );
 		}
 
-		$ekit_flip_title_tag = \ElementsKit_Lite\Utils::esc_options($ekit_flip_title_tag, $options_ekit_flip_title_tag, 'h2');
-        $ekit_flip_back_title_tag = \ElementsKit_Lite\Utils::esc_options($ekit_flip_back_title_tag, $options_ekit_flip_title_tag, 'h2');
+		$ekit_flip_title_tag = \Elementor\Utils::validate_html_tag($ekit_flip_title_tag);
+        $ekit_flip_back_title_tag = \Elementor\Utils::validate_html_tag($ekit_flip_back_title_tag);
 
         $flip_class='';
         switch ($ekit_flip_box_style) {
@@ -2802,4 +2798,5 @@ class ElementsKit_Widget_Flip_Box extends Widget_Base {
         </div>
         <?php
     }
+	
 }

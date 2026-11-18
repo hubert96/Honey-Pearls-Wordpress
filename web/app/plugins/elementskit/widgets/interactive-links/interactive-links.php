@@ -34,6 +34,14 @@ class ElementsKit_Widget_Interactive_Links extends Widget_Base {
         return 'https://wpmet.com/doc/interactive-links/';
     }
 
+	public function get_style_depends() {
+		return ['ekit-pro-interactive-links'];
+	}
+
+	public function get_script_depends() {
+		return ['ekit-pro-interactive-links'];
+	}
+
     protected function is_dynamic_content(): bool {
         return false;
     }
@@ -801,6 +809,7 @@ class ElementsKit_Widget_Interactive_Links extends Widget_Base {
                 'default' => '#fff',
                 'selectors' => [
                     '{{WRAPPER}} .ekit-interactive-links-list-link-title-container svg path' => 'fill: {{VALUE}};',
+                    '{{WRAPPER}} .ekit-interactive-links-list-link-title-container i' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -900,7 +909,7 @@ class ElementsKit_Widget_Interactive_Links extends Widget_Base {
 					}
 					?>
                     <a class="ekit-interactive-links-list-link elementor-animation-<?php echo esc_attr($ekit_interactive_links_animation);?>" <?php $this->print_render_attribute_string( "link_$index" ); ?>>
-						<div class="ekit-interactive-links-list-link-title-container" data-image="<?php echo $this->get_background_url($link, $settings); ?>">
+						<div class="ekit-interactive-links-list-link-title-container" data-image="<?php echo $this->get_background_url($link, $settings); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_background_url() returns esc_url() output. ?>">
 							<?php !empty($ekit_interactive_links_icon['value']) && $ekit_interactive_links_icon_position == 'before' && Icons_Manager::render_icon( $settings['ekit_interactive_links_icon'], [ 'aria-hidden' => 'true', 'class' => 'interactive-icon-before'  ] ); ?>
 							<span class="ekit-interactive-links-list-link-title">
 								<?php echo esc_html($link['title']); ?>
@@ -919,8 +928,8 @@ class ElementsKit_Widget_Interactive_Links extends Widget_Base {
 				<?php if($settings['ekit_interactive_links_style'] == 'background') :
                 	foreach($ekit_interactive_links as $index => $link) : 
 						if(!empty($link['image']['url'])) : ?>
-							<div class="ekit-interactive-links-image interactive-backgound ekit-interactive-links-image--<?php echo esc_html($ekit_interactive_links_style_effect); ?>">     
-								<img src="<?php echo esc_url($link['image']['url']); ?>" alt="bg-image">
+							<div class="ekit-interactive-links-image interactive-backgound ekit-interactive-links-image--<?php echo esc_html($ekit_interactive_links_style_effect); ?>">
+								<img src="<?php echo esc_url($link['image']['url']); ?>" alt="">
 							</div>
 							<!-- this markup is used for animation purposes -->
 						<?php endif; 
@@ -941,4 +950,5 @@ class ElementsKit_Widget_Interactive_Links extends Widget_Base {
         </div>
         <?php
     }
+	
 }

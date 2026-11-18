@@ -41,6 +41,14 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 		return 'https://wpmet.com/doc/advanced-search/';
 	}
 
+	public function get_style_depends() {
+		return ['ekit-pro-advanced-search'];
+	}
+
+	public function get_script_depends() {
+		return ['ekit-pro-advanced-search'];
+	}
+
 	protected function register_controls()
 	{
 
@@ -314,7 +322,7 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 				'selectors'  => [
 					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-option li .select-trigger' => 'height: {{SIZE}}{{UNIT}};',
 					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-option li.ekit-search' => 'height: {{SIZE}}{{UNIT}};',
-					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-option li button' => 'height: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-option li .ekit-search-button' => 'height: {{SIZE}}{{UNIT}};',
 					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-option li .select' => 'height: {{SIZE}}{{UNIT}};',
 				],
 			]
@@ -457,6 +465,29 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 				],
 			]
 		);
+
+		$this->add_control(
+			'ekit_search_no_result_found_title',
+			[
+				'label' => esc_html__( 'No result found', 'elementskit' ),
+				'type' => Controls_Manager::HEADING,
+				'separator' => 'before',
+			]
+		);
+
+		$this->add_control(
+			'ekit_search_no_result_found_text',
+			[
+				'label' => esc_html__( 'No result found', 'elementskit' ),
+				'type' => Controls_Manager::TEXT,
+				'default' => esc_html__( 'No result found.', 'elementskit' ),
+				'placeholder' => esc_html__( 'No result found.', 'elementskit' ),
+				'dynamic' => [
+					'active' => true,
+				],
+			]
+		);
+
 
 		$this->end_controls_section();
 
@@ -632,34 +663,7 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 			]
 		);
 
-		$this->add_control(
-			'ekit_adv_search_total_label_show',
-			[
-				'label'        =>  esc_html__('Show Label', 'elementskit'),
-				'type'         => Controls_Manager::SWITCHER,
-				'label_on'     => esc_html__('Show', 'elementskit'),
-				'label_off'    => esc_html__('Hide', 'elementskit'),
-				'return_value' => 'yes',
-				'default'      => 'no',
-			]
-		);
 
-		$this->add_control(
-			'ekit_adv_search_total_label',
-			[
-				'label' => esc_html__('Total Result Label', 'elementskit'),
-				'description' => esc_html__('%1$s = Totals Posts & %2$s = Search Term', 'elementskit'),
-				'type' => Controls_Manager::TEXT,
-				'default' => esc_html__('Results found for: %2$s', 'elementskit'),
-				'placeholder' => esc_html__('Total %1$s Result', 'elementskit'),
-				'dynamic' => [
-					'active' => true,
-				],
-				'condition' => [
-					'ekit_adv_search_total_label_show' => 'yes',
-				]
-			]
-		);
 
 		$this->add_control(
 			'ekit_adv_search_popular_keywords_display',
@@ -725,16 +729,35 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 				]
 			]
 		);
-
 		$this->add_control(
-			'ekit_adv_search_body_enable_blur',
+			'ekit_adv_search_total_label_show',
 			[
-				'label'        => esc_html__('Enable Blur', 'elementskit'),
+				'label'        =>  esc_html__('Show Label', 'elementskit'),
 				'type'         => Controls_Manager::SWITCHER,
 				'label_on'     => esc_html__('Show', 'elementskit'),
 				'label_off'    => esc_html__('Hide', 'elementskit'),
 				'return_value' => 'yes',
 				'default'      => 'no',
+			]
+		);
+
+		$this->add_control(
+			'ekit_adv_search_total_label',
+			[
+				'label' => esc_html__('Total Result Label', 'elementskit'),
+				/* translators: %1$s: total number of posts. %2$s: search term. */
+				'description' => esc_html__('%1$s = Totals Posts & %2$s = Search Term', 'elementskit'),
+				'type' => Controls_Manager::TEXT,
+				/* translators: %2$s: search term. */
+				'default' => esc_html__('Results found for: %2$s', 'elementskit'),
+				/* translators: %1$s: total number of posts. */
+				'placeholder' => esc_html__('Total %1$s Result', 'elementskit'),
+				'dynamic' => [
+					'active' => true,
+				],
+				'condition' => [
+					'ekit_adv_search_total_label_show' => 'yes',
+				]
 			]
 		);
 
@@ -1379,6 +1402,14 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 			]
 		);
 
+		$this->add_group_control(
+			Group_Control_Box_Shadow::get_type(),
+			[
+				'name' => 'ekit_adv_categories_tags_box_shadow',
+				'selector' => '{{WRAPPER}} .ekit-advanced-search-option .ekit-category .select, {{WRAPPER}} .ekit-advanced-search-option .ekit-tag .select',
+			]
+		);
+
 		$this->end_controls_tab();
 
 		$this->start_controls_tab(
@@ -1422,6 +1453,14 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 			]
 		);
 
+		$this->add_group_control(
+			Group_Control_Box_Shadow::get_type(),
+			[
+				'name' => 'ekit_adv_categories_tags_hover_box_shadow',
+				'selector' => '{{WRAPPER}} .ekit-advanced-search-option .ekit-category .select:hover, {{WRAPPER}} .ekit-advanced-search-option .ekit-tag .select:hover',
+			]
+		);
+
 		$this->end_controls_tab();
 		$this->start_controls_tab(
 			'ekit_adv_categories_tags_focus_tab',
@@ -1460,8 +1499,16 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 		$this->add_group_control(
 			Group_Control_Border::get_type(),
 			[
-				'name' => 'ekit_adv_categories_tags_focus_box_shadow',
+				'name' => 'ekit_adv_categories_tags_focus_border',
 				'selector' => '{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-option li .select .select-trigger:focus-within',
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Box_Shadow::get_type(),
+			[
+				'name' => 'ekit_adv_categories_tags_focus_box_shadow',
+				'selector' => '{{WRAPPER}} .ekit-advanced-search-option .ekit-category .select.open, {{WRAPPER}} .ekit-advanced-search-option .ekit-tag .select.open',
 			]
 		);
 		$this->end_controls_tab();
@@ -1537,7 +1584,7 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 				'label'     => esc_html__('Color', 'elementskit'),
 				'type'      => Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-option li .select .select-trigger .arrow svg path' => 'stroke: {{VALUE}};',
+					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-option li .select .select-trigger .arrow svg' => 'fill: {{VALUE}};',
 				],
 				'condition' => [
 					'ekit_adv_search_style' => ['default', 'modern'],
@@ -1601,6 +1648,43 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 			]
 		);
 
+
+
+		$this->add_responsive_control(
+			'ekit_adv_dropdown_width',
+			[
+				'label' => esc_html__('Width', 'elementskit'),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => ['px', '%', 'em', 'rem'],
+				'range' => [
+					'px' => [
+						'min' => 0,
+						'max' => 1000,
+					],
+				],
+				'selectors' => [
+					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-option :is(.ekit-category, .ekit-tag) .select .select-dropdown' => 'width: {{SIZE}}{{UNIT}};',
+				],
+			]
+		);
+
+		$this->add_responsive_control(
+			'ekit_adv_dropdown_height',
+			[
+				'label' => esc_html__('Height', 'elementskit'),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => ['px', '%', 'em', 'rem'],
+				'range' => [
+					'px' => [
+						'min' => 0,
+						'max' => 1000,
+					],
+				],
+				'selectors' => [
+					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-option :is(.ekit-category, .ekit-tag) .select .select-dropdown' => 'height: {{SIZE}}{{UNIT}};',
+				],
+			]
+		);
 		$this->add_group_control(
 			Group_Control_Background::get_type(),
 			[
@@ -1610,7 +1694,6 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 				'selector' => '{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-option li .select .select-dropdown',
 			]
 		);
-
 		$this->add_group_control(
 			Group_Control_Border::get_type(),
 			[
@@ -1671,28 +1754,16 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 				'separator' => 'before',
 			]
 		);
-		$this->add_control(
-			'ekit_adv_dropdown_item_hover_color',
-			[
-				'label' => esc_html__('Hover Color', 'elementskit'),
-				'type' => Controls_Manager::COLOR,
-				'selectors' => [
-					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-option li .select .select-dropdown .select-option:hover' => 'color: {{VALUE}}',
-				],
-			]
-		);
-		$this->add_control(
-			'ekit_adv_dropdown_item_hover_bg',
-			[
-				'label' => esc_html__('Hover Background', 'elementskit'),
-				'type' => Controls_Manager::COLOR,
-				'selectors' => [
-					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-option li .select .select-dropdown .select-option:hover' => 'background-color: {{VALUE}}',
-				],
-			]
-		);
 
-		$this->add_control(
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name' => 'ekit_adv_dropdown_item_typography',
+				'label' => esc_html__('Typography', 'elementskit'),
+				'selector' => '{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-option li .select .select-dropdown .select-option',
+			]
+		);
+		$this->add_responsive_control(
 			'ekit_adv_dropdown_item_padding',
 			[
 				'label' => esc_html__('Padding', 'elementskit'),
@@ -1703,6 +1774,74 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 				],
 			]
 		);
+
+		$this->start_controls_tabs(
+			'ekit_adv_dropdown_item_tabs'
+		);
+
+		$this->start_controls_tab(
+			'ekit_adv_dropdown_item_normal_tab',
+			[
+				'label' => esc_html__('Normal', 'elementskit'),
+			]
+		);
+
+		$this->add_control(
+			'ekit_adv_dropdown_item_color',
+			[
+				'label' => esc_html__('Color', 'elementskit'),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-option li .select .select-dropdown .select-option' => 'color: {{VALUE}}',
+				],
+			]
+		);
+
+		$this->add_control(
+			'ekit_adv_dropdown_item_bg',
+			[
+				'label' => esc_html__('Background', 'elementskit'),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-option li .select .select-dropdown .select-option' => 'background-color: {{VALUE}}',
+				],
+			]
+		);
+
+		$this->end_controls_tab();
+
+		$this->start_controls_tab(
+			'ekit_adv_dropdown_item_hover_tab',
+			[
+				'label' => esc_html__('Hover', 'elementskit'),
+			]
+		);
+
+		$this->add_control(
+			'ekit_adv_dropdown_item_hover_color',
+			[
+				'label' => esc_html__('Color', 'elementskit'),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-option li .select .select-dropdown .select-option:hover' => 'color: {{VALUE}}',
+				],
+			]
+		);
+
+		$this->add_control(
+			'ekit_adv_dropdown_item_hover_bg',
+			[
+				'label' => esc_html__('Background', 'elementskit'),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-option li .select .select-dropdown .select-option:hover' => 'background-color: {{VALUE}}',
+				],
+			]
+		);
+
+		$this->end_controls_tab();
+
+		$this->end_controls_tabs();
 
 		$this->end_controls_section();
 
@@ -1744,7 +1883,8 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 				'default' => '#ffff',
 				'selectors' => [
 					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-option li.ekit-submit .ekit-search-button' => 'color: {{VALUE}}',
-					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-option li.ekit-submit > :is(i, svg)' => 'color: {{VALUE}}; fill: {{VALUE}}',
+					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-option li.ekit-submit .ekit-search-button > i' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-option li.ekit-submit .ekit-search-button > svg' => 'fill: {{VALUE}}',
 				],
 			]
 		);
@@ -1786,7 +1926,8 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 				'default' => '#ffff',
 				'selectors' => [
 					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-option li.ekit-submit .ekit-search-button:hover' => 'color: {{VALUE}}',
-					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-option li.ekit-submit > :is(i, svg):hover' => 'color: {{VALUE}}; fill: {{VALUE}}',
+					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-option li.ekit-submit .ekit-search-button:hover > i' => 'color: {{VALUE}}',
+					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-option li.ekit-submit .ekit-search-button:hover > svg' => 'fill: {{VALUE}}',
 				],
 			]
 		);
@@ -1939,6 +2080,18 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 			]
 		);
 
+		$this->add_responsive_control(
+			'ekit_adv_search_result_wrapper_margin',
+			[
+				'label'      => esc_html__('Margin', 'elementskit'),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => ['px', '%', 'em', 'rem'],
+				'selectors'  => [
+					'{{WRAPPER}} .ekit-advanced-search-result .ekit-search-result-items' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}}',
+				],
+			]
+		);
+
 		$this->end_controls_section();
 
 		$this->start_controls_section(
@@ -1965,7 +2118,6 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 			[
 				'label' => esc_html__('Space', 'elementskit'),
 				'type' => Controls_Manager::DIMENSIONS,
-				'size_units' => ['px', '%', 'em', 'rem'],
 				'size_units' => ['px', '%', 'em', 'rem'],
 				'default' => [
 					'top' => '2.5',
@@ -2584,7 +2736,7 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 				'type' => Controls_Manager::COLOR,
 				'default' => '#ffff',
 				'selectors' => [
-					'{{WRAPPER}} {{WRAPPER}} .ekit-wid-con .ekit-advanced-search-wrapper .ekit-search-load-more-button .ekit-button' => 'color: {{VALUE}}',
+					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-search-load-more-button .ekit-button' => 'color: {{VALUE}}',
 				],
 			]
 		);
@@ -2625,7 +2777,7 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 				'type' => Controls_Manager::COLOR,
 				'default' => '#ffff',
 				'selectors' => [
-					'{{WRAPPER}} {{WRAPPER}} .ekit-wid-con .ekit-advanced-search-wrapper .ekit-search-load-more-button .ekit-button:hover' => 'color: {{VALUE}}',
+					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-search-load-more-button .ekit-button:hover' => 'color: {{VALUE}}',
 				],
 			]
 		);
@@ -2677,6 +2829,81 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 			]
 		);
 		$this->end_controls_section();
+
+		$this->start_controls_section(
+			'ekit_adv_section_no_result_found_style',
+			[
+				'label' => esc_html__('No result found', 'elementskit'),
+				'tab' => Controls_Manager::TAB_STYLE,
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name' => 'ekit_adv_no_result_found_typography',
+				'selector' => '{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-result .ekit-search-result-items.ekit-no-result',
+			]
+		);
+
+		$this->add_control(
+			'ekit_adv_no_result_found_text_color',
+			[
+				'label' => esc_html__('Text Color', 'elementskit'),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-result .ekit-search-result-items.ekit-no-result' => 'color: {{VALUE}}',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Background::get_type(),
+			[
+				'name' => 'ekit_adv_no_result_found_background',
+				'types' => ['classic', 'gradient'],
+				'selector' => '{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-result .ekit-search-result-items.ekit-no-result',
+			]
+		);
+
+		$this->add_responsive_control(
+			'ekit_adv_no_result_found_padding',
+			[
+				'label' => esc_html__('Padding', 'elementskit'),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => ['px', '%', 'em', 'rem'],
+				'selectors' => [
+					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-result .ekit-search-result-items.ekit-no-result' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}}',
+				],
+			]
+		);
+
+		$this->add_responsive_control(
+			'ekit_adv_no_result_found_alignment',
+			[
+				'label' => esc_html__('Alignment', 'elementskit'),
+				'type' => Controls_Manager::CHOOSE,
+				'options' => [
+					'left' => [
+						'title' => esc_html__('Left', 'elementskit'),
+						'icon' => 'eicon-text-align-left',
+					],
+					'center' => [
+						'title' => esc_html__('Center', 'elementskit'),
+						'icon' => 'eicon-text-align-center',
+					],
+					'right' => [
+						'title' => esc_html__('Right', 'elementskit'),
+						'icon' => 'eicon-text-align-right',
+					],
+				],
+				'selectors' => [
+					'{{WRAPPER}} .ekit-advanced-search-wrapper .ekit-advanced-search-result .ekit-search-result-items.ekit-no-result' => 'text-align: {{VALUE}}',
+				],
+			]
+		);
+
+		$this->end_controls_section();
 	}
 
 	protected function get_the_post_type()
@@ -2696,10 +2923,7 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 				continue;
 			}
 
-			$dropdown_options[$post_type->name] = sprintf(
-				esc_html__('%1$s', 'elementskit'),
-				$post_type->labels->name
-			);
+			$dropdown_options[$post_type->name] = $post_type->labels->name;
 		}
 		return $dropdown_options;
 	}
@@ -2730,21 +2954,19 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 				// Check if the taxonomy name contains "category"
 				if (preg_match('/category|categories|cat|cats/', $taxonomy)) {
 					$args = array(
+						'taxonomy'   => $taxonomy,
 						'orderby'    => 'name',
 						'order'      => 'ASC',
 						'hide_empty' => true,
 					);
 
 					// Get categories for the current taxonomy and post type
-					$categories = array_merge($categories, get_terms($taxonomy, $args));
+					$categories = array_merge($categories, get_terms($args));
 				}
 			}
 			// Store category names in the $category_names array
 			foreach ($categories as $category) {
-				$category_options[$category->term_id] = sprintf(
-					esc_html__('%1$s', 'elementskit'),
-					$category->name
-				);
+				$category_options[$category->term_id] = $category->name;
 			}
 		}
 		return $category_options;
@@ -2766,7 +2988,6 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 			'postsPerPage' => !empty($ekit_adv_search_per_page) ? (int) $ekit_adv_search_per_page : 5,
 			'order' => 'DESC',
 			'keywordOff' => !empty($ekit_adv_show_popular_keyword) ?? true,
-			'enableBlur' => !empty($ekit_adv_search_body_enable_blur) ?? true,
 			'keywordsRank' => !empty($ekit_adv_search_most_popular_keyword_rank) ? (int) $ekit_adv_search_most_popular_keyword_rank : 5,
 			'keywordsLimit' => !empty($ekit_adv_search_popular_keywords_display) ? (int) $ekit_adv_search_popular_keywords_display : 5,
 			'searchIcon' => Icons_Manager::try_get_icon_html($ekit_adv_search_icon, ['aria-hidden' => 'true']),
@@ -2776,7 +2997,9 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 			'excludeCategory' => isset($ekit_adv_exclude_category) ? $ekit_adv_exclude_category : [],
 			'includeCategory' => isset($ekit_adv_include_category) ? $ekit_adv_include_category : [],
 			'resultLabel' => !empty($ekit_adv_search_total_label) ? $ekit_adv_search_total_label : esc_html__('Results found for:', 'elementskit'),
+			'noResultFound' => !empty($ekit_search_no_result_found_text) ? $ekit_search_no_result_found_text : esc_html__('No result found.', 'elementskit'),
 		];
+
 
 		/*
 		*
@@ -2900,10 +3123,10 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 	{
 		extract($settings);
 	?>
-		<div class="select" id="select" tabindex="0">
-			<div class="select-trigger" tabindex="0">
+		<div class="select">
+			<div class="select-trigger" tabindex="0" aria-label="<?php echo esc_attr__('Filter by category', 'elementskit'); ?>">
 				<span class="selected-text"><?php echo esc_html($ekit_adv_section_search_categories); ?></span>
-				<span class="arrow">
+				<span class="arrow" aria-hidden="true">
 					<svg xmlns="http://www.w3.org/2000/svg" width="12" height="7" viewBox="0 0 12 7" fill="none">
 						<path d="M1 1L6 6L11 1" stroke="#17171E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
 					</svg>
@@ -2919,14 +3142,14 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 							<div class="select-option" data-value="0"> <?php echo esc_html($ekit_adv_section_search_categories); ?> </div>
 						<?php endif; ?>
 						<div class="select-option" data-value="<?php echo esc_attr($cat->term_id); ?>">
-							<?php echo esc_html__($cat->name, 'elementskit'); ?>
+							<?php echo esc_html($cat->name); ?>
 						</div>
 					<?php endforeach; ?>
 				<?php endif; ?>
 			</div>
 
 			<!-- Hidden input to capture selected value -->
-			<input type="hidden" name="post_category" id="selected-value" value="0">
+			<input type="hidden" name="post_category" value="0">
 		</div>
 	<?php
 	}
@@ -2935,10 +3158,10 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 	{
 		extract($settings);
 	?>
-		<div class="select" id="select" tabindex="0">
-			<div class="select-trigger" tabindex="0">
+		<div class="select">
+			<div class="select-trigger" tabindex="0" aria-label="<?php echo esc_attr__('Filter by tag', 'elementskit'); ?>">
 				<span class="selected-text"><?php echo esc_html($ekit_adv_section_search_tags); ?></span>
-				<span class="arrow">
+				<span class="arrow" aria-hidden="true">
 					<svg xmlns="http://www.w3.org/2000/svg" width="12" height="7" viewBox="0 0 12 7" fill="none">
 						<path d="M1 1L6 6L11 1" stroke="#17171E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
 					</svg>
@@ -2953,14 +3176,14 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 							<div class="select-option" data-value="0"> <?php echo esc_html($ekit_adv_section_search_tags); ?> </div>
 						<?php endif; ?>
 						<div class="select-option" data-value="<?php echo esc_attr($tag->term_id); ?>">
-							<?php echo esc_html__($tag->name, 'elementskit'); ?>
+							<?php echo esc_html($tag->name); ?>
 						</div>
 					<?php endforeach; ?>
 				<?php endif; ?>
 			</div>
 
 			<!-- Hidden input to capture selected value -->
-			<input type="hidden" name="post_tag" id="selected-value" value="0">
+			<input type="hidden" name="post_tag" value="0">
 		</div>
 	<?php
 	}
@@ -2978,14 +3201,14 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 						</span>
 					<?php endif; ?>
 
-					<input class="search-field" type="text" name="s" id="search" value="<?php the_search_query(); ?>" placeholder="<?php echo esc_attr__($ekit_adv_section_search_placeholder, 'elementskit'); ?>">
+					<input class="search-field" type="text" name="s" id="ekit-adv-search-field-<?php echo esc_attr($this->get_id()); ?>" value="<?php the_search_query(); ?>" placeholder="<?php echo esc_attr__($ekit_adv_section_search_placeholder, 'elementskit'); ?>" aria-label="<?php echo esc_attr__($ekit_adv_section_search_placeholder, 'elementskit'); ?>">
 					<div class="ekit-adv-search-loader-closer">
-						<span class="ekit-adv-search-loader"></span>
-						<span class="ekit-adv-search-closer">
-							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+						<span class="ekit-adv-search-loader" aria-hidden="true"></span>
+						<button type="button" class="ekit-adv-search-closer" aria-label="<?php echo esc_attr__('Clear search', 'elementskit'); ?>">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16" aria-hidden="true">
 								<path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
 							</svg>
-						</span>
+						</button>
 					</div>
 				</li>
 				<?php if ($ekit_adv_show_category === 'yes') : ?>
@@ -3041,12 +3264,12 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 				}
 				$keyword        = ucfirst(str_replace('_', ' ', $key));
 				$data_id        = uniqid();
-				$keyword_html   = sprintf('<a href="javascript:void(0)" class="ekit-keyword" id="%2$s" data-id="%2$s" data-keyword="%1$s">%1$s</a>', $keyword, $data_id);
+				$keyword_html   = sprintf('<a href="javascript:void(0)" class="ekit-keyword" id="%2$s" data-id="%2$s" data-keyword="%1$s">%1$s</a>', esc_attr($keyword), esc_attr($data_id));
 				$popular_keywords_html .= $keyword_html;
 			}
 			if (! empty($popular_keywords_html)) : ?>
 				<span class="ekit-keyword-title"><?php echo esc_html($ekit_adv_show_popular_keyword_title); ?></span>
-				<div class="ekit-popular-keyword-items ekit-keyword-list"> <?php echo $popular_keywords_html; ?> </div>
+				<div class="ekit-popular-keyword-items ekit-keyword-list"> <?php echo $popular_keywords_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Built from esc_attr() escaped parts above; href="javascript:void(0)" must survive kses. ?> </div>
 		<?php endif;
 		}
 	}
@@ -3056,7 +3279,7 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 		?>
 		<div class="ekit-search-load-more-button">
 			<?php if ($ekit_serach_load_more === 'yes'):; ?>
-				<a class="ekit-button" href="javascript:void(0)"><?php echo esc_html__($ekit_search_load_more_button, 'elementskit'); ?></a>
+				<a class="ekit-button" href="javascript:void(0)"><?php echo esc_html($ekit_search_load_more_button); ?></a>
 			<?php endif; ?>
 		</div>
 		<div class="ekit-advanced-search-owner">
@@ -3065,7 +3288,7 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 					$this->add_link_attributes('uri', $ekit_search_in_copyright_url);
 				}
 			?>
-				<a <?php echo $this->get_render_attribute_string('uri'); ?>>
+				<a <?php echo $this->get_render_attribute_string('uri'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Elementor escapes render attribute strings. ?>>
 					<span class="ekit-search-by"><?php echo esc_html__('Search by', 'elementskit'); ?> </span>
 					<span class="ekit-search-in"><?php echo esc_html(ucfirst($ekit_search_in_copyright_name)); ?></span>
 				</a>
@@ -3089,7 +3312,7 @@ class ElementsKit_Widget_Advanced_Search extends Widget_Base
 					<?php $this->get_popular_keyword($settings); ?>
 				</div>
 			<?php endif; ?>
-			<div class="ekit-search-result-items"> </div>
+			<div class="ekit-search-result-items" aria-live="polite"> </div>
 			<?php if ($settings['ekit_serach_footer'] === 'yes'):; ?>
 				<div class="ekit-search-result-footer">
 					<?php $this->get_result_footer($settings); ?>

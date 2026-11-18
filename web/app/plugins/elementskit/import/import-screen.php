@@ -70,7 +70,7 @@ class Import_Screen {
 					$redir = add_query_arg($args, $redir);
 					$redir = remove_query_arg(['handler', 'nonce', 'media_id', 'post_status'], $redir);
 
-					wp_redirect($redir);
+					wp_safe_redirect($redir);
 
 					exit();
 				}

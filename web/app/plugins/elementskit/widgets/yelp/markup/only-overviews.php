@@ -30,12 +30,12 @@ $page_thumbnail = !empty($page_Info['picture']) ? $page_Info['picture'] : $handl
     </h5>
 
     <span class="ekit-review-card--average">
-        <?php echo empty($page_Info['rating']) ? '' : $page_Info['rating'] ?>
+        <?php echo empty($page_Info['rating']) ? '' : esc_html( $page_Info['rating'] ) ?>
     </span>
 
     <!-- Start Rating stars -->
     <div class="ekit-review-card--stars">
-        <?php echo $this->get_stars_rating($rating); ?>
+        <?php echo $this->get_stars_rating($rating); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Returns static star markup with no user data. ?>
     </div>
     <!-- End Rating stars -->
 

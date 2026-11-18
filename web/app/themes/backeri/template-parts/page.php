@@ -28,7 +28,7 @@ if(empty($background_image)) {
 				<div class="col-md-12">
 					<div class="page-header-box">
 						<?php the_title( '<h1 class="text-anime">', '</h1>' ); ?>
-						<?php do_action('backeri_action_get_breadcrumb');		?>
+						<?php if ( get_theme_mod( 'page_show_breadcrumb', 1 ) ) { do_action( 'backeri_action_get_breadcrumb' ); }		?>
 					</div>
 				</div>
 			</div>

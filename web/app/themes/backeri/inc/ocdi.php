@@ -24,6 +24,16 @@ function backeri_ocdi_before_content_import( $selected_import ) {
 	update_option( 'elementor_element_cache_ttl', 'disable' );
 	update_option( 'elementor_local_google_fonts', '0' );
 	update_option( 'elementor_unfiltered_files_upload', '1' );
+
+	update_option( 'elementor_experiment-e_element_cache', 'inactive' );
+	update_option( 'elementor_experiment-e_atomic_elements', 'inactive' );
+	update_option( 'elementor_one_welcome_screen_completed', '1' );
+	update_option( 'elementor_experiment-e_opt_in_v4', 'inactive' );
+	update_option( 'elementor_onboarded', '1' );
+	update_option( 'elementor_one_dismiss_elementor_one_subscription_alert', '1' );
+	update_option( 'elementor_tracker_notice', '1' );
+	update_option( 'elementor_angie_guide_auto_shown', 'yes' );
+	update_option( 'elementor_one_dismiss_connect_alert', '1' );
 }
 add_action( 'ocdi/before_content_import', 'backeri_ocdi_before_content_import' );
 
@@ -89,6 +99,76 @@ function backeri_set_latest_woo_pages() {
     }
 }
 
+
+/**
+ * Returns the demo site URL for the demo that was imported (stored in 'backeri_active_demo').
+ */
+function backeri_get_active_demo_url() {
+	return 'https://demo.awaikenthemes.com/backeri';
+}
+
+/**
+ * Replaces our demo URL with this site's URL in Elementor data and custom menu links.
+ *
+ * @param string $old_url Demo URL to replace.
+ */
+function backeri_replace_demo_urls( $old_url ) {
+	global $wpdb;
+
+	// Get the current site's home URL without trailing slash
+	$new_url = untrailingslashit( home_url() );
+	$old_url = untrailingslashit( $old_url );
+
+	// Replace in _elementor_data (postmeta)
+	$escaped_from    = str_replace( '/', '\\/', $old_url );
+	$escaped_to      = str_replace( '/', '\\/', $new_url );
+	$meta_value_like = '[%'; // meta_value LIKE '[%' are json formatted
+
+	$wpdb->query(
+		$wpdb->prepare(
+			"UPDATE {$wpdb->postmeta} " .
+			'SET `meta_value` = REPLACE(`meta_value`, %s, %s) ' .
+			"WHERE `meta_key` = '_elementor_data' AND `meta_value` LIKE %s;",
+			$escaped_from,
+			$escaped_to,
+			$meta_value_like
+		)
+	);
+
+	// Replace in custom menu item links (with and without trailing slash)
+	$menu_items = get_posts( array(
+		'post_type'      => 'nav_menu_item',
+		'posts_per_page' => -1,
+		'post_status'    => 'any',
+		'fields'         => 'ids',
+	) );
+
+	if ( ! empty( $menu_items ) && is_array( $menu_items ) ) {
+		foreach ( $menu_items as $menu_item_id ) {
+
+			$url = get_post_meta( $menu_item_id, '_menu_item_url', true );
+
+			if ( empty( $url ) || ! is_string( $url ) ) {
+				continue;
+			}
+
+			$new_link = str_replace(
+				array( trailingslashit( $old_url ), $old_url ),
+				array( trailingslashit( $new_url ), $new_url ),
+				$url
+			);
+
+			if ( $new_link !== $url ) {
+				update_post_meta( $menu_item_id, '_menu_item_url', esc_url_raw( $new_link ) );
+			}
+		}
+	}
+
+	// Regenerate Elementor CSS files
+	if ( did_action( 'elementor/loaded' ) ) {
+		\Elementor\Plugin::instance()->files_manager->clear_cache();
+	}
+}
 
 function backeri_ocdi_after_import_setup( $selected_import ) {
 	
@@ -165,66 +245,7 @@ function backeri_ocdi_after_import_setup( $selected_import ) {
 	// Demo URL 
     $old_url = 'https://demo.awaikenthemes.com/backeri';
     
-    // Get the current site's home URL without trailing slash
-    $new_url = untrailingslashit( home_url() );
-	
-	global $wpdb;
-	// Replace in _elementor_data (postmeta)
-	$escaped_from = str_replace( '/', '\\/', $old_url );
-	$escaped_to = str_replace( '/', '\\/', $new_url );
-	$meta_value_like = '[%'; // meta_value LIKE '[%' are json formatted
-
-	$rows_affected = $wpdb->query(
-		$wpdb->prepare(
-			"UPDATE {$wpdb->postmeta} " .
-			'SET `meta_value` = REPLACE(`meta_value`, %s, %s) ' .
-			"WHERE `meta_key` = '_elementor_data' AND `meta_value` LIKE %s;",
-			$escaped_from,
-			$escaped_to,
-			$meta_value_like
-		)
-	);
-
-    // Replace in custom menu item links (with and without trailing slash)
-    $menu_items = get_posts( array(
-		'post_type'      => 'nav_menu_item',
-		'posts_per_page' => -1,
-		'post_status'    => 'any',
-		'fields'         => 'ids',
-	) );
-
-	if ( ! empty( $menu_items ) && is_array( $menu_items ) ) {
-		foreach ( $menu_items as $menu_item_id ) {
-
-			// Get the current custom URL from menu item
-			$url = get_post_meta( $menu_item_id, '_menu_item_url', true );
-
-			// Skip if no URL or it's not a valid string
-			if ( empty( $url ) || ! is_string( $url ) ) {
-				continue;
-			}
-
-			// Replace old URL with new one (handling both with and without trailing slash)
-			$new_link = str_replace(
-				array( untrailingslashit( $old_url ), trailingslashit( $old_url ) ),
-				array( untrailingslashit( $new_url ), trailingslashit( $new_url ) ),
-				$url
-			);
-
-			// Only update if something changed
-			if ( $new_link !== $url ) {
-				update_post_meta( $menu_item_id, '_menu_item_url', esc_url_raw( $new_link ) );
-			}
-		}
-	}
-	
+	backeri_replace_demo_urls( $old_url );
 	backeri_set_latest_woo_pages();
-	
-	// Check if Elementor is active
-    if ( did_action( 'elementor/loaded' ) ) {
-        // Regenerate CSS files
-        \Elementor\Plugin::instance()->files_manager->clear_cache();
-    }
-
 }
 add_action( 'ocdi/after_import', 'backeri_ocdi_after_import_setup' );

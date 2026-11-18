@@ -2,6 +2,7 @@
 namespace Elementor;
 
 use Elementor\Controls_Manager;
+use ElementsKit_Lite\Utils;
 
 defined('ABSPATH') || die();
 
@@ -66,7 +67,7 @@ class ElementsKit_Mouse_Cursor {
 		$element->start_controls_section(
 			'ekit_cursor_section',
 			[
-				'label' => esc_html__( 'Elementskit Mouse Cursor', 'elementskit' ),
+				'label' => ( method_exists( Utils::class, 'get_promo_icon' ) ? Utils::get_promo_icon() : 'ElementsKit' ) . esc_html__( 'Mouse Cursor', 'elementskit' ),
 				'tab' => Controls_Manager::TAB_ADVANCED,
 			]
 		);
@@ -469,5 +470,67 @@ class ElementsKit_Mouse_Cursor {
 
 	public function before_render($element) {
 		$settings = $element->get_settings_for_display();
+
+		if ( empty( $settings['ekit_cursor_show'] ) || 'yes' !== $settings['ekit_cursor_show'] ) {
+			return;
+		}
+
+		if ( empty( $settings['ekit_cursor_type'] ) || 'icon' !== $settings['ekit_cursor_type'] ) {
+			return;
+		}
+
+		$icon = isset( $settings['ekit_cursor_icons'] ) ? $settings['ekit_cursor_icons'] : [];
+
+		// Uploaded SVG files are already printed as an <img> by the cursor script.
+		if ( empty( $icon['library'] ) || empty( $icon['value'] ) || 'svg' === $icon['library'] ) {
+			return;
+		}
+
+		$icon_html = self::get_cursor_icon_html( $icon );
+
+		if ( '' === $icon_html ) {
+			return;
+		}
+
+		$element->add_render_attribute( '_wrapper', 'data-ekit-cursor-icon', $icon_html );
+	}
+
+	/**
+	 * Render the cursor icon on the server side.
+	 *
+	 * The cursor markup is built by JavaScript on mouseover, so it never passes through the
+	 * icon renderers. Both Elementor's `e_font_icon_svg` experiment and the ElementsKit inline
+	 * SVG option stop the icon fonts from being enqueued on the frontend, which leaves the <i>
+	 * tag the script builds on its own empty. Rendering the icon here keeps those features
+	 * working, and the script falls back to its own <i> tag whenever they are turned off.
+	 *
+	 * @param array $icon Icons control value: [ 'value' => string, 'library' => string ].
+	 *
+	 * @return string
+	 */
+	private static function get_cursor_icon_html( $icon ) {
+		$attributes = [ 'class' => [ 'ekit-cursor-icon' ] ];
+		$icon_pack  = '\ElementsKit_Lite\Modules\ElementsKit_Icon_Pack\Init';
+		$icon_html  = '';
+
+		// Handles the ElementsKit icon pack, and hands every other library to Elementor.
+		if ( class_exists( $icon_pack ) && method_exists( $icon_pack, 'get_icon_html' ) ) {
+			$icon_html = call_user_func( [ $icon_pack, 'get_icon_html' ], $icon, $attributes );
+		}
+
+		if ( empty( $icon_html ) && method_exists( Icons_Manager::class, 'try_get_icon_html' ) ) {
+			$icon_html = Icons_Manager::try_get_icon_html( $icon, $attributes );
+		}
+
+		if ( empty( $icon_html ) || ! is_string( $icon_html ) ) {
+			return '';
+		}
+
+		// An inline SVG has no font-size, so give it the class that carries the width/height.
+		if ( 0 === strncasecmp( ltrim( $icon_html ), '<svg', 4 ) ) {
+			$icon_html = preg_replace( '/class="/', 'class="ekit-cursor-svg ', $icon_html, 1 );
+		}
+
+		return $icon_html;
 	}
 }

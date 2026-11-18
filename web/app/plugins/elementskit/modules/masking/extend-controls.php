@@ -2,6 +2,7 @@
 namespace Elementor;
 
 use \ElementsKit_Lite\Modules\Controls\Controls_Manager as ElementsKit_Controls_Manager;
+use ElementsKit_Lite\Utils;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -50,12 +51,14 @@ class ElementsKit_Extend_Masking {
 			'common' => '{{WRAPPER}}:not(.elementor-widget-video, .elementor-widget-elementskit-image-hover-effect) img',
 			'video' => '{{WRAPPER}}.elementor-widget-video',
 			'imagehover' => '{{WRAPPER}}.elementor-widget-elementskit-image-hover-effect',
+			'image' => '{{WRAPPER}}.elementor-widget-image', // for scroll reveal modules compatibility
 		];
 
 		return [
 			$selectors['common'] => $rules,
 			$selectors['video'] => $rules,
 			$selectors['imagehover'] => $rules,
+			$selectors['image'] => $rules, // for scroll reveal modules compatibility
 		];
 	}
 
@@ -69,7 +72,7 @@ class ElementsKit_Extend_Masking {
 		$element->start_controls_section(
 			'ekit_masking_section',
 			[
-				'label'	=> esc_html__('ElementsKit Masking', 'elementskit'),
+				'label'	=> ( method_exists( Utils::class, 'get_promo_icon' ) ? Utils::get_promo_icon() : 'ElementsKit' ) . esc_html__('Masking', 'elementskit'),
 				'tab'	=> Controls_Manager::TAB_CONTENT,
 			]
 		);

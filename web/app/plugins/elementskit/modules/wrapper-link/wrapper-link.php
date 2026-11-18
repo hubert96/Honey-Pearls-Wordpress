@@ -2,6 +2,7 @@
 namespace Elementor;
 
 use Elementor\Controls_Manager;
+use ElementsKit_Lite\Utils;
 
 defined('ABSPATH') || die();
 
@@ -39,7 +40,7 @@ class ElementsKit_Wrapper_Link {
 		$element->start_controls_section(
 			'elementskit_wrapper_link_section',
 			[
-				'label' => __( 'Elementskit Wrapper Link', 'elementskit' ),
+				'label' => ( method_exists( Utils::class, 'get_promo_icon' ) ? Utils::get_promo_icon() : 'ElementsKit' ) . esc_html__( 'Wrapper Link', 'elementskit' ),
 				'tab' => Controls_Manager::TAB_ADVANCED,
 			]
 		);
@@ -60,7 +61,7 @@ class ElementsKit_Wrapper_Link {
 		$element->add_control(
 			'elementskit_wrapper_link',
 			[
-				'label' => __( 'Link', 'elementskit' ),
+				'label' => esc_html__( 'Link', 'elementskit' ),
 				'type'  => Controls_Manager::URL,
 				'dynamic' => [
 					'active' => true,

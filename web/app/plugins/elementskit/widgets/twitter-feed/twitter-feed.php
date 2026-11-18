@@ -42,7 +42,11 @@ class ElementsKit_Widget_Twitter_Feed extends Widget_Base {
 	public function has_widget_inner_wrapper(): bool {
 		return ! Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
 	}
-	
+
+	public function get_style_depends() {
+		return ['ekit-pro-twitter-feed'];
+	}
+
 	protected function register_controls() {
 
         $setting = new \Ekit_twitter_settings();
@@ -1738,7 +1742,7 @@ class ElementsKit_Widget_Twitter_Feed extends Widget_Base {
 															<!--start date -->
 															<?php if($ekit_twitter_feed_show_post_date == 'yes'): ?>
 															<span class="ekit-twitter-feed-item-user-date">
-																<span><?php echo esc_html(date(get_option('date_format'), strtotime($twitter['created_at']) ));?></span>
+																<span><?php echo esc_html(gmdate(get_option('date_format'), strtotime($twitter['created_at']) ));?></span>
 															</span>
 															<?php endif;?>
 															<!--end date -->
@@ -1832,7 +1836,7 @@ class ElementsKit_Widget_Twitter_Feed extends Widget_Base {
 															'&amp;counturl=' . urlencode($tweet_url) .
 															'';
 															?>
-															<a href="<?php echo 'https://twitter.com/share' . $twitter_params; ?>" title="Share" target="_blank" class="ekit-twitter-feed-share__with-tw">
+															<a href="<?php echo esc_url( 'https://twitter.com/share' . $twitter_params ); ?>" title="Share" target="_blank" class="ekit-twitter-feed-share__with-tw">
 																<i class="icon icon-twitter"></i>
 																<span><?php echo esc_html__( 'Share on Twitter', 'elementskit' ) ?></span>
 															</a>

@@ -43,6 +43,10 @@ class ElementsKit_Widget_Woo_Category_List extends Widget_Base {
 		return ! Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
 	}
 
+	public function get_style_depends() {
+		return ['ekit-pro-woo-category-list'];
+	}
+
     protected function register_controls() {
 		
 		$this->start_controls_section(

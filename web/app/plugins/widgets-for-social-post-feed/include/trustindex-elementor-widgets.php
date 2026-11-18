@@ -18,7 +18,7 @@ public function get_categories() {
 return ['trustindex'];
 }
 protected function render() {
-$pluginManagerInstance = new TRUSTINDEX_Feed_Facebook("facebook", __FILE__, "1.7.8", "Widgets for Social Post Feed", "Facebook");
+$pluginManagerInstance = new TRUSTINDEX_Feed_Facebook("facebook", __FILE__, "1.8.3", "Widgets for Social Post Feed", "Facebook");
 echo do_shortcode('['.$pluginManagerInstance->getShortcodeName().']');
 }
 }

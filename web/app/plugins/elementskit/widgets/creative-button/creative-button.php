@@ -36,6 +36,14 @@ class ElementsKit_Widget_Creative_Button extends Widget_Base {
         return 'https://wpmet.com/doc/creative-button/';
     }
 
+	public function get_style_depends() {
+		return ['ekit-pro-creative-button'];
+	}
+
+	public function get_script_depends() {
+		return ['ekit-pro-creative-button'];
+	}
+
     protected function is_dynamic_content(): bool {
         return false;
     }
@@ -316,9 +324,9 @@ class ElementsKit_Widget_Creative_Button extends Widget_Base {
 					'{{WRAPPER}} .ekit_creative_button:not(.ekit_tamaya) > .ekit_creative_button_text' => 'color: {{VALUE}};',
 					'{{WRAPPER}} .ekit_creative_button.ekit_tamaya::before' => 'color: {{VALUE}};',
 					'{{WRAPPER}} .ekit_creative_button.ekit_tamaya::after' => 'color: {{VALUE}};',
-					'{{WRAPPER}} .ekit_creative_button > i' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .ekit_creative_button i' => 'color: {{VALUE}};',
 					'{{WRAPPER}} .ekit_slide_in_line::after' => 'background-color: {{VALUE}};',
-					'{{WRAPPER}} .ekit_creative_button svg path' => 'stroke: {{VALUE}}; fill: {{VALUE}};',
+					'{{WRAPPER}} .ekit_creative_button svg' => 'fill: {{VALUE}};',
 				],
 			]
 		);
@@ -353,8 +361,8 @@ class ElementsKit_Widget_Creative_Button extends Widget_Base {
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .ekit_creative_button:hover > .ekit_creative_button_text' => 'color: {{VALUE}};',
-					'{{WRAPPER}} .ekit_creative_button:hover > i' => 'color: {{VALUE}};',
-					'{{WRAPPER}} .ekit_creative_button:hover svg path' => 'stroke: {{VALUE}}; fill: {{VALUE}};',
+					'{{WRAPPER}} .ekit_creative_button:hover i' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .ekit_creative_button:hover svg' => 'fill: {{VALUE}};',
 				],
 			]
 		);
@@ -367,7 +375,7 @@ class ElementsKit_Widget_Creative_Button extends Widget_Base {
 					'{{WRAPPER}} .ekit_creative_button:hover' => 'background-color: {{VALUE}}',
 				],
 				'condition' => [
-					'ekit_creative_hover_btn_style!' => ['two_dot_ripple', 'left_to_right_with_hypen', 'border_left_to_right', 'center_ripple_effect', 'ripple_position_aware', 'doors_open', 'skew_open', 'two_shade', 'outer_dot_click_splash_effect']
+					'ekit_creative_hover_btn_style!' => ['two_dot_ripple', 'left_to_right_with_hypen', 'left_to_right', 'left_to_right_with_out_hypen', 'border_left_to_right', 'center_ripple_effect', 'ripple_position_aware', 'doors_open', 'skew_open', 'two_shade', 'outer_dot_click_splash_effect']
 				]
 			]
 		);
@@ -380,9 +388,9 @@ class ElementsKit_Widget_Creative_Button extends Widget_Base {
 				'selectors' => [
 					'{{WRAPPER}} .ekit_creative_button.ekit_slide_bg:before' => 'background-color: {{VALUE}}',
 				],
-				// 'condition' => [
-				// 	'ekit_creative_hover_btn_style' => 'left_to_right_with_hypen'
-				// ]
+				'condition' => [
+					'ekit_creative_hover_btn_style' => ['left_to_right_with_hypen', 'left_to_right', 'left_to_right_with_out_hypen']
+				]
 			]
 		);
 
@@ -592,7 +600,7 @@ class ElementsKit_Widget_Creative_Button extends Widget_Base {
 					),
 				),
 				'selectors'  => array(
-					'{{WRAPPER}} .ekit_creative_button > :is(i, svg)' => 'font-size: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .ekit_creative_button .ekit_creative_button_icon_wrapper' => 'font-size: {{SIZE}}{{UNIT}};',
 				),
 			)
 		);
@@ -611,8 +619,7 @@ class ElementsKit_Widget_Creative_Button extends Widget_Base {
 					),
 				),
 				'selectors'  => array(
-					'{{WRAPPER}} .ekit_creative_button .ekit_creative_button_icon_before' => 'margin-right: {{SIZE}}{{UNIT}};',
-					'{{WRAPPER}} .ekit_creative_button .ekit_creative_button_icon_after' => 'margin-left: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .ekit_creative_button' => 'gap: {{SIZE}}{{UNIT}};',
 				),
 			)
 		);
@@ -624,7 +631,7 @@ class ElementsKit_Widget_Creative_Button extends Widget_Base {
 				'type' => Controls_Manager::DIMENSIONS,
 				'size_units' => [ 'px', '%', 'em' ],
 				'selectors' => [
-					'{{WRAPPER}} .ekit_creative_button > i' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					'{{WRAPPER}} .ekit_creative_button .ekit_creative_button_icon_wrapper' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				],
 			]
 		);
@@ -632,11 +639,11 @@ class ElementsKit_Widget_Creative_Button extends Widget_Base {
 		$this->add_responsive_control(
 			'ekit_btn_normal_icon_bg_color',
 			[
-				'label' => esc_html__( 'Iocn Bg Normal', 'elementskit' ),
+				'label' => esc_html__( 'Icon Bg Normal', 'elementskit' ),
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} .ekit_group_btn:not(.ekit_skew_bg) > i' => 'background-color: {{VALUE}}',
-					'{{WRAPPER}} .ekit_group_btn.ekit_skew_bg > i::after' => 'background-color: {{VALUE}}',
+					'{{WRAPPER}} .ekit_group_btn:not(.ekit_skew_bg) .ekit_creative_button_icon_wrapper' => 'background-color: {{VALUE}}',
+					'{{WRAPPER}} .ekit_group_btn.ekit_skew_bg .ekit_creative_button_icon_wrapper::after' => 'background-color: {{VALUE}}',
 				],
 				'condition' => [
 					'ekit_creative_hover_btn_style' => ['fade_with_icon', 'fade_with_icon_skew'],
@@ -646,11 +653,11 @@ class ElementsKit_Widget_Creative_Button extends Widget_Base {
 		$this->add_responsive_control(
 			'ekit_btn_normal_icon_bg_hover_color',
 			[
-				'label' => esc_html__( 'Iocn Bg Hover', 'elementskit' ),
+				'label' => esc_html__( 'Icon Bg Hover', 'elementskit' ),
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} .ekit_group_btn:not(.ekit_skew_bg):hover > i' => 'background-color: {{VALUE}}',
-					'{{WRAPPER}} .ekit_group_btn.ekit_skew_bg:hover > i::after' => 'background-color: {{VALUE}}',
+					'{{WRAPPER}} .ekit_group_btn:not(.ekit_skew_bg):hover .ekit_creative_button_icon_wrapper' => 'background-color: {{VALUE}}',
+					'{{WRAPPER}} .ekit_group_btn.ekit_skew_bg:hover .ekit_creative_button_icon_wrapper::after' => 'background-color: {{VALUE}}',
 				],
 				'condition' => [
 					'ekit_creative_hover_btn_style' => ['fade_with_icon', 'fade_with_icon_skew'],
@@ -769,6 +776,7 @@ class ElementsKit_Widget_Creative_Button extends Widget_Base {
 		$this->add_render_attribute( 'button', [
 			'class' => $btn_class,
 			'id' => ($settings['ekit_btn_id'] != '') ? esc_attr($settings['ekit_btn_id']) : '',
+			'style' => 'flex-direction: ' . ( $icon_align == 'right' ? 'row-reverse' : 'row' ) . ';',
 		] );
 
 		?>
@@ -793,44 +801,26 @@ class ElementsKit_Widget_Creative_Button extends Widget_Base {
 				case 'two_shade':
 				case 'fade_only':
 				?>
-					<a <?php echo $this->get_render_attribute_string( 'button' ); ?> data-text="<?php echo esc_html( $data_text ); ?>">
-
-						<?php if($icon_align == 'left'): ?>
-							<?php
+					<a <?php echo $this->get_render_attribute_string( 'button' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Elementor escapes render attribute strings. ?> data-text="<?php echo esc_html( $data_text ); ?>">
+						<span class="ekit_creative_button_icon_wrapper">
+						<?php
+							// new icon
+							$migrated = isset( $settings['__fa4_migrated']['ekit_btn_icons'] );
+							// Check if its a new widget without previously selected icon using the old Icon control
+							$is_new = empty( $settings['ekit_btn_icon'] );
+							if ( $is_new || $migrated ) {
 								// new icon
-								$migrated = isset( $settings['__fa4_migrated']['ekit_btn_icons'] );
-								// Check if its a new widget without previously selected icon using the old Icon control
-								$is_new = empty( $settings['ekit_btn_icon'] );
-								if ( $is_new || $migrated ) {
-									// new icon
-									Icons_Manager::render_icon( $settings['ekit_btn_icons'], [ 'aria-hidden' => 'true', 'class'    => 'ekit_creative_button_icon_before' ] );
-								} else {
-									?>
-									<i class="<?php echo esc_attr($settings['ekit_btn_icon']); ?> ekit_creative_button_icon_before" aria-hidden="true"></i>
-									<?php
-								}
-							?>
-						<?php endif; ?>
+								Icons_Manager::render_icon( $settings['ekit_btn_icons'], [ 'aria-hidden' => 'true', 'class'    => 'ekit_creative_button_icon_before' ] );
+							} else {
+								?>
+								<i class="<?php echo esc_attr($settings['ekit_btn_icon']); ?> ekit_creative_button_icon_before" aria-hidden="true"></i>
+								<?php
+							}
+						?>
+						</span>
 
 						<span class="ekit_creative_button_text"><?php echo esc_html( $btn_text ); ?></span>
 
-						<?php if($icon_align == 'right'): ?>
-							<?php
-								// new icon
-								$migrated = isset( $settings['__fa4_migrated']['ekit_btn_icons'] );
-								// Check if its a new widget without previously selected icon using the old Icon control
-								$is_new = empty( $settings['ekit_btn_icon'] );
-								if ( $is_new || $migrated ) {
-									// new icon
-									Icons_Manager::render_icon( $settings['ekit_btn_icons'], [ 'aria-hidden' => 'true', 'class'    => 'ekit_creative_button_icon_after' ] );
-								} else {
-									?>
-									<i class="<?php echo esc_attr($settings['ekit_btn_icon']); ?> ekit_creative_button_icon_after" aria-hidden="true"></i>
-									<?php
-								}
-							?>
-
-						<?php endif; ?>
 						<?php echo wp_kses($position_aware_bg . $outline_extra_border, \ElementsKit_Lite\Utils::get_kses_array()); ?>
 					</a>
 				<?php break;
@@ -845,7 +835,7 @@ class ElementsKit_Widget_Creative_Button extends Widget_Base {
                             </filter>
                         </defs>
                     </svg>
-                    <a <?php echo $this->get_render_attribute_string( 'button' ); ?> style="filter: url('#ekit-filter-goo-<?php echo esc_attr($this->get_id());?>')">
+                    <a <?php echo $this->get_render_attribute_string( 'button' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Elementor escapes render attribute strings. ?> style="filter: url('#ekit-filter-goo-<?php echo esc_attr($this->get_id());?>')">
                         <span class="ekit_creative_button_text"><?php echo esc_html( $btn_text ); ?></span>
                         <span class="ekit_button__bg"></span>
 					</a>
@@ -854,19 +844,19 @@ class ElementsKit_Widget_Creative_Button extends Widget_Base {
 					<svg xmlns="https://www.w3.org/2000/svg" version="1.1" class="ekit_svg-filters">
                         <defs>
                             <filter class="ekit-filter-ripple" id="ekit-filter-ripple-<?php echo esc_attr($this->get_id());?>" data-id="ekit-filter-ripple-<?php echo esc_attr($this->get_id());?>">
-                                <feImage xlink:href="<?php echo \ElementsKit::widget_url() . 'init/assets/img/ripple.png'; ?>" x="30" y="20" width="0" height="0" result="ripple"></feImage>
+                                <feImage xlink:href="<?php echo esc_url( \ElementsKit::widget_url() . 'init/assets/img/ripple.png' ); ?>" x="30" y="20" width="0" height="0" result="ripple"></feImage>
                                 <feDisplacementMap xChannelSelector="R" yChannelSelector="G" color-interpolation-filters="sRGB" in="SourceGraphic" in2="ripple" scale="20" result="dm" />
                                 <feComposite operator="in" in2="ripple"></feComposite>
                                 <feComposite in2="SourceGraphic"></feComposite>
                             </filter>
                         </defs>
                     </svg>
-                    <a <?php echo $this->get_render_attribute_string( 'button' ); ?> style="filter: url('#ekit-filter-ripple-<?php echo esc_attr ($this->get_id());?>')">
+                    <a <?php echo $this->get_render_attribute_string( 'button' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Elementor escapes render attribute strings. ?> style="filter: url('#ekit-filter-ripple-<?php echo esc_attr ($this->get_id());?>')">
 						<span class="ekit_creative_button_text"><?php echo esc_html( $btn_text ); ?></span>
 					</a>
 				<?php break;
 				default : ?>
-					<a <?php echo $this->get_render_attribute_string( 'button' ); ?>>
+					<a <?php echo $this->get_render_attribute_string( 'button' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Elementor escapes render attribute strings. ?>>
 						<span class="ekit_creative_button_text"><?php echo esc_html( $btn_text ); ?></span>
 						<?php
 							$bg_border = wp_kses($position_aware_bg . $outline_extra_border, \ElementsKit_Lite\Utils::get_kses_array());
@@ -878,4 +868,5 @@ class ElementsKit_Widget_Creative_Button extends Widget_Base {
 		</div>
         <?php
     }
+	
 }

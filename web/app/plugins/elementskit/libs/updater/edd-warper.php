@@ -234,7 +234,7 @@ class Edd_Warper {
 				);
 			} else {
 				$or_update = esc_url( wp_nonce_url( self_admin_url( 'update.php?action=upgrade-plugin&plugin=' ) . $this->name, 'upgrade-plugin_' . $this->name ) );
-				printf('%1&s' . esc_html( $version_info->name . '%2$s <a target="_blank" class="thickbox" href="' . esc_url( $changelog_link ) . '"> %3$s' . esc_html( $version_info->new_version ) . ' %4$s </a> or <a href="'.$or_update.'"> %5$s </a>'),
+				printf('%1$s' . esc_html( $version_info->name . '%2$s <a target="_blank" class="thickbox" href="' . esc_url( $changelog_link ) . '"> %3$s' . esc_html( $version_info->new_version ) . ' %4$s </a> or <a href="'.$or_update.'"> %5$s </a>'),
 					esc_html__('There is a new version of', 'elementskit'),
 					esc_html__('available.', 'elementskit'),
 					esc_html__('View version', 'elementskit'),

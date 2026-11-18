@@ -36,9 +36,18 @@ class ElementsKit_Widget_Breadcrumb extends Widget_Base {
 		return 'https://wpmet.com/doc/breadcrumb/';
 	}
 
-    protected function is_dynamic_content(): bool {
-        return false;
-    }
+	public function get_style_depends() {
+		return ['ekit-pro-breadcrumb'];
+	}
+
+	/**
+	 * The breadcrumb depends on the current request (queried object, archive type,
+	 * paging), so its markup must never be frozen into the document element cache.
+	 */
+	protected function is_dynamic_content(): bool {
+		return true;
+	}
+
 	protected function register_controls() {
 
 		$this->start_controls_section(
@@ -57,6 +66,30 @@ class ElementsKit_Widget_Breadcrumb extends Widget_Base {
 				'fa4compatibility' => 'icon',
 				'label_block' => false,
 				'skin' => 'inline',
+			]
+		);
+
+		$this->add_control(
+			'ekit_breadcrumb_home_text',
+			[
+				'label'       => esc_html__('Home Text', 'elementskit'),
+				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => ['active' => true],
+				'label_block' => true,
+				'default'     => esc_html__('Home', 'elementskit'),
+				'placeholder' => esc_html__('Home', 'elementskit'),
+			]
+		);
+
+		$this->add_control(
+			'ekit_breadcrumb_home_link',
+			[
+				'label'       => esc_html__('Home Link', 'elementskit'),
+				'type'        => Controls_Manager::URL,
+				'dynamic'     => ['active' => true],
+				'label_block' => true,
+				'placeholder' => get_home_url(),
+				'description' => esc_html__('Leave empty to use the site home URL.', 'elementskit'),
 			]
 		);
 
@@ -661,8 +694,31 @@ class ElementsKit_Widget_Breadcrumb extends Widget_Base {
 		$max_len  = empty($settings['ekit_breadcrumb_len']) ? 15 : intval($settings['ekit_breadcrumb_len']);
 		$trail    = !empty($settings['ekit_breadcrumb_show_trail']);
 
-		echo wp_kses($this->get_crumb($settings, $pid, $max_len, $trail), \ElementsKit_Lite\Utils::get_kses_array());
+		echo wp_kses($this->get_crumb($settings, $pid, $max_len, $trail), $this->get_crumb_kses_array($settings));
 
+	}
+
+
+	/**
+	 * The shared kses allowlist drops every attribute it does not know about, so the
+	 * custom attributes coming from the Home Link URL control have to be allowed
+	 * explicitly. Elementor has already dropped `href` and `on*` keys while parsing.
+	 */
+	private function get_crumb_kses_array($settings) {
+
+		$kses = \ElementsKit_Lite\Utils::get_kses_array();
+
+		if(empty($settings['ekit_breadcrumb_home_link']['custom_attributes'])) {
+			return $kses;
+		}
+
+		$custom_attributes = Utils::parse_custom_attributes($settings['ekit_breadcrumb_home_link']['custom_attributes']);
+
+		foreach(array_keys($custom_attributes) as $attribute_key) {
+			$kses['a'][$attribute_key] = [];
+		}
+
+		return $kses;
 	}
 
 	private function get_crumb($settings, $post_id, $max_len, $trail = false) {
@@ -680,7 +736,18 @@ class ElementsKit_Widget_Breadcrumb extends Widget_Base {
 		// home breadcrumb icon 
 		$icon =  Icons_Manager::try_get_icon_html($settings['ekit_bresdcroum_home_icon'],[ 'aria-hidden' => 'true' ]);
 		$icon_tag = !empty($settings['ekit_bresdcroum_home_icon']['value']) ? '<span class="ekit_home_icon"> '.$icon.' </span>' : '';
-		$ret .= '<li class="ekit_breadcrumbs_start">' . $icon_tag . '<a href="' . get_home_url('/') .'">' . __('Home', 'elementskit') . '</a></li>';
+
+		// home breadcrumb text and link
+		$home_text = isset($settings['ekit_breadcrumb_home_text']) && '' !== trim($settings['ekit_breadcrumb_home_text']) ? $settings['ekit_breadcrumb_home_text'] : __('Home', 'elementskit');
+		$home_link = $settings['ekit_breadcrumb_home_link'] ?? [];
+
+		if(empty($home_link['url'])) {
+			$home_link['url'] = get_home_url();
+		}
+
+		$this->add_link_attributes('ekit_breadcrumb_home_link', $home_link, true);
+
+		$ret .= '<li class="ekit_breadcrumbs_start">' . $icon_tag . '<a ' . $this->get_render_attribute_string('ekit_breadcrumb_home_link') . '>' . esc_html($home_text) . '</a></li>';
 
 		if(!is_home()) {
 

@@ -14,8 +14,20 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
 
     public function __construct( $data = [], $args = null ) {
 		parent::__construct( $data, $args );
-        $this->add_script_depends('magnific-popup');
-        $this->add_script_depends('isotope');
+	}
+
+	public function get_style_depends(): array {
+		return [ 'magnific-popup','gallery-filter', 'swiper', 'ekit-pro-video-gallery' ];
+	}
+
+	public function get_script_depends() {
+		$deps = ['gallery-filter', 'ekit-pro-video-gallery', 'magnific-popup', 'swiper'];
+
+		if ( Plugin::$instance->editor->is_edit_mode() || Plugin::$instance->preview->is_preview_mode() ) {
+			$deps[] = 'magnific-popup';
+		}
+
+		return $deps;
 	}
 
 	public function get_name() {
@@ -196,22 +208,6 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
                     'masonry' => esc_html__( 'Masonry', 'elementskit' ),
                     'carousel' => esc_html__( 'Carousel', 'elementskit' ),
                 ],
-				'assets' => [
-					'styles' => [
-						[
-							'name' => 'swiper',
-							'conditions' => [
-								'terms' => [
-									[
-										'name' => 'grid_style',
-										'operator' => '===',
-										'value' => 'carousel',
-									],
-								],
-							],
-						],
-					],
-				],
             ]
         );
         $ekit_gallery_columns = range( 1, 6 );
@@ -250,6 +246,23 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
                     'popup' =>esc_html__( 'Play In Popup', 'elementskit' ),
                     'inline' =>esc_html__( 'Play Inline', 'elementskit' )
                 ],
+				'assets' => [
+					'scripts' => [
+						[
+							'name' => 'magnific-popup',
+							'conditions' => [
+								'terms' => [
+									[
+										'name' => 'click_action',
+										'operator' => '===',
+										'value' => 'popup',
+									],
+								],
+							],
+						],
+					],
+
+				],
             ]
 		);
 
@@ -709,8 +722,9 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
                         'max' => 100,
                     ),
                 ),
-                'selectors'  => array(
-                    '{{WRAPPER}} .ekit-video-item .video-icon' => 'font-size: {{SIZE}}{{UNIT}};'
+                'selectors' => array(
+                    '{{WRAPPER}} .ekit-video-item .video-link:has(i) i.video-icon' => 'font-size: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .ekit-video-item .video-link:has(svg)' => 'font-size: {{SIZE}}{{UNIT}};',
                 ),
             )
         );
@@ -790,16 +804,10 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
 				'default' => 'default',
 				'options' => [
 					'default'  => esc_html__( 'Default', 'elementskit' ),
-					'style_one' => esc_html__( 'Style One', 'elementskit' ),
-					'style_two' => esc_html__( 'Style Two', 'elementskit' ),
-					'style_three' => esc_html__( 'Style Three', 'elementskit' ),
-					'style_four' => esc_html__( 'Style Four', 'elementskit' ),
-					'style_five' => esc_html__( 'Style Five', 'elementskit' ),
-					'style_six' => esc_html__( 'Style Six', 'elementskit' ),
-					'style_seven' => esc_html__( 'Style Seven', 'elementskit' ),
-					'style_eight' => esc_html__( 'Style Eight', 'elementskit' ),
-					'style_nine' => esc_html__( 'Style Nine', 'elementskit' ),
-					'style_ten' => esc_html__( 'Style Ten', 'elementskit' ),
+					'style_three' => esc_html__( 'Style One', 'elementskit' ),
+					'style_four' => esc_html__( 'Style Two', 'elementskit' ),
+					'style_five' => esc_html__( 'Style Three', 'elementskit' ),
+					'style_six' => esc_html__( 'Style Four', 'elementskit' ),
 				],
 			]
 		);
@@ -912,6 +920,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
 				],
 				'selectors' => [
 					'{{WRAPPER}} .elementskit_filter_style_three.elementskit_nav_caret > li > a.selected::before' => 'width: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .elementskit_filter_style_three.elementskit_nav_caret > .filter-btn.filter-active::before' => 'width: {{SIZE}}{{UNIT}};'
                 ],
                 'condition' => [
                     'ekit_gallery_nav_item_show_caret' => 'yes',
@@ -943,6 +952,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
 				],
 				'selectors' => [
 					'{{WRAPPER}} .elementskit_filter_style_three.elementskit_nav_caret > li > a.selected::before' => 'height: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .elementskit_filter_style_three.elementskit_nav_caret > .filter-btn.filter-active::before' => 'height: {{SIZE}}{{UNIT}};'
                 ],
                 'condition' => [
                     'ekit_gallery_nav_item_show_caret' => 'yes',
@@ -970,6 +980,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
 				],
 				'selectors' => [
 					'{{WRAPPER}} .elementskit_filter_style_three.elementskit_nav_caret > li > a.selected::before' => 'top: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .elementskit_filter_style_three.elementskit_nav_caret > .filter-btn.filter-active::before' => 'top: {{SIZE}}{{UNIT}};'
                 ],
                 'condition' => [
                     'ekit_gallery_nav_item_show_caret' => 'yes',
@@ -984,7 +995,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
 				'name' => 'ekit_gallery_filter_caret_background',
 				'label' => esc_html__( 'Background', 'elementskit' ),
 				'types' => [ 'classic', 'gradient' ],
-                'selector' => '{{WRAPPER}} .elementskit_filter_style_three.elementskit_nav_caret > li > a.selected::before',
+                'selector' => '{{WRAPPER}} .elementskit_filter_style_three.elementskit_nav_caret > li > a.selected::before, {{WRAPPER}} .elementskit_filter_style_three.elementskit_nav_caret > .filter-btn.filter-active::before',
                 'condition' => [
                     'ekit_gallery_nav_item_show_caret' => 'yes',
                     'ekit_gallery_filter_style_choose' => ['style_three']
@@ -1019,6 +1030,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
 				],
 				'selectors' => [
 					'{{WRAPPER}} .elementskit_filter_style_four.elementskit_nav_caret > li > a.selected::after' => 'width: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .elementskit_filter_style_four.elementskit_nav_caret > .filter-btn.filter-active::after' => 'width: {{SIZE}}{{UNIT}};'
                 ],
                 'condition' => [
                     'ekit_gallery_nav_item_show_caret' => 'yes',
@@ -1050,6 +1062,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
 				],
 				'selectors' => [
 					'{{WRAPPER}} .elementskit_filter_style_four.elementskit_nav_caret > li > a.selected::after' => 'height: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .elementskit_filter_style_four.elementskit_nav_caret > .filter-btn.filter-active::after' => 'height: {{SIZE}}{{UNIT}};'
                 ],
                 'condition' => [
                     'ekit_gallery_nav_item_show_caret' => 'yes',
@@ -1082,6 +1095,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
 				],
 				'selectors' => [
 					'{{WRAPPER}} .elementskit_filter_style_four.elementskit_nav_caret > li > a.selected::after' => 'bottom: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .elementskit_filter_style_four.elementskit_nav_caret > .filter-btn.filter-active::after' => 'bottom: {{SIZE}}{{UNIT}};'
                 ],
                 'condition' => [
                     'ekit_gallery_nav_item_show_caret' => 'yes',
@@ -1096,7 +1110,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
 				'name' => 'ekit_gallery_filter_caret_four_background',
 				'label' => esc_html__( 'Background', 'elementskit' ),
 				'types' => [ 'classic', 'gradient' ],
-                'selector' => '{{WRAPPER}} .elementskit_filter_style_four.elementskit_nav_caret > li > a.selected::after',
+                'selector' => '{{WRAPPER}} .elementskit_filter_style_four.elementskit_nav_caret > li > a.selected::after, {{WRAPPER}} .elementskit_filter_style_four.elementskit_nav_caret > .filter-btn.filter-active::after',
                 'condition' => [
                     'ekit_gallery_nav_item_show_caret' => 'yes',
                     'ekit_gallery_filter_style_choose' => ['style_four']
@@ -1138,7 +1152,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
 				'name' => 'ekit_gallery_filter_divider_background',
 				'label' => esc_html__( 'Background', 'elementskit' ),
 				'types' => [ 'classic', 'gradient' ],
-                'selector' => '{{WRAPPER}} .elementskit_filter_style_five.elementskit_divider_active > li > a::before, {{WRAPPER}} .elementskit_filter_style_four.elementskit_divider_active > li > a::before',
+                'selector' => '{{WRAPPER}} .elementskit_filter_style_five.elementskit_divider_active > li > a::before,{{WRAPPER}} .elementskit_filter_style_five.elementskit_divider_active > .filter-btn::before,  {{WRAPPER}} .elementskit_filter_style_four.elementskit_divider_active > li > a::before,{{WRAPPER}} .elementskit_filter_style_four.elementskit_divider_active > .filter-btn::before',
                 'condition' => [
                     'ekit_gallery_filter_show_divider' => 'yes',
                     'ekit_gallery_filter_style_choose' => ['style_four', 'style_five'],
@@ -1172,7 +1186,9 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
 				],
 				'selectors' => [
 					'{{WRAPPER}} .elementskit_filter_style_five.elementskit_divider_active > li > a::before' => 'width: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .elementskit_filter_style_five.elementskit_divider_active > .filter-btn::before' => 'width: {{SIZE}}{{UNIT}};',
 					'{{WRAPPER}} .elementskit_filter_style_four.elementskit_divider_active > li > a::before' => 'width: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .elementskit_filter_style_four.elementskit_divider_active > .filter-btn::before' => 'width: {{SIZE}}{{UNIT}};',
                 ],
                 'condition' => [
                     'ekit_gallery_filter_show_divider' => 'yes',
@@ -1204,7 +1220,9 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
 				],
 				'selectors' => [
 					'{{WRAPPER}} .elementskit_filter_style_five.elementskit_divider_active > li > a::before' => 'height: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .elementskit_filter_style_five.elementskit_divider_active > .filter-btn::before' => 'height: {{SIZE}}{{UNIT}};',
 					'{{WRAPPER}} .elementskit_filter_style_four.elementskit_divider_active > li > a::before' => 'height: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .elementskit_filter_style_four.elementskit_divider_active > .filter-btn::before' => 'height: {{SIZE}}{{UNIT}};',
                 ],
                 'condition' => [
                     'ekit_gallery_filter_show_divider' => 'yes',
@@ -1226,7 +1244,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
 				'name' => 'ekit_gallery_filter_border_bottom_background',
 				'label' => esc_html__( 'Background', 'elementskit' ),
 				'types' => [ 'classic', 'gradient' ],
-                'selector' => '{{WRAPPER}} .elementskit_filter_style_six > li > a.selected > .elementskit_filter_nav_text::before',
+                'selector' => '{{WRAPPER}} .elementskit_filter_style_six > li > a.selected > .elementskit_filter_nav_text::before, {{WRAPPER}} .elementskit_filter_style_six > .filter-btn.filter-active > .elementskit_filter_nav_text::before',
                 'condition' => [
                     'ekit_gallery_filter_style_choose' => ['style_six'],
                 ],
@@ -1289,6 +1307,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
 				],
 				'selectors' => [
 					'{{WRAPPER}} .elementskit_filter_style_six > li > a > .elementskit_filter_nav_text::before' => 'height: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .elementskit_filter_style_six > .filter-btn.filter-active > .elementskit_filter_nav_text::before' => 'height: {{SIZE}}{{UNIT}};',
                 ],
                 'condition' => [
                     'ekit_gallery_filter_style_choose' => ['style_six'],
@@ -1319,6 +1338,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
 				],
 				'selectors' => [
 					'{{WRAPPER}} .elementskit_filter_style_six > li > a > .elementskit_filter_nav_text::before' => 'bottom: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .elementskit_filter_style_six > .filter-btn.filter-active > .elementskit_filter_nav_text::before' => 'bottom: {{SIZE}}{{UNIT}};',
 				],
                 'condition' => [
                     'ekit_gallery_filter_style_choose' => ['style_six'],
@@ -1349,6 +1369,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
 				],
 				'selectors' => [
 					'{{WRAPPER}} .elementskit_filter_style_six > li > a > .elementskit_filter_nav_text::before' => 'left: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .elementskit_filter_style_six > .filter-btn.filter-active > .elementskit_filter_nav_text::before' => 'left: {{SIZE}}{{UNIT}};',
 				],
                 'condition' => [
                     'ekit_gallery_filter_style_choose' => ['style_six'],
@@ -1364,6 +1385,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
                 'size_units' => [ 'px', 'em' ],
                 'selectors' => [
                     '{{WRAPPER}} .elementskit-main-filter > li' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .elementskit_filter_style_six > .filter-btn > .elementskit_filter_nav_text::before' => 'left: {{SIZE}}{{UNIT}};'
                 ],
             ]
         );
@@ -1405,7 +1427,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
             [
                 'name' => 'ekit_gallery_filter_typography_normal',
                 'label' => esc_html__( 'Typography', 'elementskit' ),
-                'selector' => '{{WRAPPER}} .elementskit-main-filter > li > a',
+                'selector' => '{{WRAPPER}} .elementskit-main-filter > li > a, {{WRAPPER}} .elementskit-main-filter .filter-btn',
             ]
         );
 
@@ -1417,6 +1439,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
                 'default' => '',
                 'selectors' => [
                     '{{WRAPPER}} .elementskit-main-filter > li > a' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .elementskit-main-filter .filter-btn' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -1429,6 +1452,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
                 'default' => '',
                 'selectors' => [
                     '{{WRAPPER}} .elementskit-main-filter > li > a' => 'background-color: {{VALUE}};',
+                    '{{WRAPPER}} .elementskit-main-filter .filter-btn' => 'background-color: {{VALUE}};',
                 ],
             ]
         );
@@ -1440,7 +1464,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
                 'label' => esc_html__( 'Border', 'elementskit' ),
                 'placeholder' => '1px',
                 'default' => '1px',
-                'selector' => '{{WRAPPER}} .elementskit-main-filter > li > a',
+                'selector' => '{{WRAPPER}} .elementskit-main-filter > li > a, {{WRAPPER}} .elementskit-main-filter .filter-btn',
             ]
         );
 
@@ -1452,6 +1476,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
                 'size_units' => [ 'px', '%' ],
                 'selectors' => [
                     '{{WRAPPER}} .elementskit-main-filter > li > a' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .elementskit-main-filter .filter-btn' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
@@ -1470,6 +1495,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
                 ],
                 'selectors' => [
                     '{{WRAPPER}} .elementskit-main-filter > li > a' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .elementskit-main-filter .filter-btn' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
@@ -1478,7 +1504,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
             Group_Control_Box_Shadow::get_type(),
             [
                 'name' => 'ekit_gallery_filter_box_shadow',
-                'selector' => '{{WRAPPER}} .elementskit-main-filter > li > a',
+                'selector' => '{{WRAPPER}} .elementskit-main-filter > li > a, {{WRAPPER}} .elementskit-main-filter .filter-btn',
             ]
         );
 
@@ -1496,7 +1522,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
             [
                 'name' => 'ekit_gallery_filter_typography_hover',
                 'label' => esc_html__( 'Typography', 'elementskit' ),
-                'selector' => '{{WRAPPER}} .elementskit-main-filter > li > a.selected',
+                'selector' => '{{WRAPPER}} .elementskit-main-filter > li > a.selected, {{WRAPPER}} .elementskit-main-filter .filter-btn.filter-active',
             ]
         );
 
@@ -1504,7 +1530,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
             Group_Control_Text_Shadow::get_type(),
             [
                 'name' => 'ekit_gallery_filter_typography_hover_sahdow',
-                'selector' => '{{WRAPPER}} .elementskit-main-filter > li > a.selected',
+                'selector' => '{{WRAPPER}} .elementskit-main-filter > li > a.selected, {{WRAPPER}} .elementskit-main-filter .filter-btn.filter-active',
             ]
         );
 
@@ -1516,6 +1542,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
                 'default' => '',
                 'selectors' => [
                     '{{WRAPPER}} .elementskit-main-filter > li > a.selected' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .elementskit-main-filter .filter-btn.filter-active' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -1528,6 +1555,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
                 'default' => '',
                 'selectors' => [
                     '{{WRAPPER}} .elementskit-main-filter > li > a.selected' => 'background-color: {{VALUE}};',
+                    '{{WRAPPER}} .elementskit-main-filter .filter-btn.filter-active' => 'background-color: {{VALUE}};',
                 ],
                 'condition' => [
                     'ekit_gallery_filter_style_choose!' => 'style_two'
@@ -1541,7 +1569,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
 				'name' => 'background',
 				'label' => esc_html__( 'Background', 'elementskit' ),
 				'types' => [ 'gradient' ],
-                'selector' => '{{WRAPPER}} .elementskit-main-filter > li > a.selected .elementskit_blur_shadow_panel,{{WRAPPER}} .elementskit-main-filter > li > a.selected',
+                'selector' => '{{WRAPPER}} .elementskit-main-filter > li > a.selected .elementskit_blur_shadow_panel,{{WRAPPER}} .elementskit-main-filter > li > a.selected, {{WRAPPER}} .elementskit-main-filter .filter-btn.filter-active',
                 'condition' => [
                     'ekit_gallery_filter_style_choose' => 'style_two'
                 ],
@@ -1560,6 +1588,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
                 'default' => '',
                 'selectors' => [
                     '{{WRAPPER}} .elementskit-main-filter > li > a.selected' => 'border-color: {{VALUE}};',
+                    '{{WRAPPER}} .elementskit-main-filter .filter-btn.filter-active' => 'border-color: {{VALUE}};',
                 ],
             ]
         );
@@ -1568,7 +1597,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
             Group_Control_Box_Shadow::get_type(),
             [
                 'name' => 'ekit_gallery_filter_box_shadow_hover',
-                'selector' => '{{WRAPPER}} .elementskit-main-filter > li > a.selected',
+                'selector' => '{{WRAPPER}} .elementskit-main-filter > li > a.selected, {{WRAPPER}} .elementskit-main-filter .filter-btn.filter-active',
             ]
         );
 
@@ -2229,34 +2258,38 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
             ],
         ];
 
+        $gallery_config = [
+                'id'              => $this->get_id(),
+                'gridStyle'       => $settings['grid_style'],
+                'layout'          => $settings['grid_style'] === 'masonry' ? 'masonry' : 'grid',
+                'showFilters'     => $settings['enable_filter'] === 'yes',
+                'columns'         => !empty($settings['ekit_column']) ? (int) $settings['ekit_column'] : 3,
+                'filterBarClass' => 'ekit-filter-bar-wrapper'
+                    . (! empty($settings['ekit_gallery_nav_alignment'])
+                        ? ' ekit-filter-bar-' . $settings['ekit_gallery_nav_alignment']
+                        : ''
+                    )
+                    . (! empty($settings['ekit_gallery_fill_nav_content'])
+                        ? ' ekit-filter-bar-nav-fill'
+                        : ''
+                    ),
+                'filterBarBtnGroupClass' => 'elementskit-main-filter',
+                'filterBtnClass'   => 'ekit-filter-btn',
+                'filterBarStyleClass' =>'elementskit_filter_' . $settings['ekit_gallery_filter_style_choose'] . ($settings['ekit_gallery_nav_item_show_caret'] === 'yes' ? ' elementskit_nav_caret' : '') . ($settings['ekit_gallery_filter_show_divider'] === 'yes' ? ' elementskit_divider_active' : ''),
+            ];
+
+        $this->add_render_attribute( 'wrapper', 'data-filter', wp_json_encode($gallery_config) );
 		$this->add_render_attribute( 'wrapper', 'data-config', wp_json_encode($config) );
+
+
 
 		// Swiper container
 		$this->add_render_attribute('swiper-container', 'class', method_exists('\ElementsKit_Lite\Utils', 'swiper_class') ? \ElementsKit_Lite\Utils::swiper_class() : 'swiper');
 		?>
 		<div class="ekit-video-gallery-wrapper">
-			<!-- filter nav -->
-			<?php if($enable_filter == 'yes') : ?>
-				<ul class="elementskit-main-filter elementskit_filter_<?php echo esc_attr($ekit_gallery_filter_style_choose); ?>">
-					<li><a href="#" data-value="" class="selected"><span class="elementskit_filter_nav_text">All</span></a></li>
-					<?php
-					$appended_cat = [];
-					foreach($video_content as $nav) {
-						if(!empty($nav['video_category']) && !in_array($nav['video_category'], $appended_cat)) : ?>
-							<li>
-								<a href='' data-value="<?php echo esc_attr($this->slugify($nav['video_category'])); ?>">
-									<span class="elementskit_filter_nav_text"><?php echo esc_html($nav['video_category']); ?></span>
-								</a>
-							</li>
-							<!-- // removed duplication -->
-							<?php array_push($appended_cat, $nav['video_category']);
-						endif;
-					} ?>
-				</ul>
-			<?php endif; ?>
-			<!-- filter nav -->
 
-			<div <?php echo \ElementsKit_Lite\Utils::render($this->get_render_attribute_string( 'wrapper' )); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+
+			<div  <?php echo \ElementsKit_Lite\Utils::render($this->get_render_attribute_string( 'wrapper' )); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 				<?php if($grid_style == 'carousel') : ?>
 					<div <?php $this->print_render_attribute_string('swiper-container'); ?>>
 						<div class="swiper-wrapper">
@@ -2271,11 +2304,11 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
 
 					if($video_type == 'youtube') {
 						if(strpos($video_url['url'], 'youtu.be') !== false) {
-							$path = parse_url($video_url['url'], PHP_URL_PATH);
+							$path = wp_parse_url($video_url['url'], PHP_URL_PATH);
 							$video_id = ltrim($path, '/');
 							$watch_url = 'https://www.youtube.com/watch?v='.$video_id;
 						} else{
-							$query_string = parse_url( $video_url['url'], PHP_URL_QUERY );
+							$query_string = wp_parse_url( $video_url['url'], PHP_URL_QUERY );
 							if (!empty($query_string)) {
 								parse_str($query_string, $y_v_id);
 								$video_id = ! empty( $y_v_id['v'] ) ? $y_v_id['v'] : '';
@@ -2295,7 +2328,7 @@ class ElementsKit_Widget_Video_Gallery extends Widget_Base {
 						$data_url = ($is_url == 'yes') ? $video['self_hosted_video_url']['url'] : $video['self_hosted_video']['url'];
 					}
 				?>
-					<div class="ekit-video-item <?php echo $grid_style == 'carousel' ? 'swiper-slide ' : ' '; echo $this->slugify(esc_attr($video['video_category'])); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>">
+					<div data-category="<?php echo $this->slugify(esc_attr($video['video_category'])); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" class="ekit-video-item <?php echo $grid_style !== 'carousel' ? 'filter-item' : '' ?>  <?php echo $grid_style == 'carousel' ? 'swiper-slide ' : ' '; echo $this->slugify(esc_attr($video['video_category'])); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>">
 
 						<?php if($grid_style == 'carousel') : ?>
 							<div class="swiper-slide-inner">

@@ -40,6 +40,14 @@ class Elementskit_Widget_Circle_Menu extends Widget_Base {
 		return 'https://wpmet.com/doc/circle-menu/';
 	}
 
+	public function get_style_depends() {
+		return ['ekit-pro-circle-menu'];
+	}
+
+	public function get_script_depends() {
+		return ['circle-menu', 'ekit-pro-circle-menu'];
+	}
+
 	protected function is_dynamic_content(): bool {
 		return false;
 	}
@@ -514,8 +522,8 @@ class Elementskit_Widget_Circle_Menu extends Widget_Base {
 				'label' => esc_html__( 'Color', 'elementskit' ),
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} .ekit-wid-con .ekit-circle-menu-item :is(i, svg)' => 'color: {{VALUE}}; fill: {{VALUE}};',
-					'{{WRAPPER}} .ekit-wid-con .ekit-circle-menu-item > svg > path ' => 'stroke: {{VALUE}};',
+					'{{WRAPPER}} .ekit-wid-con .ekit-circle-menu-item i' => 'color: {{VALUE}}',
+					'{{WRAPPER}} .ekit-wid-con .ekit-circle-menu-item svg' => 'fill: {{VALUE}};',
 				],
 			]
 		);
@@ -526,8 +534,8 @@ class Elementskit_Widget_Circle_Menu extends Widget_Base {
 				'label' => esc_html__( 'Hover Color', 'elementskit' ),
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} .ekit-wid-con .ekit-circle-menu-box li:hover .ekit-circle-menu-item :is(i, svg)' => 'color: {{VALUE}}; fill: {{VALUE}};',
-					'{{WRAPPER}} .ekit-wid-con .ekit-circle-menu-box li:hover .ekit-circle-menu-item > svg > path ' => 'stroke: {{VALUE}};',
+					'{{WRAPPER}} .ekit-wid-con .ekit-circle-menu-box li:hover .ekit-circle-menu-item i' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .ekit-wid-con .ekit-circle-menu-box li:hover .ekit-circle-menu-item > svg' => 'fill: {{VALUE}};',
 				],
 			]
 		);
@@ -751,7 +759,7 @@ class Elementskit_Widget_Circle_Menu extends Widget_Base {
 									<?php endif; ?>
 
 									<?php if (!empty($item['ekit_cm_tooltip'])) : ?>
-										<span class="ekit-circle-menu-item-tooltip"><?php echo wp_kses($item['ekit_cm_tooltip'], \ElementsKit_Lite\Utils::get_kses_array()); ?></span>
+										<span class="ekit-circle-menu-item-tooltip"<?php echo !empty($item['ekit_cm_title']) ? ' aria-hidden="true"' : ''; ?>><?php echo wp_kses($item['ekit_cm_tooltip'], \ElementsKit_Lite\Utils::get_kses_array()); ?></span>
 									<?php endif; ?>
 
 									<?php if (!empty($item['ekit_cm_title'])) : ?>
@@ -771,4 +779,5 @@ class Elementskit_Widget_Circle_Menu extends Widget_Base {
 			</div>
 		<?php
 	}
+	
 }

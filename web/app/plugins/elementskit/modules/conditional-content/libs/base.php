@@ -5,6 +5,7 @@ namespace ElementsKit\Modules\Conditional_Content\Libs;
 use Elementor\Controls_Manager;
 use Elementor\Element_Base;
 use ElementsKit\Modules\Conditional_Content\Libs\Controls\Extra;
+use ElementsKit_Lite\Utils;
 
 require_once 'controls/trait.php';
 
@@ -56,7 +57,7 @@ class Base
         $element->start_controls_section(
             $this->PREFIX . 'condition_section',
             [
-                'label' => __('ElementsKit Conditions', 'elementskit'),
+                'label' => ( method_exists( Utils::class, 'get_promo_icon' ) ? Utils::get_promo_icon() : 'ElementsKit' ) . esc_html__('Conditions', 'elementskit'),
                 'tab' => Controls_Manager::TAB_ADVANCED
             ]
         );

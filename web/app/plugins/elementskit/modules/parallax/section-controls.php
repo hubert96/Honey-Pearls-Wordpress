@@ -2,6 +2,8 @@
 
 namespace Elementor;
 
+use ElementsKit_Lite\Utils;
+
 class ElementsKit_Section_Effect_Controls{
 
 	public function __construct() {
@@ -60,7 +62,55 @@ class ElementsKit_Section_Effect_Controls{
 			],
 			'scripts' => [
 				[
-					'name' => 'elementskit-parallax-frontend',
+					'name' => 'imagesloaded',
+					'conditions' => [
+						'terms' => [
+							[
+								'name' => 'ekit_section_parallax_multi',
+								'operator' => '===',
+								'value' => 'yes',
+							],
+						],
+					],
+				],
+				[
+					'name' => 'ekit-tweenmax',
+					'conditions' => [
+						'terms' => [
+							[
+								'name' => 'ekit_section_parallax_multi',
+								'operator' => '===',
+								'value' => 'yes',
+							],
+						],
+					],
+				],
+				[
+					'name' => 'ekit-jquery-easing',
+					'conditions' => [
+						'terms' => [
+							[
+								'name' => 'ekit_section_parallax_multi',
+								'operator' => '===',
+								'value' => 'yes',
+							],
+						],
+					],
+				],
+				[
+					'name' => 'ekit-tilt',
+					'conditions' => [
+						'terms' => [
+							[
+								'name' => 'ekit_section_parallax_multi',
+								'operator' => '===',
+								'value' => 'yes',
+							],
+						],
+					],
+				],
+				[
+					'name' => 'ekit-magician',
 					'conditions' => [
 						'terms' => [
 							[
@@ -91,7 +141,7 @@ class ElementsKit_Section_Effect_Controls{
 		$control->start_controls_section(
 			'ekit_section_parallax',
 			[
-				'label' => esc_html__('ElementsKit Effects', 'elementskit'),
+				'label' => ( method_exists( Utils::class, 'get_promo_icon' ) ? Utils::get_promo_icon() : 'ElementsKit' ) . esc_html__('Effects', 'elementskit'),
 				'tab' => Controls_Manager::TAB_ADVANCED,
 			]
 		);
@@ -327,7 +377,7 @@ class ElementsKit_Section_Effect_Controls{
 				],
 			]
 		);
-		
+
 		$repeater->add_responsive_control(
 			'pos_x', [
 				'label' => esc_html__('Position X (%)', 'elementskit'),

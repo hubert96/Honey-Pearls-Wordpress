@@ -10,10 +10,14 @@ foreach($active_breakpoints as $key => $breakpoint) {
 		$line_directions[$key] = $location['ekit_hotspot_follow_line_direction_' . $key];
 	}
 }
+
+$ekit_hotspot_is_active   = ( $ekit_hotspot_all_time_show_hide == 'yes' ) || ( isset($location['ekit_hotspot_active']) && $location['ekit_hotspot_active'] == 'yes' );
+$ekit_hotspot_content_id  = 'ekit-hotspot-content-' . $location['_id'];
+$ekit_hotspot_label       = ( isset($location['ekit_hotspot_title']) && $location['ekit_hotspot_title'] !== '' ) ? $location['ekit_hotspot_title'] : esc_html__( 'Hotspot', 'elementskit' );
 ?>
 
 <div class="ekit-location elementor-repeater-item-<?php echo esc_attr( $location[ '_id' ] ); ?> ekit-location-on-click <?php echo esc_attr($hotspot_line_class . ' ' . $location['ekit_hotspot_follow_line_direction']);?> <?php echo esc_attr($ekit_hotspot_all_time_show_hide == 'yes' ? 'ekit-all-activated active' : ''); ?> <?php echo ($ekit_hotspot_all_time_show_hide != 'yes' && $location['ekit_hotspot_active'] == 'yes') ? 'active' : ''; ?>" data-directions="<?php echo esc_attr(wp_json_encode($line_directions)) ?>">
-    <div class="ekit-location_outer">
+    <div class="ekit-location_outer" id="<?php echo esc_attr($ekit_hotspot_content_id); ?>">
         <div class="ekit-hotspot-vertical-line">
             <?php if ($ekit_hotspot_show_caret == 'yes') { ?>
                 <div class="ekit_hotspot_arrow"></div>
@@ -46,7 +50,7 @@ foreach($active_breakpoints as $key => $breakpoint) {
             <?php endif; ?>
         </div>
     </div>
-    <div class="ekit-location_indicator">
+    <div class="ekit-location_indicator" role="button" tabindex="0" aria-expanded="<?php echo $ekit_hotspot_is_active ? 'true' : 'false'; ?>" aria-controls="<?php echo esc_attr($ekit_hotspot_content_id); ?>" aria-label="<?php echo esc_attr($ekit_hotspot_label); ?>">
         <?php if ($ekit_hotspot_show_glow == 'yes') { ?>
             <div class="ekit_hotspot_pulse_1"></div>
             <div class="ekit_hotspot_pulse_2"></div>

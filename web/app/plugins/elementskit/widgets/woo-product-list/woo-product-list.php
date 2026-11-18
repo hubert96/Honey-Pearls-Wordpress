@@ -13,7 +13,6 @@ class ElementsKit_Widget_Woo_Product_List extends Widget_Base {
 
 	public function __construct( $data = [], $args = null ) {
 		parent::__construct( $data, $args );
-		$this->add_script_depends('magnific-popup');
 	}
 
 	public function get_name() {
@@ -36,6 +35,10 @@ class ElementsKit_Widget_Woo_Product_List extends Widget_Base {
         return Handler::get_keywords();
     }
 
+	public function get_script_depends() {
+		return ['magnific-popup'];
+	}
+
     public function get_help_url() {
         return 'https://wpmet.com/doc/woocommerce-product-list/';
     }
@@ -46,6 +49,10 @@ class ElementsKit_Widget_Woo_Product_List extends Widget_Base {
 
 	public function has_widget_inner_wrapper(): bool {
 		return ! Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
+	}
+
+	public function get_style_depends() {
+		return ['font-awesome','ekit-pro-woo-product-list'];
 	}
 
 	protected function register_controls() {
@@ -2532,7 +2539,7 @@ class ElementsKit_Widget_Woo_Product_List extends Widget_Base {
 				$popupVertical_align = !empty($settings['ekit_popup_vertical_alignment']) ? ' popup-vertical-' . esc_attr( $settings['ekit_popup_vertical_alignment'] ) : '';
 			?>
 				<div class="ekit-wc-product-popop <?php echo esc_attr( $popupHorizontal_align ); ?> <?php echo esc_attr( $popupVertical_align ); ?>">
-					<a class="ekit-wc-product-popop--link" href="<?php echo get_the_post_thumbnail_url( get_the_ID(), 'full' ); ?>"><i class="fa fa-eye" aria-hidden="true"></i></a>
+					<a class="ekit-wc-product-popop--link" href="<?php echo esc_url( get_the_post_thumbnail_url( get_the_ID(), 'full' ) ); ?>"><i class="fa fa-eye" aria-hidden="true"></i></a>
 				</div>
 			<?php endif; ?>
 
@@ -2552,7 +2559,7 @@ class ElementsKit_Widget_Woo_Product_List extends Widget_Base {
 
 			<!-- Thumb content -->
 			<a class="ekit_woo_product_img_link" href="<?php the_permalink(); ?>">
-				<img src="<?php echo wp_get_attachment_image_url(get_post_thumbnail_id(), $settings['ekit_image_size']); ?>" alt="Product Thumb">
+				<img src="<?php echo esc_url( wp_get_attachment_image_url(get_post_thumbnail_id(), $settings['ekit_image_size']) ); ?>" alt="Product Thumb">
 			</a>
 
 			<!-- Add to cart button -->
@@ -2571,8 +2578,8 @@ class ElementsKit_Widget_Woo_Product_List extends Widget_Base {
 					<?php
 						$isCart = false;
 						if($product->is_purchasable() && $product->is_type('simple') == true) { $isCart = true; }
-						$add_cart_btn = '<a data-product_id="'. $product->get_id() .'" href="'. $product->add_to_cart_url() .'" class="' . $iconPos . ' ' . $iconCls . ' button product_type_simple add_to_cart_button '. ($isCart == true ? "ajax_add_to_cart" : '') .'">'. $product->add_to_cart_text() .'</a>';
-						echo str_replace($product->add_to_cart_text(), '<span class="ekit-woo-add-cart-text">'. $product->add_to_cart_text() .'</span>', $add_cart_btn);
+						$add_cart_btn = '<a data-product_id="'. esc_attr( $product->get_id() ) .'" href="'. esc_url( $product->add_to_cart_url() ) .'" class="' . $iconPos . ' ' . $iconCls . ' button product_type_simple add_to_cart_button '. ($isCart == true ? "ajax_add_to_cart" : '') .'">'. $product->add_to_cart_text() .'</a>';
+						echo str_replace($product->add_to_cart_text(), '<span class="ekit-woo-add-cart-text">'. $product->add_to_cart_text() .'</span>', $add_cart_btn); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- URL/id escaped in $add_cart_btn; add_to_cart_text() is safe WC label wrapped in a span.
 					?>
 
 				</div>
@@ -2598,7 +2605,7 @@ class ElementsKit_Widget_Woo_Product_List extends Widget_Base {
 								echo "<div class='ekit-wc-product-categories'><ul>";
 								foreach($terms as $key => $term){
 									$sperator = $key !== ($terms_count -1) ? ',' : '';
-									echo "<li><a href='". get_term_link($term->term_id) ."'>". esc_html( $term->name ) . $sperator . "</a></li>";
+									echo "<li><a href='". esc_url( get_term_link($term->term_id) ) ."'>". esc_html( $term->name ) . esc_html( $sperator ) . "</a></li>";
 								}
 								echo "</ul></div>";
 							}
@@ -2624,7 +2631,7 @@ class ElementsKit_Widget_Woo_Product_List extends Widget_Base {
 										$rating_html .= wc_get_star_rating_html( 0, 0 );
 										$rating_html .= '</div>';
 
-										echo \ElementsKit_Lite\Utils::render($rating_html);
+										echo \ElementsKit_Lite\Utils::render($rating_html); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $rating_html built from wc_get_star_rating_html() safe markup.
 									}
 								?>
 							</div>
@@ -2652,7 +2659,7 @@ class ElementsKit_Widget_Woo_Product_List extends Widget_Base {
 			'ekit-wc-carousel-desc-position-' . esc_attr($settings['ekit_product_description_position'])
 		]);
 		?>
-		<div <?php echo $this->get_render_attribute_string( 'ekit-wc-products' ); ?>>
+		<div <?php echo $this->get_render_attribute_string( 'ekit-wc-products' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Elementor escapes render attribute strings. ?>>
 		<?php
 	}
 
@@ -2738,7 +2745,7 @@ class ElementsKit_Widget_Woo_Product_List extends Widget_Base {
 			);
 
 			?>
-			<div <?php echo $this->get_render_attribute_string( 'ekit-wc-products-wrapper' ); ?>>
+			<div <?php echo $this->get_render_attribute_string( 'ekit-wc-products-wrapper' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Elementor escapes render attribute strings. ?>>
 			<?php
 
 			$this->add_render_attribute('ekit-wc-product', 'class', [
@@ -2765,7 +2772,7 @@ class ElementsKit_Widget_Woo_Product_List extends Widget_Base {
 			</div>
 			<?php
 				if ( 'yes' == $settings['ekit_show_pagination'] ) {
-					echo $this->render_pagination($wp_query);
+					echo $this->render_pagination($wp_query); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- render_pagination() returns safe paginate_links() markup.
 				}
 			wp_reset_postdata();
 		} else {
@@ -2785,6 +2792,7 @@ class ElementsKit_Widget_Woo_Product_List extends Widget_Base {
 		$page_number = !empty($the_query->query['paged']) ? $the_query->query['paged'] :  $the_query->query_vars['paged'];
 		$pagination_type = $settings['ekit_pagination_type'];
 		$control_args = [];
+		$pagination = '';
 
 		// Determine pagination style
 		switch ($pagination_type) {
@@ -2818,9 +2826,11 @@ class ElementsKit_Widget_Woo_Product_List extends Widget_Base {
 				)
 			);
 
-			$pagination = "<ul class='ekit-pagination'>";
-			$pagination .= implode('', array_map(fn($item) => "<li><span>{$item}</span></li>", (array)$items));
-			$pagination .= "</ul>";
+			if ( ! empty( $items ) ) {
+				$pagination = "<ul class='ekit-pagination'>";
+				$pagination .= implode('', array_map(fn($item) => "<li><span>{$item}</span></li>", (array)$items));
+				$pagination .= "</ul>";
+			}
 		}
 		return $pagination;
 	}

@@ -34,6 +34,14 @@ class ElementsKit_Widget_Fancy_Animated_Text extends Widget_Base {
         return Handler::get_help_url();
     }
 
+	public function get_style_depends() {
+		return ['ekit-pro-fancy-animated-text'];
+	}
+
+	public function get_script_depends() {
+		return ['ekit-pro-fancy-animated-text'];
+	}
+
     protected function is_dynamic_content(): bool {
         return false;
     }
@@ -778,7 +786,7 @@ class ElementsKit_Widget_Fancy_Animated_Text extends Widget_Base {
                 'type' => Controls_Manager::COLOR,
                 'default' => '#F386B9',
                 'selectors' => [
-					'{{WRAPPER}} .ekit-fancy-text .ekit-highlighted-effect svg path' => 'stroke: {{VALUE}};',
+                    '{{WRAPPER}} .ekit-fancy-text .ekit-highlighted-effect svg path' => 'stroke: {{VALUE}};',
 				],
             ]
         );
@@ -977,21 +985,7 @@ class ElementsKit_Widget_Fancy_Animated_Text extends Widget_Base {
 		];
 		
 		$fancy_animation_type_class = isset($animation_types[$ekit_fancy_animation_type]) ? $animation_types[$ekit_fancy_animation_type] : 'clip is-full-width';
-
-        // Sanitize title tags
-        $options_ekit_text_title_tag = array_keys([
-            'h1' => 'H1',
-            'h2' => 'H2',
-            'h3' => 'H3',
-            'h4' => 'H4',        
-            'h5' => 'H5',
-            'h6' => 'H6',
-            'div' => 'div',
-            'span' => 'span',
-            'p' => 'p',
-        ]);
-
-        $title_tag = \ElementsKit_Lite\Utils::esc_options($ekit_fancy_text_title_tag, $options_ekit_text_title_tag, 'h2');
+        $title_tag = \Elementor\Utils::validate_html_tag($ekit_fancy_text_title_tag);
 
 		$fancy_animation_settings = [
 			'animationStyle' => $ekit_fancy_animation_style,
@@ -1096,4 +1090,5 @@ class ElementsKit_Widget_Fancy_Animated_Text extends Widget_Base {
             <?php echo strip_tags($svg, '<path>'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- It will escape finally inside $this->render_raw() method ?>
         </svg> 
     <?php }
+	
 }

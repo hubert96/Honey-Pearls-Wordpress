@@ -10,7 +10,7 @@ defined('ABSPATH') || exit;
 /**
  * Class ElementsKit_Widget_Facebook_Feed
  *
- * This facebook feed need to must have user_posts permission to work properly
+ * This Facebook feed requires appropriate Page permissions (commonly `pages_read_engagement` and, for reading post content, `pages_read_user_content`) on the access token.
  *
  *
  * @package Elementor
@@ -47,6 +47,14 @@ class ElementsKit_Widget_Facebook_Feed extends Widget_Base {
     public function get_help_url() {
         return 'https://wpmet.com/doc/facebook-feed-api/';
     }
+
+	public function get_style_depends() {
+		return ['ekit-layout-responsive', 'ekit-pro-facebook-feed'];
+	}
+
+	public function get_script_depends() {
+		return ['ekit-pro-facebook-feed'];
+	}
 
     protected function is_dynamic_content(): bool {
         return false;
@@ -118,7 +126,7 @@ class ElementsKit_Widget_Facebook_Feed extends Widget_Base {
 				'type'    => Controls_Manager::NUMBER,
 				'default' => 9,
 				'min'     => 1,
-				'max'     => 100,
+				'max'     => 25,
 				'step'    => 1,
 
 			]
@@ -1717,9 +1725,17 @@ class ElementsKit_Widget_Facebook_Feed extends Widget_Base {
 		 */
 		$page = $setting->verify_fb_page_and_token();
 
-		if(!empty($page['param']['pg_id'])):
+		if(!empty($page['param']['pg_id'])) {
 
-			$load = $setting->get_fb_page_posts($ekit_facebook_feed_show_post);
+			// The cached response holds the full set; $max_post below trims it down
+			// to what this particular widget is set to show.
+			$load = $setting->get_fb_page_posts();
+			if(empty($load['success'])) {
+				echo esc_html__( 'Fetching page posts failed! <br/>', 'elementskit' );
+				echo esc_html__('Error msg : ', 'elementskit') . esc_html($load['msg']) . esc_html('<br/>');
+				return;
+			}
+
 			if(!empty($load['success'])) {
 
 			    $max_post = $ekit_facebook_feed_show_post;
@@ -1751,10 +1767,8 @@ class ElementsKit_Widget_Facebook_Feed extends Widget_Base {
 					}
 				}
 
-
-
 				if(isset($response->error)) {
-					echo esc_html($response->error->message);
+					echo !empty($response->error->message) ? esc_html($response->error->message) : esc_html__('Facebook API error', 'elementskit');
 
 					return '';
 				}
@@ -1773,14 +1787,17 @@ class ElementsKit_Widget_Facebook_Feed extends Widget_Base {
 				// Bottom reaction section
 				$show_reaction = isset($show_reaction) ? $show_reaction : 'yes';
 
-				$ekit_facebook_feed_show_comments = 'no'
+				$ekit_facebook_feed_show_comments = 'no';
 
 				?>
                 <div class="ekit-facebook-feed">
                     <div class="ekit-fb-row <?php echo esc_attr($masnory_column . ' ' . $styleLayout); ?>">
 						<?php
 
-						$default_pic_placeholder = Handler::get_url() . 'assets/images/profile-placeholder.jpg';
+						$default_pic_placeholder  = Handler::get_url() . 'assets/images/profile-placeholder.jpg';
+						$default_feed_placeholder = Handler::get_url() . 'assets/images/fb-feed-placeholder.png';
+						$profile_image_fallback   = "this.onerror=null;this.src='" . esc_url($default_pic_placeholder) . "';";
+						$feed_image_fallback      = "this.onerror=null;this.src='" . esc_url($default_feed_placeholder) . "';";
 
 						$page_link = 'https://www.facebook.com/' . $page['param']['pg_id'];
 
@@ -1800,7 +1817,7 @@ class ElementsKit_Widget_Facebook_Feed extends Widget_Base {
 							$fb_created_time  = isset($fbjson->created_time) ? $fbjson->created_time : '';
 							$updated_time     = isset($fbjson->updated_time) ? $fbjson->updated_time : '';
 							$fb_picture       = isset($fbjson->picture) ? $fbjson->picture : '';
-							$fb_full_picture  = isset($fbjson->full_picture) ? $fbjson->full_picture : '';
+							$fb_full_picture  = isset($fbjson->full_picture) ? $this->cached_img_url($fbjson->full_picture) : '';
 							$fb_permalink_url = isset($fbjson->permalink_url) ? $fbjson->permalink_url : '';
 
 							// from user
@@ -1824,7 +1841,7 @@ class ElementsKit_Widget_Facebook_Feed extends Widget_Base {
 							 */
 							$fb_comments     = isset($fbjson->comments->summary->total_count)? 	$fbjson->comments->summary->total_count : 0;
 							$convert_comment = $this->unit_converter($fb_comments);
-							$cmt_link        = $fbjson->permalink_url?$fbjson->permalink_url : '#';
+							$cmt_link        = empty($fb_permalink_url) ? '#' : $fb_permalink_url;
 
 							/**
 							 * Share count is coming correct now with permission -
@@ -1844,13 +1861,18 @@ class ElementsKit_Widget_Facebook_Feed extends Widget_Base {
 							$userName = '';
 
 							$profileName = 'Annonymous';
+
+							// The reduced field set has no author on it, so the placeholder has to
+							// be in place before the author block is printed.
+							$profileImage = $default_pic_placeholder;
+
 							if(isset($fbjson->from)) {
 								$userName     = $fb_from_user->id;
 								$profileName  = $fb_from_user->name;
-								$profileImage = \Ekit_facebook_settings::get_fb_page_profile_pic_url($fbjson->from->id);
+								$profileImage = $this->cached_img_url(\Ekit_facebook_settings::get_fb_page_profile_pic_url($fbjson->from->id));
 							}
 
-							$pic_created_time = date("F j, Y", strtotime($fb_created_time . " +1 days"));
+							$pic_created_time = gmdate("F j, Y", strtotime($fb_created_time . " +1 days"));
 
 							$photos_class = '';
 
@@ -1867,7 +1889,7 @@ class ElementsKit_Widget_Facebook_Feed extends Widget_Base {
 											echo esc_attr( in_array($per_post_image_position, ['left', 'background']) ? ' image-in-' . $image_position : '' ); 
 											echo esc_attr( $image_bg_style == 's2' ? ' bg-img-style-2' : '' )
 										?>"
-										style="<?php echo ($per_post_image_position == 'background' && !empty($feed_image)) ? 'background-image:url(' . esc_url($feed_image) . ')' : ''; ?>"
+										style="<?php echo ($per_post_image_position == 'background' && !empty($feed_image)) ? 'background-image:url(' . esc_url($feed_image) . '), url(' . esc_url($default_feed_placeholder) . ');' : ''; ?>"
 									>
 										<?php if($per_post_image_position == 'background'): ?>
 											<div class='facebook-feed-card__inner'>
@@ -1896,12 +1918,12 @@ class ElementsKit_Widget_Facebook_Feed extends Widget_Base {
 										<?php endif; ?>
 
 										<?php if($per_post_image_position == 'left'): ?>
-											<?php $this->render_feed_image($fbjson); ?>
+											<?php $this->render_feed_image($fbjson, $feed_image_fallback); ?>
 											<div class='right'>
 										<?php endif; ?>
 
 										<?php if($per_post_image_position == 'top'):
-											$this->render_feed_image($fbjson);
+											$this->render_feed_image($fbjson, $feed_image_fallback);
 										endif;
 
 										
@@ -1913,13 +1935,14 @@ class ElementsKit_Widget_Facebook_Feed extends Widget_Base {
 
 													if(in_array($ekit_facebook_feed_author_type, [ 'both', 'only-profile' ])): ?>
                                                         <a 
-                                                           	target="_blank"
+                                                            	target="_blank"
 															href="https://www.facebook.com/<?php echo esc_attr($userName); ?>"
-                                                           	class="<?php echo esc_attr($ekit_facebook_feed_author_style); echo esc_attr( $show_thumbnail_outline ) ? ' has-outline' : '' ?>">
-                                                            	<img 
+                                                            	class="<?php echo esc_attr($ekit_facebook_feed_author_style); echo esc_attr( $show_thumbnail_outline ) ? ' has-outline' : '' ?>">
+                                                             	<img 
 																	src="<?php echo esc_url( $profileImage ); ?>"
-                                                                 	alt="<?php echo esc_attr($userName); ?>"
-																/>
+                                                                  	alt="<?php echo esc_attr($userName); ?>"
+																	onerror="<?php echo esc_attr($profile_image_fallback); ?>"
+ 																/>
                                                         </a>
 														<?php
 													endif; ?>
@@ -1981,7 +2004,7 @@ class ElementsKit_Widget_Facebook_Feed extends Widget_Base {
 										<?php endif; ?>
 										
 										<?php if($per_post_image_position == 'center'): ?>
-											<?php $this->render_feed_image($fbjson); ?>
+											<?php $this->render_feed_image($fbjson, $feed_image_fallback); ?>
 										<?php endif; ?>
 
 										<?php if( empty($image_bg_style) || $image_bg_style == 's1' ): ?>
@@ -2039,8 +2062,8 @@ class ElementsKit_Widget_Facebook_Feed extends Widget_Base {
 																'';
 															?>
 															<a href="<?php echo 'https://twitter.com/share' . esc_html($twitter_params); ?>" title="Share" target="_blank" class='ekit-fb-feed-share__with-tw'>
-																<i class="icon icon-twitter"></i>
-																<span><?php echo esc_html__('Share on Twitter', 'elementskit'); ?></span>
+																<i class="icon icon-x-twitter"></i>
+																<span><?php echo esc_html__('Share on X', 'elementskit'); ?></span>
 															</a>
 
 															<?php
@@ -2061,7 +2084,7 @@ class ElementsKit_Widget_Facebook_Feed extends Widget_Base {
 															</a>		
 														</div>
 													</span>
-													<a href="<?php echo esc_url($fbjson->permalink_url) ;?>"  class='ekit-fb-feed-share__view' target="_blank">
+													<a href="<?php echo esc_url($fb_permalink_url) ;?>"  class='ekit-fb-feed-share__view' target="_blank">
 														<span class='medium-text'> <?php echo esc_html__( 'View', 'elementskit' ) ?> </span>
 														<i class='icon icon-arrow-right'></i>
 													</a>
@@ -2108,7 +2131,8 @@ class ElementsKit_Widget_Facebook_Feed extends Widget_Base {
                                                    target="_blank">
                                                     <img class="ekit_fb_photo"
                                                          src="<?php echo esc_url($fb_full_picture); ?>"
-                                                         alt="<?php echo esc_attr($fb_name); ?>"/>
+                                                         alt="<?php echo esc_attr($fb_name); ?>"
+														 onerror="<?php echo esc_attr($feed_image_fallback); ?>"/>
                                                 </a>
                                             </div>
                                             <!--End Media -->
@@ -2123,19 +2147,24 @@ class ElementsKit_Widget_Facebook_Feed extends Widget_Base {
 						?>
                     </div>
                 </div>
-				<?php
+					<?php
+				}
 
-			} else {
-				echo esc_html__( 'Fetching page posts failed! <br/>', 'elementskit' );
-				echo esc_html__('Error msg : ', 'elementskit') . esc_html($load['msg']) . esc_html('<br/>');
-			}
-
-		else:
+		} else {
 
 			echo esc_html__( 'Page could not be verified!<br/>', 'elementskit' );
 			echo esc_html__( 'Most probably your page access token is wrong or expired, please refresh the page token in the user setting data', 'elementskit' );
 
-		endif;
+		}
+	}
+
+	/**
+	 * Facebook image URLs are signed and expire, so every image is mirrored into
+	 * the uploads folder and served from there once it has been stored.
+	 */
+	protected function cached_img_url( $url ) {
+
+		return Handler::media_cache()->url($url);
 	}
 
 	protected function format_column( $devices, $value ){
@@ -2150,12 +2179,14 @@ class ElementsKit_Widget_Facebook_Feed extends Widget_Base {
 		$image_types = ['photo', 'album', 'share', 'profile_media', 'cover_photo'];
 		$video_types = ['video', 'video_autoplay', 'video-inline'];
         $data = $post->attachments->data[0];
-        
-		if(in_array($data->type, $image_types)){
-			return esc_url($data->media->image->src);
+		$type = isset($data->type) ? $data->type : '';
+
+		if(in_array($type, $image_types)){
+			// A share can arrive without any media of its own.
+			return empty($data->media->image->src) ? '' : esc_url($this->cached_img_url($data->media->image->src));
         }
-		elseif(substr($data->type, 0, 5) == 'video' || in_array($data->type, $video_types)){
-			return !empty($post->full_picture) ? esc_url($post->full_picture) : '';
+		elseif(substr($type, 0, 5) == 'video' || in_array($type, $video_types)){
+			return !empty($post->full_picture) ? esc_url($this->cached_img_url($post->full_picture)) : '';
 		}
 		return '';
 	}
@@ -2170,59 +2201,100 @@ class ElementsKit_Widget_Facebook_Feed extends Widget_Base {
 		<?php endif;
 	}
 
-    protected function render_feed_image( $fbjson ) { 
-        
-        if(empty($fbjson->attachments)){ return ;}
+    protected function render_feed_image( $fbjson, $fallback_attr = '' ) {
 
-        $has_media = false;
-        foreach( $fbjson->attachments->data as $post ):
-            if(isset($post->type)){
-                $has_media = true;
-                break;
-            }
-        endforeach;
+        if(empty($fbjson->attachments) || empty($fbjson->attachments->data)){ return ;}
 
-        if(!$has_media){ return ;}
+		$feed_placeholder = Handler::get_url() . 'assets/images/fb-feed-placeholder.png';
 
+		if(empty($fallback_attr)) {
+			$fallback_attr = "this.onerror=null;this.src='" . esc_url($feed_placeholder) . "';";
+		}
+
+		$image_types = ['photo', 'album', 'share', 'profile_media', 'cover_photo'];
+		$items       = [];
+
+		// A link post often carries an attachment with no preview image on it, and a
+		// placeholder in place of a picture that never existed helps nobody. Collect
+		// what can really be shown first, then draw only that.
+		foreach($fbjson->attachments->data as $obj) {
+
+			$type = isset($obj->type) ? $obj->type : '';
+			$src  = isset($obj->media->image->src) ? $obj->media->image->src : '';
+
+			if(in_array($type, $image_types, true)) {
+
+				if(empty($src)) {
+					continue;
+				}
+
+				$items[] = [
+					'kind'  => 'image',
+					'type'  => $type,
+					'src'   => $src,
+					'title' => isset($obj->title) ? $obj->title : '',
+				];
+
+				continue;
+			}
+
+			if(substr($type, 0, 5) === 'video' || 'video_autoplay' === $type) {
+
+				$poster = isset($fbjson->full_picture) ? $fbjson->full_picture : $src;
+				$source = isset($obj->media->source) ? $obj->media->source : '';
+
+				// No poster and nothing to play leaves nothing to draw at all.
+				if(empty($poster) && empty($source)) {
+					continue;
+				}
+
+				$items[] = [
+					'kind'   => 'video',
+					'src'    => empty($poster) ? $feed_placeholder : $poster,
+					'source' => $source,
+				];
+			}
+		}
+
+		if(empty($items)) {
+			return;
+		}
         ?>
 		<div class='ekit-fb-feed-image'>
-			<?php if(!empty($fbjson->attachments->data)):
-				$objs = $fbjson->attachments->data;
-				foreach( $objs as $obj ):
-					if($obj->type == 'photo' || $obj->type == 'album') : ?>
-						<img src="<?php echo esc_url( $obj->media->image->src ); ?>" alt="Post Image"/>
-					<?php elseif( 
-						$obj->type == 'share' || 
-						$obj->type == 'profile_media' || 
-						$obj->type == 'cover_photo' 
-					): ?>
-						<img 
-							src="<?php echo esc_url( $obj->media->image->src ); ?>"
-							title="<?php echo esc_attr( $obj->title ) ?>"
-							alt="<?php echo esc_attr( $obj->title ) ?>" 
+			<?php foreach($items as $item) :
+
+				if('image' === $item['kind']) :
+
+					if('photo' === $item['type'] || 'album' === $item['type']) : ?>
+						<img src="<?php echo esc_url( $this->cached_img_url($item['src']) ); ?>" alt="Post Image" onerror="<?php echo esc_attr($fallback_attr); ?>"/>
+					<?php else : ?>
+						<img
+							src="<?php echo esc_url( $this->cached_img_url($item['src']) ); ?>"
+							title="<?php echo esc_attr( $item['title'] ) ?>"
+							alt="<?php echo esc_attr( $item['title'] ) ?>"
+							onerror="<?php echo esc_attr($fallback_attr); ?>"
 						/>
-					<?php elseif(
-						substr($obj->type, 0, 5) == 'video' || 
-						$obj->type == 'video_autoplay' || 
-						$obj->type == 'video'
-                    ):
-                    $fb_name          = isset($fbjson->name) ? $fbjson->name : '';
-					$fb_full_picture  = isset($fbjson->full_picture) ? $fbjson->full_picture : '';
+					<?php endif;
+
+				else :
+					$fb_name = isset($fbjson->name) ? $fbjson->name : '';
 					?>
-						<div class='video-container' data-src="<?php echo esc_url($obj->media->source); ?>">
-                            <img src="<?php echo esc_url($fb_full_picture); ?>" alt="<?php echo esc_html($fb_name); ?>"/>
+						<div class='video-container' data-src="<?php echo esc_url($item['source']); ?>">
+                            <img src="<?php echo esc_url($this->cached_img_url($item['src'])); ?>" alt="<?php echo esc_html($fb_name); ?>" onerror="<?php echo esc_attr($fallback_attr); ?>"/>
+							<?php if(!empty($item['source'])) : ?>
 							<div class="ekit-fb-hover-content">
-								<div class="ekit-fb-video-play-button">
+								<div class="ekit-fb-video-play-button" role="button" tabindex="0" aria-label="<?php echo esc_attr__( 'Play video', 'elementskit' ); ?>">
 									<svg xmlns="https://www.w3.org/2000/svg" style="display: initial;" viewBox="0 0 512 512">
 										<path d="M354.2 247.4L219.1 155c-4.2-3.1-15.4-3.1-16.3 8.6v184.8c1 11.7 12.4 11.9 16.3 8.6l135.1-92.4c3.5-2.1 8.3-10.7 0-17.2zm-130.5 81.3V183.3L329.8 256l-106.1 72.7z"/>
 										<path d="M256 11C120.9 11 11 120.9 11 256s109.9 245 245 245 245-109.9 245-245S391.1 11 256 11zm0 469.1C132.4 480.1 31.9 379.6 31.9 256S132.4 31.9 256 31.9 480.1 132.4 480.1 256 379.6 480.1 256 480.1z"/>
 									</svg>
 								</div>
 							</div>
+							<?php endif; ?>
 						</div>
-					<?php endif;
-				endforeach;
-			endif; ?>
+				<?php endif;
+			endforeach; ?>
 		</div>
 	<?php }
+	
 }

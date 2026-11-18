@@ -9,10 +9,18 @@ class ElementsKit_Widget_Woo_Mini_Cart_Handler extends \ElementsKit_Lite\Core\Ha
     }
 
     public function ekit_cart_count_total_fragments( $fragments ) {
-        
-        $fragments['.ekit-cart-items-count'] = '<span class="ekit-cart-items-count">' . '<span class="ekit-cart-content-count">'. WC()->cart->get_cart_contents_count() . '</span><span class="ekit-cart-content-separator"> - </span>' .  WC()->cart->get_cart_total(). '</span>';
+        if ( ! function_exists( 'WC' ) || ! WC()->cart ) {
+            return $fragments;
+        }
 
+        $fragments['.ekit-cart-items-count'] = '<span class="ekit-cart-items-count"><span class="ekit-cart-content-count">' . WC()->cart->get_cart_contents_count() . '</span><span class="ekit-cart-content-separator"> - </span>' . WC()->cart->get_cart_total() . '</span>';
         $fragments['.ekit-cart-count'] = '<span class="ekit-cart-count">' . WC()->cart->get_cart_contents_count() . '</span>';
+
+        ob_start();
+        woocommerce_mini_cart();
+        $mini_cart = ob_get_clean();
+
+        $fragments['div.widget_shopping_cart_content'] = '<div class="widget_shopping_cart_content">' . $mini_cart . '</div>';
 
         return $fragments;
     }

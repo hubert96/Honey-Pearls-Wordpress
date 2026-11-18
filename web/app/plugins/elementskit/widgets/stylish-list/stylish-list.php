@@ -33,9 +33,18 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
         return 'https://wpmet.com/doc/stylish-list';
     }
 
+	public function get_style_depends() {
+		return ['elementor-animations', 'ekit-pro-stylish-list'];
+	}
+
+	public function get_script_depends() {
+		return ['ekit-pro-stylish-list'];
+	}
+
     protected function is_dynamic_content(): bool {
         return false;
     }
+
     protected function register_controls() {
 
         $this->start_controls_section(
@@ -79,7 +88,7 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 				'label_on' => esc_html__('Yes', 'elementskit'),
 				'label_off' => esc_html__('No', 'elementskit'),
 				'return_value' => 'yes',
-				'default' => 'no'		
+				'default' => 'no'
 			]
 		);
 
@@ -89,7 +98,7 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 				'label' => esc_html__( 'Counter Style', 'elementskit' ),
 				'type' => Controls_Manager::SELECT,
 				'default' => 'number-normal',
-				'options' => [								
+				'options' => [
 					'number-normal'  => esc_html__( 'Normal', 'elementskit' ),
 					'decimal-leading-zero'  => esc_html__( 'Decimal Leading Zero', 'elementskit' ),
 					'upper-alpha'  => esc_html__( 'Upper Alpha', 'elementskit' ),
@@ -114,7 +123,7 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 				'label' => esc_html__( 'Counter Suffix', 'elementskit' ),
 				'type' => Controls_Manager::SELECT,
 				'default' => '.',
-				'options' => [							
+				'options' => [
 					'.'  => esc_html__( 'Dot', 'elementskit' ),
 					')'  => esc_html__( 'Bracket', 'elementskit' ),
 					':'  => esc_html__( 'Colon', 'elementskit' ),
@@ -303,7 +312,7 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 				],
 			]
 		);
-		
+
 		$repeater->add_control(
 			'list_bg_color',
 			[
@@ -421,9 +430,6 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 				'label_off' => esc_html__('No', 'elementskit'),
 				'return_value' => 'yes',
 				'default' => 'no',
-				'condition' => [
-					'ekit_stylish_list_hover_use!' => '0.6'
-				]
 			]
 		);
 
@@ -432,9 +438,9 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 			[
 				'label' => esc_html__( 'Entrance Animation', 'elementskit' ),
 				'type' => Controls_Manager::ANIMATION,
+				'render_type' => 'template',
 				'condition' => [
 					'ekit_stylish_list_animation_use' => 'yes',
-					'ekit_stylish_list_hover_use!' => '0.6'
 				]
 			]
 		);
@@ -453,7 +459,6 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 				'condition' => [
 					'ekit_stylish_list_entrance_animation!'=> '',
 					'ekit_stylish_list_animation_use' => 'yes',
-					'ekit_stylish_list_hover_use!' => '0.6'
 				]
 			]
 		);
@@ -468,7 +473,6 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 				'condition'          => [
 					'ekit_stylish_list_entrance_animation!'=> '',
 					'ekit_stylish_list_animation_use' => 'yes',
-					'ekit_stylish_list_hover_use!' => '0.6'
 				]
 			]
 		);
@@ -486,7 +490,7 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 			]
 		);
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'ekit_stylish_list_justify',
 			[
 				'label' => esc_html__('Justify Content', 'elementskit'),
@@ -515,8 +519,8 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 				]
 			]
 		);
-		
-		$this->add_control(
+
+		$this->add_responsive_control(
 			'ekit_stylish_list_align_item',
 			[
 				'label' => esc_html__('Align Items', 'elementskit'),
@@ -544,7 +548,7 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 		$this->start_controls_tabs(
 			'ekit_stylish_list_tabs'
 		);
-		
+
 		$this->start_controls_tab(
 			'ekit_stylish_list_normal_tab',
 			[
@@ -580,7 +584,7 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 				'selector' => '{{WRAPPER}} .ekit-stylish-list-content-wrapper',
 			]
 		);
-		
+
 		$this->end_controls_tab();
 
 		$this->start_controls_tab(
@@ -618,9 +622,9 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 				'selector' => '{{WRAPPER}} .ekit-stylish-list-content-wrapper:hover',
 			]
 		);
-		
+
 		$this->end_controls_tab();
-		
+
 		$this->end_controls_tabs();
 
 		$this->add_control(
@@ -636,7 +640,7 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 			]
 		);
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'ekit_stylish_list_padding',
 			[
 				'label' => esc_html__('Padding', 'elementskit'),
@@ -648,7 +652,7 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 			]
 		);
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'ekit_stylish_list_margin',
 			[
 				'label' => esc_html__('Margin', 'elementskit'),
@@ -662,7 +666,7 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 
 		$this->end_controls_section();
 
-		// Icon Style Section 
+		// Icon Style Section
 		$this->start_controls_section(
 			'ekit_stylish_list_section_icon_style',
 			[
@@ -671,7 +675,7 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 			]
 		);
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'ekit_stylish_list_icon_direction',
 			[
 				'label' => esc_html__('Direction', 'elementskit'),
@@ -706,7 +710,7 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 			]
 		);
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'ekit_stylish_list_icon_size',
 			[
 				'label' => esc_html__('Size', 'elementskit'),
@@ -744,7 +748,7 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 			]
 		);
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'ekit_stylish_list_icon_width',
 			[
 				'label' => esc_html__('Width', 'elementskit'),
@@ -759,7 +763,7 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 			]
 		);
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'ekit_stylish_list_icon_height',
 			[
 				'label' => esc_html__('Height', 'elementskit'),
@@ -777,7 +781,7 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 		$this->start_controls_tabs(
 			'ekit_stylish_list_icon_tabs'
 		);
-		
+
 		$this->start_controls_tab(
 			'ekit_stylish_list_icon_normal_tab',
 			[
@@ -792,8 +796,7 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 				'type' => Controls_Manager::COLOR,
 				'default' => '#E93469',
 				'selectors' => [
-					'{{WRAPPER}} .ekit-stylish-list-content-icon > i' => 'color: {{VALUE}}',
-					'{{WRAPPER}} .ekit-stylish-list-content-icon > svg path' => 'stroke: {{VALUE}} !important;',
+					'{{WRAPPER}} .ekit-stylish-list-content-icon > :is( i, svg )' => 'color: {{VALUE}}; fill: {{VALUE}};',
 					'{{WRAPPER}} .ekit-stylish-list-content-icon > img' => 'color: {{VALUE}};',
 				],
 			]
@@ -829,7 +832,7 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 				],
 			]
 		);
-		
+
 		$this->end_controls_tab();
 
 		$this->start_controls_tab(
@@ -846,9 +849,8 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 				'type' => Controls_Manager::COLOR,
 				'default' => '#E93469',
 				'selectors' => [
-					'{{WRAPPER}} .ekit-stylish-list-content-wrapper:hover .ekit-stylish-list-content-icon > i' => 'color: {{VALUE}}',
-					'{{WRAPPER}} .ekit-stylish-list-content-wrapper:hover .ekit-stylish-list-content-icon > img' => 'color: {{VALUE}}',
-					'{{WRAPPER}} .ekit-stylish-list-content-wrapper:hover .ekit-stylish-list-content-icon > svg path' => 'stroke: {{VALUE}} !important;',
+					'{{WRAPPER}} .ekit-stylish-list-content-wrapper:hover .ekit-stylish-list-content-icon > :is( i, svg )' => 'color: {{VALUE}}; fill: {{VALUE}};',
+					'{{WRAPPER}} .ekit-stylish-list-content-wrapper:hover .ekit-stylish-list-content-icon > img' => 'color: {{VALUE}};',
 				],
 			]
 		);
@@ -883,12 +885,12 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 				],
 			]
 		);
-		
+
 		$this->end_controls_tab();
-		
+
 		$this->end_controls_tabs();
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'ekit_stylish_list_icon_padding',
 			[
 				'label' => esc_html__( 'Padding', 'elementskit' ),
@@ -901,7 +903,7 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 			]
 		);
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'ekit_stylish_list_icon_margin',
 			[
 				'label' => esc_html__( 'Margin', 'elementskit' ),
@@ -943,7 +945,7 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 		$this->start_controls_tabs(
 			'ekit_stylish_list_title_tabs'
 		);
-		
+
 		$this->start_controls_tab(
 			'ekit_stylish_list_title_normal_tab',
 			[
@@ -1001,10 +1003,10 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 		);
 
 		$this->end_controls_tab();
-		
+
 		$this->end_controls_tabs();
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'ekit_stylish_list_title_margin',
 			[
 				'label' => esc_html__( 'Margin', 'elementskit' ),
@@ -1093,7 +1095,7 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 			]
 		);
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'ekit_stylish_list_description_margin',
 			[
 				'label' => esc_html__( 'Margin', 'elementskit' ),
@@ -1124,7 +1126,7 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 			]
 		);
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'ekit_stylish_list_badge_direction',
 			[
 				'label' => esc_html__('Badge Direction', 'elementskit'),
@@ -1211,7 +1213,7 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 			]
 		);
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'ekit_stylish_list_badge_padding',
 			[
 				'label' => esc_html__( 'Padding', 'elementskit' ),
@@ -1232,7 +1234,7 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 			]
 		);
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'ekit_stylish_list_badge_margin',
 			[
 				'label' => esc_html__( 'Margin', 'elementskit' ),
@@ -1438,31 +1440,34 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 		$entrance_animation = '';
 		$animation_duration = '';
 
-		if($ekit_stylish_list_animation_use == 'yes' ) {
-			$entrance_animation = "data-ekit-animation= $ekit_stylish_list_entrance_animation";
-			$animation_duration = ' animated-'.$ekit_stylish_list_animation_duration;
-		}	
+		if ( $ekit_stylish_list_animation_use === 'yes' && ! empty( $ekit_stylish_list_entrance_animation ) && $ekit_stylish_list_entrance_animation !== 'none' ) {
+			$entrance_animation = $ekit_stylish_list_entrance_animation;
+			if ( ! empty( $ekit_stylish_list_animation_duration ) ) {
+				$animation_duration = ' animated-' . $ekit_stylish_list_animation_duration;
+			}
+		}
 	?>
-		<ul class="ekit-stylish-list <?php echo esc_attr($list_type_class)?>" <?php echo esc_attr($entrance_animation); ?>>
-			<?php foreach($ekit_stylist_lists as $index => $list) : 
-					$animation_delay = $ekit_stylish_list_animation_use == 'yes' ? (' data-ekit-delay='.$ekit_stylish_list_animation_delay * $index * 1000) : '';
+		<ul class="ekit-stylish-list <?php echo esc_attr($list_type_class)?>" <?php if (!empty($entrance_animation)) : ?>data-ekit-animation="<?php echo esc_attr($entrance_animation); ?>"<?php endif; ?>>
+			<?php foreach($ekit_stylist_lists as $index => $list) :
+				$animation_delay = !empty($entrance_animation) ? ($ekit_stylish_list_animation_delay * $index * 1000) : null;
 				?>
-				<li class="ekit-stylish-list-content-wrapper elementor-repeater-item-<?php echo esc_attr( $list[ '_id' ].$animation_duration ); ?>" <?php echo esc_attr($animation_delay); ?>>
-					<?php if(!empty($list['link']['url'])) : 
-						$this->add_link_attributes('link'.$list[ '_id' ] , $list['link']); ?>
+				<li class="ekit-stylish-list-content-wrapper elementor-repeater-item-<?php echo esc_attr( $list[ '_id' ].$animation_duration ); ?>" <?php if ($animation_delay !== null) : ?>data-ekit-delay="<?php echo esc_attr($animation_delay); ?>"<?php endif; ?>>
+					<?php if(!empty($list['link']['url'])) :
+						$this->add_link_attributes('link'.$list[ '_id' ] , $list['link']);
+						$this->add_render_attribute('link'.$list[ '_id' ], 'aria-label', wp_strip_all_tags($list['title'])); ?>
 						<a class="ekit-wrapper-link" <?php $this->print_render_attribute_string('link'.$list[ '_id' ]); ?>></a>
 					<?php endif; ?>
 					<div class="ekit-stylish-list-content">
-						<?php if ($ekit_stylish_list_counter == 'yes') : ?>	
+						<?php if ($ekit_stylish_list_counter == 'yes') : ?>
 							<div class="ekit-stylish-list-content-counter"></div>
 						<?php endif; ?>
 						<?php if ($list['media_type'] == 'icon' && !empty($list['icon']['value'])) : ?>
-							<div class="ekit-stylish-list-content-icon">			
-								<?php Icons_Manager::render_icon( $list['icon'], [ 'aria-hidden' => 'true' ] ); ?>			
+							<div class="ekit-stylish-list-content-icon">
+								<?php Icons_Manager::render_icon( $list['icon'], [ 'aria-hidden' => 'true' ] ); ?>
 							</div>
 						<?php endif; ?>
 						<?php if ($list['media_type'] == 'image' && !empty($list['image']['id'])) : ?>
-							<div class="ekit-stylish-list-content-icon">			
+							<div class="ekit-stylish-list-content-icon">
 								<?php echo wp_kses(wp_get_attachment_image( $list['image']['id'], 'full', false,'' ), \ElementsKit_Lite\Utils::get_kses_array()); ?>
 							</div>
 						<?php endif; ?>
@@ -1478,13 +1483,13 @@ class ElementsKit_Widget_Stylish_List extends Widget_Base {
 							</div>
 						<?php endif; ?>
 					</div>
-					
 				</li>
 				<?php if($ekit_stylish_list_divider == 'yes') : ?>
 					<div class="ekit-stylish-list-divider<?php echo esc_attr($divider_class)?>"></div>
 				<?php endif; ?>
 			<?php endforeach; ?>
 		</ul>
-	<?php 
+	<?php
 	}
+	
 }

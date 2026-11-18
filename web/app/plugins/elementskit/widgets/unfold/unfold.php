@@ -28,7 +28,7 @@ class ElementsKit_Widget_Unfold extends Widget_Base {
     public function get_categories() {
         return Handler::get_categories();
     }
-    
+
 	public function get_keywords() {
 		return Handler::get_keywords();
 	}
@@ -36,6 +36,14 @@ class ElementsKit_Widget_Unfold extends Widget_Base {
     public function get_help_url() {
         return 'https://wpmet.com/doc/unfold/';
     }
+
+	public function get_style_depends() {
+		return ['ekit-pro-unfold'];
+	}
+
+	public function get_script_depends() {
+		return ['ekit-pro-unfold'];
+	}
 
     protected function is_dynamic_content(): bool {
         return true;
@@ -45,9 +53,7 @@ class ElementsKit_Widget_Unfold extends Widget_Base {
 		return ! Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
 	}
 
-    protected function register_controls() {
-
-
+	protected function register_controls() {
 		$this->start_controls_section(
 			'unfold_general_content',
 			array(
@@ -91,12 +97,20 @@ class ElementsKit_Widget_Unfold extends Widget_Base {
 			]
 		);
 		$this->add_control(
-            'unfold_widget_content', [
-                'label' => esc_html__('Content', 'elementskit'),
-                'type' => ElementsKit_Controls_Manager::WIDGETAREA,
-                'label_block' => true,
-            ]
-        );
+			'unfold_widget_content', [
+				'label' => esc_html__('Content', 'elementskit'),
+				'type' => ElementsKit_Controls_Manager::WIDGETAREA,
+				'label_block' => true,
+			]
+		);
+		$this->end_controls_section();
+
+		$this->start_controls_section(
+			'unfold_button_content',
+			[
+				'label' => esc_html__( 'Button ', 'elementskit' ),
+			]
+		);
 		$this->add_control(
 			'unfold_expand_btn_text',
 			[
@@ -108,6 +122,17 @@ class ElementsKit_Widget_Unfold extends Widget_Base {
 				],
 			]
 		);
+
+		$this->add_control(
+			'unfold_expand_btn_text_icon',
+			[
+				'label' => esc_html__( 'Expand Button Icon', 'elementskit' ),
+				'type' => Controls_Manager::ICONS,
+				'skin' => 'inline',
+				'label_block' => false,
+			]
+		);
+
 		$this->add_control(
 			'unfold_collapse_btn_text',
 			[
@@ -116,6 +141,57 @@ class ElementsKit_Widget_Unfold extends Widget_Base {
 				'default'	=> 'Read Less',
 				'dynamic' => [
 					'active' => true,
+				],
+			]
+		);
+		// icon control can be added here
+		$this->add_control(
+			'unfold_collapse_btn_text_icon',
+			[
+				'label' => esc_html__( 'Collapse Button Icon', 'elementskit' ),
+				'type' => Controls_Manager::ICONS,
+				'skin' => 'inline',
+				'label_block' => false,
+			]
+		);
+
+		$this->add_control(
+			'unfold_btn_icon_position',
+			[
+				'label' => esc_html__('Icon Position', 'elementskit'),
+				'type' => Controls_Manager::SELECT,
+				'default' => 'after',
+				'options' => [
+					'before' => esc_html__('Before Text', 'elementskit'),
+					'after' => esc_html__('After Text', 'elementskit'),
+				],
+				'selectors_dictionary' => [
+					'before' => 'flex-direction: row-reverse; display: flex; align-items: center;',
+					'after' => 'flex-direction: row; display: flex; align-items: center;',
+				],
+				'selectors' => [
+					'{{WRAPPER}} .ekit-unfold-btn' => '{{VALUE}}',
+				],
+			]
+		);
+
+		$this->add_control(
+			'unfold_btn_icon_spacing',
+			[
+				'label' => esc_html__('Icon Spacing (px)', 'elementskit'),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => [ 'px' ],
+				'range' => [
+					'px' => [
+						'min' => 0,
+						'max' => 50,
+					],
+				],
+				'default' => [
+					'size' => 5,
+				],
+				'selectors' => [
+					'{{WRAPPER}} .ekit-unfold-btn' => 'gap: {{SIZE}}{{UNIT}};',
 				],
 			]
 		);
@@ -130,7 +206,7 @@ class ElementsKit_Widget_Unfold extends Widget_Base {
 		);
 
 		$this->add_control(
-			'unfold_content_expand_direction',  
+			'unfold_content_expand_direction',
 			[
 				'label' => esc_html__('Content Expand Direction', 'elementskit'),
 				'type' => Controls_Manager::SELECT,
@@ -141,7 +217,7 @@ class ElementsKit_Widget_Unfold extends Widget_Base {
 				],
 			]
 		);
-		
+
 		$this->add_responsive_control(
 			'unfold_collapsed_content_height', [
 				'label'			 =>esc_html__( 'Collapsed Content Height', 'elementskit' ),
@@ -164,42 +240,43 @@ class ElementsKit_Widget_Unfold extends Widget_Base {
 		);
 
 		$this->add_control(
-            'unfold_transition_duration',
-            [
-                'label'     => esc_html__( 'Transition Duration', 'elementskit' ),
+			'unfold_transition_duration',
+			[
+				'label'     => esc_html__( 'Transition Duration', 'elementskit' ),
 				'type'      => Controls_Manager::NUMBER,
 				'min' => 0,
 				'max' => 5000,
 				'step' => 1,
-                'default'   => 300,
-            ]
+				'default'   => 300,
+			]
 		);
-		
+
 		$this->add_responsive_control(
 			'unfold_btn_alignment',
 			[
-				'label' =>esc_html__( 'Button Alignment', 'elementskit' ),
-				'type' => Controls_Manager::CHOOSE,
+				'label' => esc_html__( 'Button Alignment', 'elementskit' ),
+				'type'  => Controls_Manager::CHOOSE,
 				'options' => [
-					'baseline'    => [
-						'title' =>esc_html__( 'Left', 'elementskit' ),
-						'icon' => 'eicon-text-align-left',
+					'flex-start' => [
+						'title' => esc_html__( 'Left', 'elementskit' ),
+						'icon'  => 'eicon-text-align-left',
 					],
 					'center' => [
-						'title' =>esc_html__( 'Center', 'elementskit' ),
-						'icon' => 'eicon-text-align-center',
+						'title' => esc_html__( 'Center', 'elementskit' ),
+						'icon'  => 'eicon-text-align-center',
 					],
 					'flex-end' => [
-						'title' =>esc_html__( 'Right', 'elementskit' ),
-						'icon' => 'eicon-text-align-right',
+						'title' => esc_html__( 'Right', 'elementskit' ),
+						'icon'  => 'eicon-text-align-right',
 					],
 				],
-				'selectors'=> [
-					 '{{WRAPPER}} .ekit-unfold-btn' => 'align-self: {{VALUE}};',
-				 ],
-				'default' => 'baseline',
+				'selectors' => [
+					'{{WRAPPER}} .ekit-unfold-btn' => 'align-self: {{VALUE}};',
+				],
+				'default' => 'flex-start',
 			]
 		);
+
 
 		$this->end_controls_section();
 
@@ -231,7 +308,7 @@ class ElementsKit_Widget_Unfold extends Widget_Base {
 				],
 				'selectors' => [
 					'{{WRAPPER}} .ekit-unfold-wrapper' => 'width: {{SIZE}}{{UNIT}};',
-                ]
+				]
 			]
 		);
 
@@ -261,7 +338,7 @@ class ElementsKit_Widget_Unfold extends Widget_Base {
 				]
 			]
 		);
- 
+
 		$this->add_group_control(
 			Group_Control_Background::get_type(),
 			[
@@ -283,7 +360,7 @@ class ElementsKit_Widget_Unfold extends Widget_Base {
 				],
 			]
 		);
-	
+
 		$this->add_responsive_control(
 			'unfold_wrapper_margin',
 			[
@@ -331,37 +408,37 @@ class ElementsKit_Widget_Unfold extends Widget_Base {
 				'types'    => [ 'gradient' ],
 				'selector' => '{{WRAPPER}} .ekit-unfold-data:after',
 				'fields_options' => [
-                    'background' => [
-                        'label' => esc_html__( 'Overlay Color', 'elementskit' ),
-                    ],
+					'background' => [
+						'label' => esc_html__( 'Overlay Color', 'elementskit' ),
+					],
 				],
 				'separator' => 'before'
 			]
 		);
 
 		$this->add_responsive_control(
-            'unfold_wrapper_overly_h',
-            [
-                'label' => esc_html__( 'Overlay Height', 'elementskit' ),
-                'type' => Controls_Manager::SLIDER,
-                'size_units' => [ 'px','%' ],
-                'range' => [
-                    'px'    => [
-                        'min'   => 0,
-                        'max'   => 500
-                    ],
-                    '%'     => [
-                        'min' => 0,
-                        'max' => 100,
-                    ],
+			'unfold_wrapper_overly_h',
+			[
+				'label' => esc_html__( 'Overlay Height', 'elementskit' ),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => [ 'px','%' ],
+				'range' => [
+					'px'    => [
+						'min'   => 0,
+						'max'   => 500
+					],
+					'%'     => [
+						'min' => 0,
+						'max' => 100,
+					],
 				],
-                'selectors' => [
-                    '{{WRAPPER}} .ekit-unfold-data:after' => 'height: {{SIZE}}{{UNIT}};line-height: {{SIZE}}{{UNIT}};',
+				'selectors' => [
+					'{{WRAPPER}} .ekit-unfold-data:after' => 'height: {{SIZE}}{{UNIT}};line-height: {{SIZE}}{{UNIT}};',
 				],
 				'separator'	=> 'after',
-            ]
-        );
-	
+			]
+		);
+
 		$this->end_controls_section();
 
 		$this->start_controls_section(
@@ -374,7 +451,7 @@ class ElementsKit_Widget_Unfold extends Widget_Base {
 				]
 			]
 		);
-		
+
 
 		$this->add_responsive_control(
 			'unfold_title_margin',
@@ -394,7 +471,7 @@ class ElementsKit_Widget_Unfold extends Widget_Base {
 				'label' =>esc_html__( 'Alignment', 'elementskit' ),
 				'type' => Controls_Manager::CHOOSE,
 				'options' => [
-					'baseline'    => [
+					'flex-start'    => [
 						'title' =>esc_html__( 'Left', 'elementskit' ),
 						'icon' => 'eicon-text-align-left',
 					],
@@ -408,9 +485,9 @@ class ElementsKit_Widget_Unfold extends Widget_Base {
 					],
 				],
 				'selectors'=> [
-					 '{{WRAPPER}} .ekit-unfold-heading' => 'align-self: {{VALUE}};',
-				 ],
-				'default' => 'baseline',
+						'{{WRAPPER}} .ekit-unfold-heading' => 'align-self: {{VALUE}};',
+					],
+				'default' => 'flex-start',
 			]
 		);
 
@@ -422,15 +499,15 @@ class ElementsKit_Widget_Unfold extends Widget_Base {
 		);
 
 		$this->add_control(
-            'unfold_title_text_color',
-            [
-                'label'      => esc_html__( 'Text Color', 'elementskit' ),
-                'type'       => Controls_Manager::COLOR,
-                'selectors'  => [
-                    '{{WRAPPER}} .ekit-unfold-heading' => 'color: {{VALUE}};'
-                ],
-            ]
-        );
+			'unfold_title_text_color',
+			[
+				'label'      => esc_html__( 'Text Color', 'elementskit' ),
+				'type'       => Controls_Manager::COLOR,
+				'selectors'  => [
+					'{{WRAPPER}} .ekit-unfold-heading' => 'color: {{VALUE}};'
+				],
+			]
+		);
 
 		$this->end_controls_section();
 
@@ -458,22 +535,22 @@ class ElementsKit_Widget_Unfold extends Widget_Base {
 		);
 
 		$this->add_responsive_control(
-            'unfold_desc_para_spacing',
-            [
-                'label' => esc_html__( 'Paragraph Spacing', 'elementskit' ),
-                'type' => Controls_Manager::SLIDER,
-                'size_units' => ['px'],
-                'range' => [
-                    'px' => [
-                        'min' => 0,
-                        'max' => 100,
-                    ],
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .ekit-unfold-raw-content p, {{WRAPPER}} .ekit-unfold-raw-content ul' => 'margin-bottom: {{SIZE}}{{UNIT}};',
-                ],
-            ]
-        );
+			'unfold_desc_para_spacing',
+			[
+				'label' => esc_html__( 'Paragraph Spacing', 'elementskit' ),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => ['px'],
+				'range' => [
+					'px' => [
+						'min' => 0,
+						'max' => 100,
+					],
+				],
+				'selectors' => [
+					'{{WRAPPER}} .ekit-unfold-raw-content p, {{WRAPPER}} .ekit-unfold-raw-content ul' => 'margin-bottom: {{SIZE}}{{UNIT}};',
+				],
+			]
+		);
 
 		$this->add_responsive_control(
 			'unfold_desc_alignment',
@@ -495,8 +572,8 @@ class ElementsKit_Widget_Unfold extends Widget_Base {
 					],
 				],
 				'selectors'=> [
-					 '{{WRAPPER}} .ekit-unfold-data-inner' => 'text-align: {{VALUE}};',
-				 ],
+						'{{WRAPPER}} .ekit-unfold-data-inner' => 'text-align: {{VALUE}};',
+					],
 				'default' => 'left',
 			]
 		);
@@ -509,15 +586,15 @@ class ElementsKit_Widget_Unfold extends Widget_Base {
 		);
 
 		$this->add_control(
-            'unfold_desc_text_color',
-            [
-                'label'      => esc_html__( 'Text Color', 'elementskit' ),
-                'type'       => Controls_Manager::COLOR,
-                'selectors'  => [
-                    '{{WRAPPER}} .ekit-unfold-raw-content p' => 'color: {{VALUE}};'
-                ],
-            ]
-        );
+			'unfold_desc_text_color',
+			[
+				'label'      => esc_html__( 'Text Color', 'elementskit' ),
+				'type'       => Controls_Manager::COLOR,
+				'selectors'  => [
+					'{{WRAPPER}} .ekit-unfold-raw-content p' => 'color: {{VALUE}};'
+				],
+			]
+		);
 
 		$this->end_controls_section();
 
@@ -528,7 +605,7 @@ class ElementsKit_Widget_Unfold extends Widget_Base {
 				'tab'   => Controls_Manager::TAB_STYLE,
 			]
 		);
- 
+
 		$this->add_responsive_control(
 			'unfold_button_padding',
 			[
@@ -541,7 +618,19 @@ class ElementsKit_Widget_Unfold extends Widget_Base {
 			]
 		);
 
-        $this->add_group_control(
+		$this->add_responsive_control(
+			'unfold_button_margin',
+			[
+				'label' =>esc_html__( 'Margin', 'elementskit' ),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', 'em', '%' ],
+				'selectors' => [
+					'{{WRAPPER}} .ekit-unfold-btn' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		$this->add_group_control(
 			Group_Control_Typography::get_type(),
 			[
 				'name' => 'unfold_button_typography',
@@ -550,13 +639,13 @@ class ElementsKit_Widget_Unfold extends Widget_Base {
 			]
 		);
 
-        $this->add_group_control(
-        	Group_Control_Text_Shadow::get_type(),
-        	[
-        		'name' => 'unfold_button_shadow',
-        		'selector' => '{{WRAPPER}} .ekit-unfold-btn',
-        	]
-        );
+		$this->add_group_control(
+			Group_Control_Text_Shadow::get_type(),
+			[
+				'name' => 'unfold_button_shadow',
+				'selector' => '{{WRAPPER}} .ekit-unfold-btn',
+			]
+		);
 
 		$this->start_controls_tabs( 'unfold_button_tabs_style' );
 
@@ -574,18 +663,20 @@ class ElementsKit_Widget_Unfold extends Widget_Base {
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .ekit-unfold-btn' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .ekit-unfold-btn .expand-btn' => 'color: {{VALUE}}; fill: {{VALUE}};',
+					'{{WRAPPER}} .ekit-unfold-btn .collapse-btn' => 'color: {{VALUE}}; fill: {{VALUE}};',
 					'{{WRAPPER}} .ekit-unfold-btn:not(:hover):not(:active):not(.has-text-color)' => 'color: {{VALUE}};', // the wrapper is used to solved conflict with twenty twenty one theme
 				],
 			]
 		);
 
-        $this->add_group_control(
-            Group_Control_Background::get_type(),
-            array(
+		$this->add_group_control(
+			Group_Control_Background::get_type(),
+			array(
 				'name'     => 'unfold_button_bg_color',
 				'selector' => '{{WRAPPER}} .ekit-unfold-btn, {{WRAPPER}} .ekit-unfold-btn:not(:hover):not(:active):not(.has-text-color)', // second wrapper is used to solved conflict with twenty twenty one theme
-            )
-        );
+			)
+		);
 
 		$this->end_controls_tab();
 
@@ -603,17 +694,19 @@ class ElementsKit_Widget_Unfold extends Widget_Base {
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .ekit-unfold-btn:hover' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .ekit-unfold-btn:hover .expand-btn' => 'color: {{VALUE}}; fill: {{VALUE}};',
+					'{{WRAPPER}} .ekit-unfold-btn:hover .collapse-btn' => 'color: {{VALUE}}; fill: {{VALUE}};',
 				],
 			]
 		);
 
-	    $this->add_group_control(
-		    Group_Control_Background::get_type(),
-		    array(
-			    'name'     => 'unfold_button_bg_hover_color',
-			    'selector' => '{{WRAPPER}} .ekit-unfold-btn:hover',
-		    )
-	    );
+		$this->add_group_control(
+			Group_Control_Background::get_type(),
+			array(
+				'name'     => 'unfold_button_bg_hover_color',
+				'selector' => '{{WRAPPER}} .ekit-unfold-btn:hover',
+			)
+		);
 
 		$this->end_controls_tab();
 		$this->end_controls_tabs();
@@ -646,26 +739,26 @@ class ElementsKit_Widget_Unfold extends Widget_Base {
 		);
 
 		$this->end_controls_section();
- 
+
 
 		$this->insert_pro_message();
-    }
+	}
 
-    protected function render( ) {
-        echo '<div class="ekit-wid-con" >';
-            $this->render_raw();
-        echo '</div>';
-    }
+	protected function render( ) {
+		echo '<div class="ekit-wid-con" >';
+			$this->render_raw();
+		echo '</div>';
+	}
 
-    protected function render_raw( ) {
+	protected function render_raw( ) {
 		$settings = $this->get_settings_for_display();
 		extract($settings);
 		$config = [
-            'expand_text'				=> (!empty($unfold_expand_btn_text) ? esc_attr($unfold_expand_btn_text) : ''),
-            'collapse_text'			=>  (!empty($unfold_collapse_btn_text) ? esc_attr($unfold_collapse_btn_text) : ''),
-            'collapse_height'			=>  (!empty($unfold_collapsed_content_height['size']) ? esc_attr($unfold_collapsed_content_height['size']) : ''),
-            'transition_duration'			=>  (!empty($unfold_transition_duration) ? esc_attr($unfold_transition_duration) : ''),
-        ];
+			'expand_text'				=> (!empty($unfold_expand_btn_text) ? esc_attr($unfold_expand_btn_text) : ''),
+			'collapse_text'			=>  (!empty($unfold_collapse_btn_text) ? esc_attr($unfold_collapse_btn_text) : ''),
+			'collapse_height'			=>  (!empty($unfold_collapsed_content_height['size']) ? esc_attr($unfold_collapsed_content_height['size']) : ''),
+			'transition_duration'			=>  (!empty($unfold_transition_duration) ? esc_attr($unfold_transition_duration) : ''),
+		];
 
 		$this->add_render_attribute( 'wrapper-settings', [
 			'data-config' =>  wp_json_encode($config),
@@ -681,18 +774,37 @@ class ElementsKit_Widget_Unfold extends Widget_Base {
 					<h3 class="ekit-unfold-heading"><?php echo esc_html($unfold_title); ?></h3>
 				<?php endif; ?>
 
-				<div class="ekit-unfold-data">
+				<?php
+					// The toggle button points aria-controls at this panel, so it needs
+					// a stable id that is unique per widget instance on the page.
+					$unfold_content_id = 'ekit-unfold-content-' . $this->get_id();
+				?>
+				<div class="ekit-unfold-data" id="<?php echo esc_attr( $unfold_content_id ); ?>">
 					<div class="ekit-unfold-data-inner">
 						<?php if(!empty($unfold_enable_template) && $unfold_enable_template == 'yes') {
- 							echo Widget_Area_Utils::parse( $settings['unfold_widget_content'], $this->get_id(), 99 ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+							echo Widget_Area_Utils::parse( $settings['unfold_widget_content'], $this->get_id(), 99 ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 						} else {
 							echo '<div class="ekit-unfold-raw-content">'. do_shortcode( \ElementsKit_Lite\Utils::kses($unfold_content) ) .'</div>';
 						} ?>
 					</div>
 				</div>
-				
-				<button class="ekit-unfold-btn"><?php echo!empty($unfold_expand_btn_text) ? esc_html($unfold_expand_btn_text) : ''; ?></button>
+
+				<?php
+					// Icon-only variant: the button text is optional and both icons are
+					// aria-hidden, so without this the button has no accessible name at
+					// all. The label is state-neutral because the same button collapses
+					// as well as expands; the open/closed state belongs on aria-expanded.
+					$unfold_btn_a11y_attr = ( '' === trim( (string) $unfold_expand_btn_text ) )
+						? ' aria-label="' . esc_attr__( 'Toggle content', 'elementskit' ) . '"'
+						: '';
+				?>
+				<button class="ekit-unfold-btn" aria-expanded="false" aria-controls="<?php echo esc_attr( $unfold_content_id ); ?>"<?php echo $unfold_btn_a11y_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped on assignment above. ?>>
+					<?php echo!empty($unfold_expand_btn_text) ? esc_html($unfold_expand_btn_text) : ''; ?>
+					<?php \Elementor\Icons_Manager::render_icon( $unfold_expand_btn_text_icon, [ 'aria-hidden' => 'true', 'class' => 'ekit-unfold-btn-icon expand-btn' ] ); ?>
+					<?php \Elementor\Icons_Manager::render_icon( $unfold_collapse_btn_text_icon, [ 'aria-hidden' => 'true', 'class' => 'ekit-unfold-btn-icon collapse-btn' ] ); ?>	
+				</button>
 			</div>
-        <?php
-    }
+		<?php
+	}
+	
 }

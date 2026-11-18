@@ -35,8 +35,12 @@ class ElementsKit_Widget_Advanced_Slider extends Widget_Base {
         return 'https://wpmet.com/doc/advanced-slider-in-elementor-with-elementskit/';
     }
 
+	public function get_script_depends() {
+		return ['ekit-pro-advanced-slider', 'swiper'];
+	}
+
 	public function get_style_depends() {
-		return ['swiper'];
+		return ['swiper', 'ekit-pro-advanced-slider'];
 	}
 
     protected function is_dynamic_content(): bool {
@@ -146,6 +150,7 @@ class ElementsKit_Widget_Advanced_Slider extends Widget_Base {
 					'cube' => esc_html__( 'Cube', 'elementskit' ),
 					'flip' => esc_html__( 'Flip', 'elementskit' ),
 					'coverflow' => esc_html__( 'Coverflow', 'elementskit' ),
+					'cards' => esc_html__( 'Cards', 'elementskit' ),
 				],
 			]
 		);
@@ -197,10 +202,13 @@ class ElementsKit_Widget_Advanced_Slider extends Widget_Base {
 				'selectors' => [
 					'{{WRAPPER}} .elementskit-advanced-slider' => '--ekit-swiper-slide-per-view:  {{SIZE}};',
 				],
-                'condition' => ['ekit_slider_show_direction_type' => 'horizontal']
+				'condition' => [
+					'ekit_slider_show_direction_type' => 'horizontal',
+					'ekit_slider_effect_style' => [ 'default', 'coverflow' ],
+				]
 			]
 		);
-		
+
         $this->add_responsive_control(
 			'ekit_slider_space_between',
 			[
@@ -262,7 +270,7 @@ class ElementsKit_Widget_Advanced_Slider extends Widget_Base {
 				'default' => '',
 			]
 		);
-		
+
 		$this->add_control(
 			'ekit_slider_thumbs_scale',
 			[
@@ -314,7 +322,7 @@ class ElementsKit_Widget_Advanced_Slider extends Widget_Base {
 				'default' => 'yes',
 			]
 		);
-		
+
 		$this->add_control(
 			'ekit_slider_speed_time',
 			[
@@ -381,6 +389,18 @@ class ElementsKit_Widget_Advanced_Slider extends Widget_Base {
 		);
 
 		$this->add_control(
+			'ekit_slider_keyboard_control',
+			[
+				'label' => esc_html__( 'Keyboard Enable', 'elementskit' ),
+				'type' => Controls_Manager::SWITCHER,
+				'label_on' => esc_html__( 'Yes', 'elementskit' ),
+				'label_off' => esc_html__( 'No', 'elementskit' ),
+				'return_value' => 'yes',
+				'default' => '',
+			]
+		);
+
+		$this->add_control(
 			'ekit_slider_nav_show_controls',
 			[
 				'label' => esc_html__( 'Show Navigation', 'elementskit' ),
@@ -391,7 +411,6 @@ class ElementsKit_Widget_Advanced_Slider extends Widget_Base {
 				'default' => '',
 			]
 		);
-
 		$this->add_control(
 			'ekit_slider_nav_left_arrow_icon',
 			[
@@ -415,6 +434,130 @@ class ElementsKit_Widget_Advanced_Slider extends Widget_Base {
 					'library' => 'solid',
 				],
 				'condition' => ['ekit_slider_nav_show_controls' => 'yes']
+			]
+		);
+		$this->add_control(
+			'ekit_slider_coverflow_effect_heading',
+			[
+				'label' => esc_html__( 'Effect', 'elementskit' ),
+				'type' => Controls_Manager::HEADING,
+				'condition' => [ 'ekit_slider_effect_style' => 'coverflow' ],
+				'separator' => 'before',
+			]
+		);
+
+		$this->add_control(
+			'ekit_slider_coverflow_rotate',
+			[
+				'label' => esc_html__( 'Rotate', 'elementskit' ),
+				'type' => Controls_Manager::NUMBER,
+				'min' => 0,
+				'max' => 360,
+				'step' => 1,
+				'default' => 0,
+				'condition' => [ 'ekit_slider_effect_style' => 'coverflow' ],
+			]
+		);
+
+		$this->add_control(
+			'ekit_slider_coverflow_stretch',
+			[
+				'label' => esc_html__( 'Stretch', 'elementskit' ),
+				'type' => Controls_Manager::NUMBER,
+				'min' => -100,
+				'max' => 100,
+				'step' => 1,
+				'default' => 0,
+				'condition' => [ 'ekit_slider_effect_style' => 'coverflow' ],
+			]
+		);
+
+		$this->add_control(
+			'ekit_slider_coverflow_depth',
+			[
+				'label' => esc_html__( 'Depth', 'elementskit' ),
+				'type' => Controls_Manager::NUMBER,
+				'min' => 0,
+				'max' => 1000,
+				'step' => 1,
+				'default' => 120,
+				'condition' => [ 'ekit_slider_effect_style' => 'coverflow' ],
+			]
+		);
+
+		$this->add_control(
+			'ekit_slider_coverflow_scale',
+			[
+				'label' => esc_html__( 'Scale', 'elementskit' ),
+				'type' => Controls_Manager::NUMBER,
+				'min' => 0,
+				'max' => 2,
+				'step' => 0.1,
+				'default' => 0.82,
+				'condition' => [ 'ekit_slider_effect_style' => 'coverflow' ],
+			]
+		);
+
+		$this->add_control(
+			'ekit_slider_coverflow_modfier',
+			[
+				'label' => esc_html__( 'Modifier', 'elementskit' ),
+				'type' => Controls_Manager::NUMBER,
+				'min' => 0,
+				'max' => 5,
+				'step' => 0.1,
+				'default' => 1,
+				'condition' => [ 'ekit_slider_effect_style' => 'coverflow' ],
+			]
+		);
+
+		$this->add_control(
+			'ekit_slider_coverflow_slide_shadow',
+			[
+				'label' => esc_html__( 'Slide Shadow', 'elementskit' ),
+				'type' => Controls_Manager::SWITCHER,
+				'label_on' => esc_html__( 'Show', 'elementskit' ),
+				'label_off' => esc_html__( 'Hide', 'elementskit' ),
+				'return_value' => 'yes',
+				'default' => '',
+				'condition' => [ 'ekit_slider_effect_style' => 'coverflow' ],
+			]
+		);
+
+		// Cards effect controls
+		$this->add_control(
+			'ekit_slider_cards_effect_heading',
+			[
+				'label' => esc_html__( 'Cards Effect', 'elementskit' ),
+				'type' => Controls_Manager::HEADING,
+				'condition' => [ 'ekit_slider_effect_style' => 'cards' ],
+				'separator' => 'before',
+			]
+		);
+
+		$this->add_control(
+			'ekit_slider_cards_per_slide_offset',
+			[
+				'label' => esc_html__( 'Per Slide Offset', 'elementskit' ),
+				'type' => Controls_Manager::NUMBER,
+				'min' => 0,
+				'max' => 200,
+				'step' => 1,
+				'default' => 8,
+				'condition' => [ 'ekit_slider_effect_style' => 'cards' ],
+			]
+		);
+
+		$this->add_control(
+			'ekit_slider_cards_per_slide_rotate',
+			[
+				'label' => esc_html__( 'Per Slide Rotate', 'elementskit' ),
+				'type' => Controls_Manager::NUMBER,
+				'min' => 0,
+				'max' => 90,
+				'step' => 1,
+				'default' => 2,
+				'condition' => [ 'ekit_slider_effect_style' => 'cards' ],
 			]
 		);
 
@@ -450,8 +593,9 @@ class ElementsKit_Widget_Advanced_Slider extends Widget_Base {
 			]
 		);
 
+
 		$this->end_controls_section();
-        
+
         $this->start_controls_section(
 			'ekit_slider_com_style_section',
 			[
@@ -506,7 +650,7 @@ class ElementsKit_Widget_Advanced_Slider extends Widget_Base {
 						'max' => 200,
 					],
 				],
-			
+
 				'selectors' => [
 					'{{WRAPPER}} .swiper-nav-button' => 'width: {{SIZE}}{{UNIT}};',
 				],
@@ -529,7 +673,7 @@ class ElementsKit_Widget_Advanced_Slider extends Widget_Base {
 						'max' => 200,
 					],
 				],
-			
+
 				'selectors' => [
 					'{{WRAPPER}} .swiper-nav-button' => 'height: {{SIZE}}{{UNIT}};',
 				],
@@ -658,7 +802,7 @@ class ElementsKit_Widget_Advanced_Slider extends Widget_Base {
 				],
 			]
 		);
-        
+
         $this->add_control(
 			'ekit_slider_arrow_align_left_rigt',
 			[
@@ -933,7 +1077,7 @@ class ElementsKit_Widget_Advanced_Slider extends Widget_Base {
 					'{{WRAPPER}} .elementskit-advanced-slider .swiper-container-horizontal .swiper-pagination' => '{{VALUE}}',
 					'{{WRAPPER}} .elementskit-advanced-slider .swiper-horizontal .swiper-pagination' => '{{VALUE}}',
 				],
-                'condition' => ['ekit_slider_show_direction_type' => 'horizontal']    
+                'condition' => ['ekit_slider_show_direction_type' => 'horizontal']
 			]
 		);
 
@@ -998,7 +1142,7 @@ class ElementsKit_Widget_Advanced_Slider extends Widget_Base {
                         'max' => 100,
                     ],
                 ],
-                
+
 				'selectors' => [
 					'{{WRAPPER}} .elementskit-advanced-slider .swiper-container-horizontal > .swiper-pagination' => 'top: {{SIZE}}%;',
 					'{{WRAPPER}} .elementskit-advanced-slider .swiper-horizontal > .swiper-pagination' => 'top: {{SIZE}}%;',
@@ -1034,7 +1178,7 @@ class ElementsKit_Widget_Advanced_Slider extends Widget_Base {
 						'step' => 0.01,
 					],
 				],
-                
+
 				'selectors' => [
 					'{{WRAPPER}} .elementskit-advanced-slider .slider-thumbs-yes .swiper-pagination .swiper-pagination-bullet' => 'opacity: {{SIZE}};',
 				],
@@ -1073,7 +1217,7 @@ class ElementsKit_Widget_Advanced_Slider extends Widget_Base {
 						'step' => 0.01,
 					],
 				],
-                
+
 				'selectors' => [
 					'{{WRAPPER}} .elementskit-advanced-slider .slider-thumbs-yes .swiper-pagination .swiper-pagination-bullet.swiper-pagination-bullet-active' => 'opacity: {{SIZE}};',
 				],
@@ -1091,7 +1235,7 @@ class ElementsKit_Widget_Advanced_Slider extends Widget_Base {
 
 		$this->end_controls_tab();
 		$this->end_controls_tabs();
-        
+
 		$this->add_control(
 			'ekit_slider_pagination_border_radius',
 			[
@@ -1327,7 +1471,7 @@ class ElementsKit_Widget_Advanced_Slider extends Widget_Base {
 						'max' => 50,
 					],
 				],
-                
+
 				'selectors' => [
 					'{{WRAPPER}} .elementskit-advanced-slider .ekit-swiper-progress-bar' => 'height: {{SIZE}}{{UNIT}}; margin: -{{SIZE}}{{UNIT}} auto 0 auto;',
 					'{{WRAPPER}} .elementskit-advanced-slider .ekit-swiper-progress-bar .ekit-progress-bar' => 'height: {{SIZE}}{{UNIT}};',
@@ -1373,8 +1517,8 @@ class ElementsKit_Widget_Advanced_Slider extends Widget_Base {
         $advanced_slider_options = [
             'type' => 'advanced-slider',
             'id' => 'ekit-advanced-slider' . $this->get_id(),
-            'sliderOptions' => [     
-                'slidesPerViewItem' => $ekit_slider_slides_per_view['size'] ?? 1,
+            'sliderOptions' => [
+				'slidesPerViewItem' => in_array($ekit_slider_effect_style, ['cards','flip','cube','fade']) ? 1 : ($ekit_slider_slides_per_view['size'] ?? 1),
                 'spaceBetweenGap' => $ekit_slider_space_between['size'] ?? 0,
                 'sliderGrapCursor' => $ekit_slider_grab_cursor,
                 'sliderDirectionType' => $ekit_slider_show_direction_type,
@@ -1383,6 +1527,18 @@ class ElementsKit_Widget_Advanced_Slider extends Widget_Base {
                 'pauseOnMouseEnter' => $ekit_slider_pause_on_hover,
                 // 'pauseOnMouseEnter' => ($ekit_slider_pause_on_hover == 'yes' ? true : false),
                 'sliderEffect' => $ekit_slider_effect_style,
+				'cardsEffect' => [
+					'perSlideOffset' => isset($ekit_slider_cards_per_slide_offset) ? (float) $ekit_slider_cards_per_slide_offset : 8,
+					'perSlideRotate' => isset($ekit_slider_cards_per_slide_rotate) ? (float) $ekit_slider_cards_per_slide_rotate : 2,
+				],
+				'coverflowEffect' => [
+					'rotate' => isset( $ekit_slider_coverflow_rotate ) ? $ekit_slider_coverflow_rotate : 50,
+					'stretch' => isset( $ekit_slider_coverflow_stretch ) ? $ekit_slider_coverflow_stretch : 0,
+					'depth' => isset( $ekit_slider_coverflow_depth ) ? $ekit_slider_coverflow_depth : 100,
+					'scale' => isset( $ekit_slider_coverflow_scale ) ? $ekit_slider_coverflow_scale : 1,
+					'modifier' => isset( $ekit_slider_coverflow_modfier ) ? $ekit_slider_coverflow_modfier : 1,
+					'slideShadows' => isset( $ekit_slider_coverflow_slide_shadow ) && 'yes' === $ekit_slider_coverflow_slide_shadow,
+				],
                 'sliderThumbsShow' => $ekit_slider_thumbs_image_show,
                 'sliderThumbsOffset' => $ekit_slider_thumbs_image_offset,
                 'sliderTabItems' => $ekit_slider_tab_items,
@@ -1390,6 +1546,7 @@ class ElementsKit_Widget_Advanced_Slider extends Widget_Base {
                 'speedTime' => $ekit_slider_speed_time,
                 'loopEnable' => $ekit_slider_infinite_loop,
                 'autoPlayDelay' => isset($ekit_slider_auto_play_delay) ? $ekit_slider_auto_play_delay : 3000,
+				'keyboardControl' => $ekit_slider_keyboard_control,
 				'breakpointsOption' => [
 					360 => [
 						'slidesPerView' => $ekit_slider_slides_per_view_mobile['size'] ?? 1,
@@ -1414,15 +1571,15 @@ class ElementsKit_Widget_Advanced_Slider extends Widget_Base {
 		?>
 
 		<div <?php $this->print_render_attribute_string( 'advanced-slider-data' ); ?>>
-			<div class="<?php echo method_exists('\ElementsKit_Lite\Utils', 'swiper_class') ? esc_attr(\ElementsKit_Lite\Utils::swiper_class()) : 'swiper'; ?> ekit-slider-wrapper">
+			<div class="<?php echo method_exists('\\ElementsKit_Lite\\Utils', 'swiper_class') ? esc_attr(\ElementsKit_Lite\Utils::swiper_class()) : 'swiper'; ?> ekit-slider-wrapper" role="region" aria-roledescription="carousel" aria-label="<?php echo esc_attr__( 'Advanced Slider', 'elementskit' ); ?>" tabindex="0" aria-live="polite">
 				<div class="swiper-wrapper ekit-swiper-wrapper">
 					<?php foreach ($ekit_slider_tab_items as $i => $tab) : ?>
-						<div class="swiper-slide ekit-swiper-slide elementor-repeater-item-<?php echo esc_attr( $tab[ '_id' ] ); ?>">
-							<?php 
+						<div class="swiper-slide ekit-swiper-slide elementor-repeater-item-<?php echo esc_attr( $tab[ '_id' ] ); ?>" role="group" aria-roledescription="slide" aria-hidden="true">
+							<?php
 								// @codingStandardsIgnoreStart
-								echo Widget_Area_Utils::parse( $tab['ekit_slider_tab_content'], $this->get_id(), $tab[ '_id' ], $ekit_ajax_template, ($i + 1) ); 
+								echo Widget_Area_Utils::parse( $tab['ekit_slider_tab_content'], $this->get_id(), $tab[ '_id' ], $ekit_ajax_template, ($i + 1) );
 								// @codingStandardsIgnoreEnd
-							?>    
+							?>
 						</div>
 					<?php endforeach; ?>
 				</div>
@@ -1430,10 +1587,10 @@ class ElementsKit_Widget_Advanced_Slider extends Widget_Base {
 				<?php if($ekit_slider_nav_show_controls === 'yes') : ?>
 					<!-- next / prev arrows -->
 				<div class="ekit-swiper-arrow-button">
-                    <div class="swiper-nav-button swiper-button-next"> 
+					<div class="swiper-nav-button swiper-button-next" role="button" tabindex="0" aria-label="<?php echo esc_attr__( 'Next slide', 'elementskit' ); ?>">
 						<?php Icons_Manager::render_icon( $ekit_slider_nav_right_arrow_icon, [ 'aria-hidden' => 'true' ] ); ?>
 					</div>
-					<div class="swiper-nav-button swiper-button-prev">
+					<div class="swiper-nav-button swiper-button-prev" role="button" tabindex="0" aria-label="<?php echo esc_attr__( 'Previous slide', 'elementskit' ); ?>">
 						<?php Icons_Manager::render_icon( $ekit_slider_nav_left_arrow_icon, [ 'aria-hidden' => 'true' ] ); ?>
 				    </div>
                 </div>
@@ -1441,7 +1598,7 @@ class ElementsKit_Widget_Advanced_Slider extends Widget_Base {
 				<?php endif; ?>
 
 				<?php if($ekit_slider_show_pagination === 'yes' || $ekit_slider_thumbs_image_show === 'yes') : ?>
-					<div class="swiper-pagination ekit-swiper-pagination""></div>
+					<div class="swiper-pagination ekit-swiper-pagination"></div>
 				<?php endif; ?>
 
                 <?php if($ekit_slider_progress_bar === 'yes'):?>

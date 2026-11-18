@@ -27,9 +27,7 @@ class ElementsKit_Widget_Zoom extends Widget_Base {
 	}
 
 
-	public function get_script_depends() {
-		return ['zoom-init'];
-	}
+	
 
 
 	public function get_name() {
@@ -58,6 +56,14 @@ class ElementsKit_Widget_Zoom extends Widget_Base {
     public function get_help_url() {
         return 'https://wpmet.com/doc/zoom-integration/';
     }
+
+	public function get_style_depends() {
+		return ['ekit-pro-zoom'];
+	}
+
+	public function get_script_depends() {
+		return ['zoom-init', 'ekit-pro-zoom'];
+	}
 
     protected function is_dynamic_content(): bool {
         return false;
@@ -105,7 +111,7 @@ class ElementsKit_Widget_Zoom extends Widget_Base {
 				'label'       => __('Start date/time*', 'elementskit'),
 				'type'        => \Elementor\Controls_Manager::DATE_TIME,
 				'description' => esc_html__('Select start date and time.(Required)', 'elementskit'),
-				'default'	=> date('y-m-d H:i')
+				'default'	=> gmdate('y-m-d H:i', current_time('timestamp'))
 			]
 		);
 
@@ -1879,14 +1885,14 @@ class ElementsKit_Widget_Zoom extends Widget_Base {
 							<?php endif; ?>
 							<?php
 							if($layout != 'flat') {
-								echo $this->zoom_join_links($zoom_data);
+								$this->zoom_join_links($zoom_data);
 							}
 							?>
 						</div>
 
 						<?php if($layout == 'flat') : ?>
 							<div class="ekit-zoom-join-links">
-								<?php echo $this->zoom_join_links($zoom_data); ?>
+								<?php $this->zoom_join_links($zoom_data); ?>
 							</div>
 						<?php endif; ?>
 						<!-- End meeting details -->

@@ -3,6 +3,7 @@ namespace Elementor;
 
 use Elementor\Modules\DynamicTags\Module as TagsModule;
 use \Elementor\ElementsKit_Widget_Audio_Player_Handler as Handler;
+use \ElementsKit_Lite\Modules\ElementsKit_Icon_Pack\Init as Icon_Pack_Init;
 
 defined('ABSPATH') || exit;
 
@@ -40,13 +41,15 @@ class ElementsKit_Widget_Audio_Player extends Widget_Base {
 		return 'https://wpmet.com/doc/audio-player/';
 	}
 
-	public function get_style_depends() {
-		return ['wp-mediaelement'];
+	public function get_script_depends() {
+		return ['ekit-pro-audio-player', 'wp-mediaelement'];
 	}
 
-	public function get_script_depends() {
-		return ['wp-mediaelement'];
+	public function get_style_depends() {
+		return ['wp-mediaelement', 'ekit-pro-audio-player'];
 	}
+
+	
 
 	protected function is_dynamic_content(): bool {
 		return false;
@@ -505,7 +508,8 @@ class ElementsKit_Widget_Audio_Player extends Widget_Base {
 				'type' => Controls_Manager::COLOR,
 				'default'	=> '#ffffff',
 				'selectors' => [
-					'{{WRAPPER}} .ekit-audio-player .mejs-playpause-button button' => 'color: {{VALUE}}',
+					'{{WRAPPER}} .ekit-audio-player .mejs-playpause-button button svg ' => 'fill: {{VALUE}};',
+					'{{WRAPPER}} .ekit-audio-player .mejs-playpause-button button i' => ' color: {{VALUE}}',
 				],
 			]
 		);
@@ -555,7 +559,8 @@ class ElementsKit_Widget_Audio_Player extends Widget_Base {
 				'type' => Controls_Manager::COLOR,
 				'default'	=> '#ffffff',
 				'selectors' => [
-					'{{WRAPPER}} .ekit-audio-player .mejs-playpause-button button:hover' => 'color: {{VALUE}}',
+					'{{WRAPPER}} .ekit-audio-player .mejs-playpause-button button:hover svg ' => 'fill: {{VALUE}};',
+					'{{WRAPPER}} .ekit-audio-player .mejs-playpause-button button:hover i' => ' color: {{VALUE}}',
 				],
 			]
 		);
@@ -1083,7 +1088,8 @@ class ElementsKit_Widget_Audio_Player extends Widget_Base {
 				'type' => Controls_Manager::COLOR,
 				'default'	=> '#ffffff',
 				'selectors' => [
-					'{{WRAPPER}} .ekit-audio-player .mejs-volume-button button' => 'color: {{VALUE}}',
+					'{{WRAPPER}} .ekit-audio-player .mejs-volume-button button svg ' => 'fill: {{VALUE}};',
+					'{{WRAPPER}} .ekit-audio-player .mejs-volume-button button i' => 'color: {{VALUE}}',
 				],
 			]
 		);
@@ -1133,7 +1139,8 @@ class ElementsKit_Widget_Audio_Player extends Widget_Base {
 				'type' => Controls_Manager::COLOR,
 				'default'	=> '#ffffff',
 				'selectors' => [
-					'{{WRAPPER}} .ekit-audio-player .mejs-volume-button button:hover' => 'color: {{VALUE}}',
+					'{{WRAPPER}} .ekit-audio-player .mejs-volume-button button:hover svg ' => 'fill: {{VALUE}};',
+					'{{WRAPPER}} .ekit-audio-player .mejs-volume-button button:hover i' => 'color: {{VALUE}}',
 				],
 			]
 		);
@@ -1399,21 +1406,8 @@ class ElementsKit_Widget_Audio_Player extends Widget_Base {
 		echo '</div>';
 	}
 
-	protected function get_icon_html( array $icon, array $attributes = [ 'aria-hidden' => 'true' ], $tag = 'i' ) {
-		/**
-		 * When the library value is svg it means that it's a SVG media attachment uploaded by the user.
-		 * Otherwise, it's the name of the font family that the icon belongs to.
-		 */
-		if ( 'svg' === $icon['library'] ) {
-			$output =\Elementor\Icons_Manager::render_uploaded_svg_icon( $icon['value'] );
-		} else {
-			$output = \Elementor\Icons_Manager::render_font_icon( $icon, $attributes, $tag );
-		}
-		return $output;
-	}
-
 	protected function render_raw() {
-		$settings = $this->get_settings_for_display();
+		$settings     = $this->get_settings_for_display();
 
 		extract($settings);
 
@@ -1439,20 +1433,12 @@ class ElementsKit_Widget_Audio_Player extends Widget_Base {
 		$data_settings['audioVolume'] = (!empty($ekit_audio_player_volume_slider_layout)) ? $ekit_audio_player_volume_slider_layout: 'horizontal';
 		$data_settings['startVolume'] = (!empty($ekit_audio_player_start_volume['size'])) ? $ekit_audio_player_start_volume['size']: 0.8;
 
-		$data_settings['playerIcons'] = [
-			'play' => !empty($ekit_audio_player_play_icon['value']) ? $ekit_audio_player_play_icon['value'] : 'icon icon-play-button',
-			'pause' => !empty($ekit_audio_player_pause_icon['value']) ? $ekit_audio_player_pause_icon['value'] : 'icon icon-pause-dark',
-			'replay' => !empty($ekit_audio_player_replay_icon['value']) ? $ekit_audio_player_replay_icon['value'] : 'icon icon-reload',
-			'unmute' => !empty($ekit_audio_player_volume_unmute_icon['value']) ? $ekit_audio_player_volume_unmute_icon['value'] : 'icon icon-volume-high-dark',
-			'mute' => !empty($ekit_audio_player_volume_mute_icon['value']) ? $ekit_audio_player_volume_mute_icon['value'] : 'icon icon-volume-mute',
-		];
-
 		// registering audio player wrapper default attributes
 		$this->add_render_attribute(
 			'wrapper',
 			[
-				'class' => 'ekit-audio-player',
-				'data-audio-settings' => esc_attr(json_encode($data_settings)),
+				'class'               => 'ekit-audio-player',
+				'data-audio-settings' => esc_attr(wp_json_encode($data_settings)),
 			]
 		);
 
@@ -1460,12 +1446,12 @@ class ElementsKit_Widget_Audio_Player extends Widget_Base {
 		$this->add_render_attribute(
 			'player',
 			[
-				'class' => 'ekit-player',
-				'src' => esc_url($audio_url),
-				'preload' => 'none',
+				'class'    => 'ekit-player',
+				'src'      => esc_url($audio_url),
+				'preload'  => 'none',
 				'controls' => '',
-				'poster' => '',
-				'width'	=> '100%',
+				'poster'   => '',
+				'width'    => '100%',
 			]
 		);
 
@@ -1490,6 +1476,39 @@ class ElementsKit_Widget_Audio_Player extends Widget_Base {
 				<audio <?php $this->print_render_attribute_string('player'); ?>>
 					<?php echo esc_html__('Your browser does not support the audio tag.', 'elementskit'); ?>
 				</audio>
+				<?php
+				// Ensure defaults are used when user leaves icon controls empty.
+				$default_icon_map = [
+					'play'   => [ 'value' => 'icon icon-play-button',      'library' => 'ekiticons' ],
+					'pause'  => [ 'value' => 'icon icon-pause-dark',       'library' => 'ekiticons' ],
+					'replay' => [ 'value' => 'icon icon-reload',           'library' => 'ekiticons' ],
+					'unmute' => [ 'value' => 'icon icon-volume-high-dark', 'library' => 'ekiticons' ],
+					'mute'   => [ 'value' => 'icon icon-volume-mute',      'library' => 'ekiticons' ],
+				];
+
+				$play_icon_data   = ! empty( $settings['ekit_audio_player_play_icon'] ) && ! empty( $settings['ekit_audio_player_play_icon']['value'] ) ? $settings['ekit_audio_player_play_icon'] : $default_icon_map['play'];
+				$pause_icon_data  = ! empty( $settings['ekit_audio_player_pause_icon'] ) && ! empty( $settings['ekit_audio_player_pause_icon']['value'] ) ? $settings['ekit_audio_player_pause_icon'] : $default_icon_map['pause'];
+				$replay_icon_data = ! empty( $settings['ekit_audio_player_replay_icon'] ) && ! empty( $settings['ekit_audio_player_replay_icon']['value'] ) ? $settings['ekit_audio_player_replay_icon'] : $default_icon_map['replay'];
+				$unmute_icon_data = ! empty( $settings['ekit_audio_player_volume_unmute_icon'] ) && ! empty( $settings['ekit_audio_player_volume_unmute_icon']['value'] ) ? $settings['ekit_audio_player_volume_unmute_icon'] : $default_icon_map['unmute'];
+				$mute_icon_data   = ! empty( $settings['ekit_audio_player_volume_mute_icon'] ) && ! empty( $settings['ekit_audio_player_volume_mute_icon']['value'] ) ? $settings['ekit_audio_player_volume_mute_icon'] : $default_icon_map['mute'];
+				?>
+				<div class="ekit-hidden-icons" hidden aria-hidden="true">
+					<?php
+					if ( class_exists( Icon_Pack_Init::class ) && method_exists( Icon_Pack_Init::class, 'icon' ) ) {
+						$hidden_icons = [
+							'ekit-audio-play'   => $play_icon_data,
+							'ekit-audio-pause'  => $pause_icon_data,
+							'ekit-audio-replay' => $replay_icon_data,
+							'ekit-audio-unmute' => $unmute_icon_data,
+							'ekit-audio-mute'   => $mute_icon_data,
+						];
+
+						foreach ( $hidden_icons as $icon_class => $icon_data ) {
+							Icon_Pack_Init::icon( $icon_data, [ 'class' => [ $icon_class ] ] );
+						}
+					}
+					?>
+				</div>
 			</div>
 		<?php else : ?>
 			<div class="elemenetskit-alert-info">

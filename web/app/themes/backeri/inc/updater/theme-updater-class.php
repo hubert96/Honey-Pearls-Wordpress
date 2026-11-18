@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 /**
  * Theme updater class.
  *
@@ -32,9 +35,9 @@ class AWAIKEN_Theme_Updater {
 	public function __construct( $args = array(), $strings = array() ) {
 
 		$defaults = array(
-			'remote_api_url' => 'https://easydigitaldownloads.com',
+			'remote_api_url' => '',
 			'request_data'   => array(),
-			'theme_slug'     => get_template(), // use get_stylesheet() for child theme updates
+			'theme_slug'     => '',
 			'item_name'      => '',
 			'license'        => '',
 			'version'        => '',

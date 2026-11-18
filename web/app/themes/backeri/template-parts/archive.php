@@ -35,7 +35,7 @@ if($background_image) {
 						<?php
 							the_archive_description( '<div class="taxonomy-description">', '</div>' );
 						?>
-						<?php do_action('backeri_action_get_breadcrumb'); ?>
+						<?php if ( get_theme_mod( 'blog_archive_show_breadcrumb', 1 ) ) { do_action( 'backeri_action_get_breadcrumb' ); } ?>
 					</div>
 				</div>
 			</div>

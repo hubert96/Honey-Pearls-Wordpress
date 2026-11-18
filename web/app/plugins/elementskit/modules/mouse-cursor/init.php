@@ -6,16 +6,19 @@ defined( 'ABSPATH' ) || exit;
 class Init {
 	private $dir;
 	private $url;
+	private $libs_url;
 
 	public function __construct() {
 
 		$this->dir = dirname(__FILE__) . '/';
 		// get current directory path
 		$this->url = \ElementsKit::plugin_url() . 'modules/mouse-cursor/';
+		// get current module's libs url
+		$this->libs_url = \ElementsKit::plugin_url() . 'assets/libs/cotton/';
 
 		// Register frontend scripts
 		add_action('elementor/frontend/before_register_scripts', [$this, 'register_frontend_scripts']);
-		
+
 		// include all necessary files
 		$this->include_files();
 
@@ -51,7 +54,7 @@ class Init {
 			],
 			'scripts' => [
 				'cotton' => [
-					'src' => $this->url . 'assets/js/cotton.min.js',
+					'src' => $this->libs_url . 'cotton.min.js',
 					'version' => \ElementsKit::version(),
 					'dependencies' => ['jquery'],
 					'in_footer' => true,

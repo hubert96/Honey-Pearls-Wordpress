@@ -16,9 +16,10 @@
                 id="content-<?php echo esc_attr($toggle['_id'].$toggle_id); ?>-tab" 
                 data-ekit-toggle="tab" 
                 href="#content-<?php echo esc_attr($toggle['_id'].$toggle_id); ?>" 
-                role="tab" 
-                aria-controls="content-<?php echo esc_attr($toggle['_id'].$toggle_id); ?>" 
-                aria-selected="true"
+                role="tab"
+                aria-controls="content-<?php echo esc_attr($toggle['_id'].$toggle_id); ?>"
+                aria-selected="<?php echo (trim($is_active) === 'active') ? 'true' : 'false'; ?>"
+                tabindex="<?php echo (trim($is_active) === 'active') ? '0' : '-1'; ?>"
                 data-toggled="<?php echo $toggleItem === 1 ? '' : '1'; ?>"
             >
             <?php if ($toggle['ekit_toggle_title'] !== '') { ?>
@@ -30,8 +31,8 @@
                     $is_toggled = $ekit_toggle_items[1]['ekit_toggle_title_is_active'] === 'yes' ? ' checked' : '';
                 ?>
 
-                <input type="checkbox" class="ekit-custom-control-input" <?php echo esc_attr( $is_toggled ); ?>>
-                <i class="ekit-custom-control-label elementor-repeater-item-<?php echo esc_attr( $toggle[ '_id' ] ); ?>"></i>
+                <input type="checkbox" class="ekit-custom-control-input" aria-hidden="true" tabindex="-1" <?php echo esc_attr( $is_toggled ); ?>>
+                <i class="ekit-custom-control-label elementor-repeater-item-<?php echo esc_attr( $toggle[ '_id' ] ); ?>" aria-hidden="true"></i>
             <?php } ?>
             <?php }; ?>
         </label>
@@ -49,8 +50,9 @@
         }
     ?>
         <div 
-        class="tab-pane fade ekit-toggle-switch-content elementor-repeater-item-<?php echo esc_attr( $toggle[ '_id' ] ); ?> <?php echo esc_attr($is_active);?>" id="content-<?php echo esc_attr($toggle['_id'].$toggle_id); ?>" 
-        role="tabpanel" 
+        class="tab-pane fade ekit-toggle-switch-content elementor-repeater-item-<?php echo esc_attr( $toggle[ '_id' ] ); ?> <?php echo esc_attr($is_active);?>" id="content-<?php echo esc_attr($toggle['_id'].$toggle_id); ?>"
+        role="tabpanel"
+        tabindex="0"
         aria-labelledby="content-<?php echo esc_attr($toggle['_id'].$toggle_id); ?>-tab"
         >   
             <div class="animated fadeIn">

@@ -2,6 +2,8 @@
 
 namespace Elementor;
 
+use ElementsKit_Lite\Utils;
+
 class ElementsKit_Widget_Effect_Controls{
 
 	public function __construct() {
@@ -26,24 +28,37 @@ class ElementsKit_Widget_Effect_Controls{
 			],
 			'scripts' => [
 				[
-					'name' => 'elementskit-parallax-frontend',
+					'name' => 'ekit-tilt',
 					'conditions' => [
-						'relation' => 'or',
 						'terms' => [
 							[
 								'name' => 'ekit_we_effect_on',
 								'operator' => '===',
 								'value' => 'tilt',
 							],
-							[
-								'name' => 'ekit_we_effect_on',
-								'operator' => '===',
-								'value' => 'onscroll',
-							],
+						],
+					],
+				],
+				[
+					'name' => 'ekit-tweenmax',
+					'conditions' => [
+						'terms' => [
 							[
 								'name' => 'ekit_we_effect_on',
 								'operator' => '===',
 								'value' => 'mousemove',
+							],
+						],
+					],
+				],
+				[
+					'name' => 'ekit-magician',
+					'conditions' => [
+						'terms' => [
+							[
+								'name' => 'ekit_we_effect_on',
+								'operator' => '===',
+								'value' => 'onscroll',
 							],
 						],
 					],
@@ -81,7 +96,7 @@ class ElementsKit_Widget_Effect_Controls{
 		$control->start_controls_section(
 			'ekit_widget_effects',
 			[
-				'label' => esc_html__('ElementsKit Effects', 'elementskit'),
+				'label' => ( method_exists( Utils::class, 'get_promo_icon' ) ? Utils::get_promo_icon() : 'ElementsKit' ) . esc_html__('Effects', 'elementskit'),
 				'tab' => Controls_Manager::TAB_ADVANCED,
 			]
 		);

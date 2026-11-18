@@ -36,6 +36,14 @@ class ElementsKit_Widget_timeline extends Widget_Base {
         return 'https://wpmet.com/doc/timeline/';
     }
 
+	public function get_style_depends() {
+		return ['ekit-pro-timeline'];
+	}
+
+	public function get_script_depends() {
+		return ['ekit-pro-timeline'];
+	}
+
     protected function is_dynamic_content(): bool {
         return false;
     }
@@ -95,7 +103,10 @@ class ElementsKit_Widget_timeline extends Widget_Base {
 				],
 				'condition' => [
 					'ekit_timeline_style' => 'horizontal',
-				]
+				],
+				'render_type' => 'template',
+				'prefix_class' => 'ekit-timeline-horizontal-',
+				
 			]
 		);
 
@@ -310,7 +321,7 @@ class ElementsKit_Widget_timeline extends Widget_Base {
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} {{CURRENT_ITEM}} .timeline-icon i' => 'color: {{VALUE}};',
-					'{{WRAPPER}} {{CURRENT_ITEM}} .timeline-icon svg path'  => 'stroke: {{VALUE}}; fill: {{VALUE}};'
+					'{{WRAPPER}} {{CURRENT_ITEM}} .timeline-icon svg'  => ' fill: {{VALUE}};'
 				],
 			]
 		);
@@ -404,7 +415,7 @@ class ElementsKit_Widget_timeline extends Widget_Base {
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} {{CURRENT_ITEM}}:hover .timeline-icon i' => 'color: {{VALUE}}',
-					'{{WRAPPER}} {{CURRENT_ITEM}}:hover .timeline-icon svg path'  => 'stroke: {{VALUE}}; fill: {{VALUE}};'
+					'{{WRAPPER}} {{CURRENT_ITEM}}:hover .timeline-icon svg'  => 'fill: {{VALUE}};'
 				],
 			]
 		);
@@ -844,7 +855,7 @@ class ElementsKit_Widget_timeline extends Widget_Base {
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .timeline-icon i' => 'color: {{VALUE}};',
-					'{{WRAPPER}} .timeline-icon svg path'   => 'stroke: {{VALUE}}; fill: {{VALUE}};',
+					'{{WRAPPER}} .timeline-icon svg'   => 'fill: {{VALUE}};',
 				],
 			]
 		);
@@ -903,7 +914,7 @@ class ElementsKit_Widget_timeline extends Widget_Base {
 					'{{WRAPPER}} .floating-style .single-timeline .timeline-info .date' => 'color: {{VALUE}};',
 					'{{WRAPPER}} .floating-style .single-timeline .timeline-info .date a' => 'color: {{VALUE}};',
 					'{{WRAPPER}} .horizantal-timeline .bottom-content .date' => 'color: {{VALUE}};',
-					'{{WRAPPER}} .single-timeline .timeline-info .date svg path'    => 'stroke: {{VALUE}}; fill: {{VALUE}};'
+					'{{WRAPPER}} .single-timeline .timeline-info .date svg'    => 'fill: {{VALUE}};'
 				],
 			]
 		);
@@ -927,7 +938,7 @@ class ElementsKit_Widget_timeline extends Widget_Base {
 				],
 				'selectors' => [
 					'{{WRAPPER}} .single-timeline .timeline-info .date i' => 'font-size: {{SIZE}}{{UNIT}};',
-					'{{WRAPPER}} .single-timeline .timeline-info .date svg' => 'max-width: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .single-timeline .timeline-info .date svg' => 'font-size: {{SIZE}}{{UNIT}};',
 				],
 			]
 		);
@@ -974,7 +985,7 @@ class ElementsKit_Widget_timeline extends Widget_Base {
 				'selectors' => [
 					'{{WRAPPER}} .floating-style .single-timeline .timeline-info p' => 'color: {{VALUE}};',
 					'{{WRAPPER}} .single-timeline .timeline-info p' => 'color: {{VALUE}};',
-					'{{WRAPPER}} .single-timeline .timeline-info .place svg path' => 'stroke: {{VALUE}}; fill: {{VALUE}};',
+					'{{WRAPPER}} .single-timeline .timeline-info .place svg' => 'fill: {{VALUE}};',
 				],
 				'condition' => [
 					'ekit_timeline_style' => 'vertical',
@@ -1001,7 +1012,7 @@ class ElementsKit_Widget_timeline extends Widget_Base {
 				],
 				'selectors' => [
 					'{{WRAPPER}} .single-timeline .timeline-info .place i' => 'font-size: {{SIZE}}{{UNIT}};',
-					'{{WRAPPER}} .single-timeline .timeline-info .place svg' => 'max-width: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .single-timeline .timeline-info .place svg' => 'font-size: {{SIZE}}{{UNIT}};',
 				],
 			]
 		);
@@ -1293,7 +1304,7 @@ class ElementsKit_Widget_timeline extends Widget_Base {
 				'default' => '#2575fc',
 				'selectors' => [
 					'{{WRAPPER}} .timeline-pin-icon i' => 'color: {{VALUE}};',
-					'{{WRAPPER}} .timeline-pin-icon svg path'   => 'stroke: {{VALUE}}; fill: {{VALUE}};',
+					'{{WRAPPER}} .timeline-pin-icon svg'   => 'fill: {{VALUE}};',
 				]
 			]
 		);
@@ -1346,7 +1357,7 @@ class ElementsKit_Widget_timeline extends Widget_Base {
 				'default' => '#000',
 				'selectors' => [
 					'{{WRAPPER}} .single-timeline:hover .timeline-pin-icon i' => 'color: {{VALUE}}',
-					'{{WRAPPER}} .single-timeline:hover .timeline-pin-icon svg path'   => 'stroke: {{VALUE}}; fill: {{VALUE}};',
+					'{{WRAPPER}} .single-timeline:hover .timeline-pin-icon svg'   => 'fill: {{VALUE}};',
 				]
 			]
 		);
@@ -1854,4 +1865,5 @@ class ElementsKit_Widget_timeline extends Widget_Base {
     <?php }
     echo "</div>";
     }
+	
 }

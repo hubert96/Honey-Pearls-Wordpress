@@ -219,6 +219,12 @@ class Awaiken_ElementsKit_Lite {
 			//Review Widgets
 			$elemkit_options[ 'widget_list' ][ 'facebook-review' ][ 'status' ] = 'inactive';
 			$elemkit_options[ 'widget_list' ][ 'yelp' ][ 'status' ] = 'inactive';
+			$elemkit_options[ 'module_list' ][ 'badge' ][ 'status' ] = 'inactive';
+			$elemkit_options[ 'module_list' ][ 'scroll-reveal' ][ 'status' ] = 'active';
+			$elemkit_options[ 'widget_list' ][ 'login-form' ][ 'status' ] = 'inactive';
+			$elemkit_options[ 'widget_list' ][ 'register-form' ][ 'status' ] = 'inactive';
+			$elemkit_options[ 'widget_list' ][ 'stacked-cards' ][ 'status' ] = 'inactive';
+			$elemkit_options[ 'widget_list' ][ 'copyright' ][ 'status' ] = 'active';
 
 			update_option( 'elementskit_options', $elemkit_options );
 			update_option('awaiken_default_ekit_settings', 0);

@@ -21,6 +21,7 @@ if(is_admin()) {
 	if(backeri_license_valid()){ 
 		require_once BACKERI_THEME_DIR . '/inc/ocdi.php';
 		require_once BACKERI_THEME_DIR . '/inc/required-plugins.php';
+		require_once BACKERI_THEME_DIR . '/inc/plugin-updates.php';
 	}
 	
 	//Load theme updater functions

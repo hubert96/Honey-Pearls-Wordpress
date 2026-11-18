@@ -26,7 +26,7 @@ class ElementsKit_Widget_Advanced_Toggle extends Widget_Base {
     public function get_categories() {
         return Handler::get_categories();
     }
-    
+
 	public function get_keywords() {
 		return Handler::get_keywords();
 	}
@@ -34,6 +34,14 @@ class ElementsKit_Widget_Advanced_Toggle extends Widget_Base {
     public function get_help_url() {
         return 'https://wpmet.com/doc/advanced-toggle/';
     }
+
+	public function get_style_depends() {
+		return ['ekit-pro-advanced-toggle'];
+	}
+
+	public function get_script_depends() {
+		return ['ui-slim','ekit-pro-advanced-toggle'];
+	}
     protected function is_dynamic_content(): bool {
         return true;
     }
@@ -166,7 +174,7 @@ class ElementsKit_Widget_Advanced_Toggle extends Widget_Base {
 					'label' => esc_html__( 'Normal', 'elementskit' ),
 				]
             );
-            
+
             $repeater->add_control(
                 'ekit_toggle_title_color_normal',
                 [
@@ -178,7 +186,7 @@ class ElementsKit_Widget_Advanced_Toggle extends Widget_Base {
                     ],
                 ]
             );
-	
+
 			$repeater->end_controls_tab();
 
 			// Hover
@@ -204,7 +212,7 @@ class ElementsKit_Widget_Advanced_Toggle extends Widget_Base {
 			$repeater->end_controls_tab();
 
 		$repeater->end_controls_tabs();
-        
+
         $repeater->add_control(
             'ekit_toggle_title_is_active',
             [
@@ -257,12 +265,13 @@ class ElementsKit_Widget_Advanced_Toggle extends Widget_Base {
 				'selector' => '{{WRAPPER}} .ekit-wid-con .elemenetskit-toogle-controls-wraper, {{WRAPPER}} .ekit-wid-con .ekit-custom-control-label',
 			]
         );
-        
+
         $this->add_responsive_control(
 			'ekit_toggle_switch_container_padding',
 			[
-				'label' => __( 'Padding', 'elementskit' ),
+				'label' => __( 'Outside Padding', 'elementskit' ),
 				'type' => Controls_Manager::DIMENSIONS,
+				'render_type' => 'ui',
 				'size_units' => [ 'px', '%', 'em' ],
 				'selectors' => [
 					'{{WRAPPER}} .ekit-wid-con .elemenetskit-toogle-controls-wraper' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
@@ -271,7 +280,7 @@ class ElementsKit_Widget_Advanced_Toggle extends Widget_Base {
 				],
 			]
         );
-        
+
         $this->add_group_control(
 			Group_Control_Box_Shadow::get_type(),
 			[
@@ -280,7 +289,7 @@ class ElementsKit_Widget_Advanced_Toggle extends Widget_Base {
 				'selector' => '{{WRAPPER}} .ekit-wid-con .elemenetskit-toogle-controls-wraper, {{WRAPPER}} .ekit-wid-con .ekit-custom-control-label',
 			]
         );
-        
+
         $this->add_responsive_control(
 			'ekit_toggle_switch_container_border_radius',
 			[
@@ -297,8 +306,9 @@ class ElementsKit_Widget_Advanced_Toggle extends Widget_Base {
         $this->add_responsive_control(
 			'ekit_toggle_switch_toggle__padding',
 			[
-				'label' => __( 'Padding', 'elementskit' ),
+				'label' => __( 'Inside Padding', 'elementskit' ),
 				'type' => Controls_Manager::DIMENSIONS,
+				'render_type' => 'ui',
 				'size_units' => [ 'px', '%', 'em' ],
 				'selectors' => [
 					'{{WRAPPER}} .ekit-wid-con .ekit-custom-control-label:before' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
@@ -306,8 +316,8 @@ class ElementsKit_Widget_Advanced_Toggle extends Widget_Base {
                 ]
 			]
         );
-        
-        
+
+
         $this->add_control(
 			'ekit_toggle_switch_container_heading_one',
 			[
@@ -316,7 +326,7 @@ class ElementsKit_Widget_Advanced_Toggle extends Widget_Base {
 				'separator' => 'before',
 			]
         );
-        
+
         $this->add_responsive_control(
 			'ekit_toggle_switch_toggle_border_radius',
 			[
@@ -376,7 +386,7 @@ class ElementsKit_Widget_Advanced_Toggle extends Widget_Base {
 					'label' => esc_html__( 'Normal', 'elementskit' ),
 				]
             );
-            
+
             $this->add_control(
                 'ekit_toggle_switch_toggle_2_normal_color',
                 [
@@ -387,7 +397,7 @@ class ElementsKit_Widget_Advanced_Toggle extends Widget_Base {
                     ],
                 ]
             );
-	
+
 			$this->end_controls_tab();
 
 			// Hover
@@ -414,9 +424,9 @@ class ElementsKit_Widget_Advanced_Toggle extends Widget_Base {
 		$this->end_controls_tabs();
 
         $this->end_controls_section();
-        
+
         // ---- Switch Title
-        
+
 		$this->start_controls_section(
 			'ekit_toggle_switch_content_style_tab',
 			[
@@ -465,4 +475,5 @@ class ElementsKit_Widget_Advanced_Toggle extends Widget_Base {
 			require Handler::get_dir() . 'style/'.$ekit_advanced_toggle_style.'.php';
 		}
 	}
+
 }

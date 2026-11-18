@@ -45,7 +45,6 @@ $pluginManagerInstance->deleteConnectedSource();
 delete_option($pluginManagerInstance->getOptionName('source'));
 delete_option($pluginManagerInstance->getOptionName('feed-data'));
 delete_option($pluginManagerInstance->getOptionName('feed-data-saved'));
-delete_option($pluginManagerInstance->getOptionName('public-id'));
 delete_option($pluginManagerInstance->getOptionName('token-expires'));
 delete_option($pluginManagerInstance->getOptionName('layout'));
 delete_option($pluginManagerInstance->getOptionName('template'));
@@ -169,6 +168,17 @@ include(plugin_dir_path(__FILE__) . '../include/step-list.php');
 <?php
 $source = $pluginManagerInstance->getConnectedSource();
 if ($source && !$isReconnectingSource): ?>
+<div class="ti-upgrade-notice">
+<strong><?php
+/* translators: %s: Platform name */
+echo esc_html(sprintf(__('Connect multiple %s accounts', 'widgets-for-social-post-feed'), 'Facebook'));
+?></strong>
+<p><?php
+/* translators: %1$s: Platform name */
+echo esc_html(sprintf(__('Need more than one %1$s account in your widget? Upgrade to a paid plan to connect and display content from multiple %1$s accounts.', 'widgets-for-social-post-feed'), 'Facebook'));
+?></p>
+<a class="ti-btn" href="https://www.trustindex.io?url=/feed-widgets&a=sys&c=wp-feed-facebook-6" target="_blank"><?php echo esc_html(__('Upgrade now', 'widgets-for-social-post-feed')); ?></a>
+</div>
 <div class="ti-source-box">
 <?php
 $feedData = $pluginManagerInstance->getFeedData();
@@ -221,16 +231,12 @@ echo esc_html(sprintf(__('This will ensure that your %s Feed Widget continues to
 <input type="hidden" name="data" required="required" value="" />
 </form>
 <?php $connectUrl = 'https://admin.trustindex.io/source/edit_feed/type/Facebook/iframe/1'; ?>
-<?php
-if ($isReconnectingSource) {
-$connectUrl .= '/public_id/'.get_option($pluginManagerInstance->getOptionName('public-id'));
-}
-?>
 <div class="ti-box" style="padding: 0">
 <?php
 $connectUrlParams = array_merge(
 isset($connectPending['error']) ? [] : $connectPending,
 array(
+'public_id' => get_option($pluginManagerInstance->getOptionName('public-id')),
 'website' => esc_attr(urlencode(get_option('siteurl'))),
 'version' => esc_attr($pluginManagerInstance->getVersion()),
 ),
@@ -261,7 +267,7 @@ __('This is only a temporary issue – no need to switch plugins, everything wil
 </div>
 <?php endforeach; ?>
 </div>
-<?php elseif ($stepCurrent === 3): $widgetDataIds = []; ?>
+<?php elseif ($stepCurrent === 3): ?>
 <div class="ti-preview-boxes-container">
 <?php foreach ($pluginManager::$widgetTemplates as $id => $template): ?>
 <?php
@@ -285,7 +291,6 @@ if ($template['is-active'] && $template['category'] === $layout):
 <div class="preview">
 <div id="<?php
 $widgetId = $pluginManagerInstance->getWidget($id);
-$widgetDataIds[] = $pluginManagerInstance->getWidgetDataKey($widgetId);
 echo esc_attr($pluginManagerInstance->getContainerKey($widgetId));
 ?>"></div>
 </div>
@@ -294,9 +299,6 @@ echo esc_attr($pluginManagerInstance->getContainerKey($widgetId));
 </div>
 <?php endif; ?>
 <?php endforeach; ?>
-<?php
-$pluginManagerInstance->registerLoaderScript($widgetDataIds);
-?>
 </div>
 <?php elseif ($stepCurrent === 4): ?>
 <form method="post" id="ti-widget-editor-form">

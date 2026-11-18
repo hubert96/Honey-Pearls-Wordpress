@@ -46,16 +46,26 @@ while ( have_posts() ) :
 				<div class="col-md-12">
 					<div class="page-header-box">
 						<?php the_title( '<h1 class="text-anime">', '</h1>' ); ?>
+						<?php
+							$show_date = (bool) get_theme_mod( 'blog_single_show_date', true );
+							$show_category = (bool) get_theme_mod( 'blog_single_show_category', true );
+						?>
+						<?php if ( $show_date || $show_category ) { ?>
 						<div class="post-single-meta">
 							<ul>
+								<?php if ( $show_date ) { ?>
 								<li><i class="fa-solid fa-calendar-days"></i><?php echo get_the_date(); ?></li>
+								<?php } ?>
+								<?php if ( $show_category ) { ?>
 								<li><i class="fa-solid fa-tag"></i>
 									<?php
 										printf( '%s %s', esc_html( '', 'backeri' ), get_the_category_list(', ') );
 									?>
 								</li>
+								<?php } ?>
 							</ul>
 						</div>
+						<?php } ?>
 					</div>
 				</div>
 			</div>
@@ -89,6 +99,17 @@ while ( have_posts() ) :
 								<?php do_action('backeri_action_social_sharing'); ?>
 							</div>
 						</div>
+						<?php if ( get_theme_mod( 'blog_single_post_navigation', 0 ) ) { ?>
+						<div class="post-navigation-box">
+							<?php
+								the_post_navigation( array(
+									'prev_text'          => '<span class="nav-subtitle">' . esc_html__( 'Previous Post', 'backeri' ) . '</span><span class="nav-title">%title</span>',
+									'next_text'          => '<span class="nav-subtitle">' . esc_html__( 'Next Post', 'backeri' ) . '</span><span class="nav-title">%title</span>',
+									'screen_reader_text' => esc_html__( 'Post navigation', 'backeri' ),
+								) );
+							?>
+						</div>
+						<?php } ?>
 					</div>
 					<?php 
 							if ( comments_open() || get_comments_number() ) :

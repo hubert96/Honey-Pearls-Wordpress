@@ -37,19 +37,19 @@
     "oscarotero/env": "^2.1",
     "roots/bedrock-autoloader": "^1.0",
     "roots/bedrock-disallow-indexing": "^2.0",
-    "roots/wordpress": "6.8.3",
+    "roots/wordpress": "7.1.4",
     "roots/wp-config": "1.0.0",
-    "wpackagist-theme/twentytwentyfive": "^1.0",
-    "wpackagist-plugin/cloudflare": "^4.13",
-    "wpackagist-plugin/amazon-s3-and-cloudfront": "^3.2",
-    "wpackagist-plugin/wordfence": "^8.1",
-    "wpackagist-plugin/wp-mail-smtp": "^4.7",
-    "wpackagist-plugin/contact-form-7": "^6.1",
-    "wpackagist-plugin/elementor": "^3.33",
-    "wpackagist-plugin/elementskit-lite": "^3.7",
-    "wpackagist-plugin/one-click-demo-import": "^3.4",
-    "wpackagist-plugin/woocommerce": "^10.3",
-    "wpackagist-plugin/wp-reviews-plugin-for-google": "^13.2"
+    "wpackagist-theme/twentytwentyfive": "1.5",
+    "wpackagist-plugin/cloudflare": "4.14.5",
+    "wpackagist-plugin/amazon-s3-and-cloudfront": "3.4.4",
+    "wpackagist-plugin/wordfence": "9.1.1",
+    "wpackagist-plugin/wp-mail-smtp": "4.10.4",
+    "wpackagist-plugin/contact-form-7": "6.2.5",
+    "wpackagist-plugin/elementor": "4.4.1",
+    "wpackagist-plugin/elementskit-lite": "4.2.0",
+    "wpackagist-plugin/one-click-demo-import": "3.4.1",
+    "wpackagist-plugin/woocommerce": "11.3.0",
+    "wpackagist-plugin/wp-reviews-plugin-for-google": "15.0"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",
@@ -61,6 +61,9 @@
     "allow-plugins": {
       "composer/installers": true,
       "roots/wordpress-core-installer": true
+    },
+    "platform": {
+      "php": "8.3.36"
     }
   },
   "minimum-stability": "dev",

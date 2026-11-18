@@ -44,6 +44,10 @@ class ElementsKit_Widget_Instagram_Feed extends Widget_Base {
 		wp_register_script('ekit-instagram-feed', Handler::get_url() . 'assets/js/script.js', ['elementor-frontend'], null, true);
 	}
 
+	public function get_style_depends() {
+		return ['ekit-pro-instagram-feed'];
+	}
+
 	public function get_script_depends() {
 		return ['ekit-instagram-feed'];
 	}
@@ -81,7 +85,7 @@ class ElementsKit_Widget_Instagram_Feed extends Widget_Base {
 				'frontend_available' => true,
 				'default'            => 'ekit-insta-col-4',
 				'options'            => [
-					'ekit-insta-col-auto' => esc_html__('1 Columns', 'elementskit'),
+					'ekit-insta-col-12'   => esc_html__('1 Columns', 'elementskit'),
 					'ekit-insta-col-6'    => esc_html__('2 Columns', 'elementskit'),
 					'ekit-insta-col-4'    => esc_html__('3 Columns', 'elementskit'),
 					'ekit-insta-col-3'    => esc_html__('4 Columns', 'elementskit'),
@@ -226,6 +230,70 @@ class ElementsKit_Widget_Instagram_Feed extends Widget_Base {
 				'label_off'          => esc_html__('Hide', 'elementskit'),
 				'return_value'       => 'yes',
 				'default'            => 'no',
+			]
+		);
+
+		$this->add_control(
+			'ekit_instagram_feed_show_classic_footer',
+			[
+				'label'              => esc_html__('Show Reaction Footer', 'elementskit'),
+				'type'               => Controls_Manager::SWITCHER,
+				'frontend_available' => true,
+				'label_on'           => esc_html__('Show', 'elementskit'),
+				'label_off'          => esc_html__('Hide', 'elementskit'),
+				'return_value'       => 'yes',
+				'default'            => 'yes',
+				'condition'          => ['ekit_instagram_feed_style!' => 'yes'],
+				'separator' => 'before'
+			]
+		);
+
+		$this->add_control(
+			'ekit_instagram_feed_reaction_display',
+			[
+				'label'     => esc_html__('Reaction Display', 'elementskit'),
+				'type'      => Controls_Manager::SELECT,
+				'default'   => 'both',
+				'options'   => [
+					'only-text' => esc_html__('Only Text', 'elementskit'),
+					'only-icon' => esc_html__('Only Icon', 'elementskit'),
+					'both'      => esc_html__('Both (Icon + Text)', 'elementskit'),
+				],
+				'condition' => ['ekit_instagram_feed_show_classic_footer' => 'yes', 'ekit_instagram_feed_style!' => 'yes'],
+			]
+		);
+
+		$this->add_control(
+			'ekit_instagram_feed_like_icon',
+			[
+				'label'     => esc_html__('Like Icon', 'elementskit'),
+				'type'      => Controls_Manager::ICONS,
+				'default'   => [
+					'value'   => 'fas fa-heart',
+					'library' => 'fa-solid',
+				],
+				'condition' => [
+					'ekit_instagram_feed_reaction_display!' => 'only-text',
+					'ekit_instagram_feed_show_classic_footer' => 'yes',
+					'ekit_instagram_feed_style!' => 'yes',
+				],
+			]
+		);
+
+		$this->add_control(
+			'ekit_instagram_feed_comment_icon',
+			[
+				'label'     => esc_html__('Comment Icon', 'elementskit'),
+				'type'      => Controls_Manager::ICONS,
+				'default'   => [
+					'value'   => 'fas fa-comment',
+					'library' => 'fa-solid',
+				],
+				'condition' => [
+					'ekit_instagram_feed_reaction_display!' => 'only-text',
+					'ekit_instagram_feed_show_classic_footer' => 'yes',
+					'ekit_instagram_feed_style!' => 'yes',
+				],
 			]
 		);
 
@@ -749,6 +817,75 @@ class ElementsKit_Widget_Instagram_Feed extends Widget_Base {
 		$this->end_controls_section();
 
 		$this->start_controls_section(
+			'ekit_instagram_feed_reaction_footer_style_tab',
+			[
+				'label'     => esc_html__('Reaction Footer', 'elementskit'),
+				'tab'       => Controls_Manager::TAB_STYLE,
+				'condition' => [
+					'ekit_instagram_feed_show_classic_footer' => 'yes',
+					'ekit_instagram_feed_style!'              => 'yes',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name'     => 'ekit_instagram_feed_reaction_text_typography',
+				'label'    => esc_html__('Text Typography', 'elementskit'),
+				'selector' => '{{WRAPPER}} .ekit-insta-classic-footer .ekit-insta-reaction-item span',
+			]
+		);
+
+		$this->add_responsive_control(
+			'ekit_instagram_feed_reaction_text_color',
+			[
+				'label'     => esc_html__('Text Color', 'elementskit'),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .ekit-insta-classic-footer .ekit-insta-reaction-item span' => 'color: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_responsive_control(
+			'ekit_instagram_feed_reaction_icon_size',
+			[
+				'label'      => esc_html__('Icon Size', 'elementskit'),
+				'type'       => Controls_Manager::SLIDER,
+				'size_units' => ['px', 'em'],
+				'range'      => [
+					'px' => [ 'min' => 8, 'max' => 60, 'step' => 1 ],
+					'em' => [ 'min' => 0.5, 'max' => 4, 'step' => 0.1 ],
+				],
+				'selectors'  => [
+					'{{WRAPPER}} .ekit-insta-classic-footer .ekit-insta-reaction-item i'   => 'font-size: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .ekit-insta-classic-footer .ekit-insta-reaction-item svg' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
+				],
+				'condition'  => [
+					'ekit_instagram_feed_reaction_display!' => 'only-text',
+				],
+			]
+		);
+
+		$this->add_responsive_control(
+			'ekit_instagram_feed_reaction_icon_color',
+			[
+				'label'     => esc_html__('Icon Color', 'elementskit'),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .ekit-insta-classic-footer .ekit-insta-reaction-item i'        => 'color: {{VALUE}};',
+					'{{WRAPPER}} .ekit-insta-classic-footer .ekit-insta-reaction-item svg path' => 'fill: {{VALUE}};',
+				],
+				'condition'  => [
+					'ekit_instagram_feed_reaction_display!' => 'only-text',
+				],
+			]
+		);
+
+		$this->end_controls_section();
+
+		$this->start_controls_section(
 			'ekit_instagram_feed_media_style_tab',
 			[
 				'label'     => esc_html__('Media', 'elementskit'),
@@ -1016,6 +1153,75 @@ class ElementsKit_Widget_Instagram_Feed extends Widget_Base {
 		return $convert_reaction . '' . $reaction_suffix;
 	}
 
+	/**
+	 * Instagram media URLs are signed and expire, so every photo and video is
+	 * mirrored into the uploads folder and served from there once it is stored.
+	 * The stored API response outlives those signatures by a long way.
+	 */
+	protected function cached_media_url($url) {
+
+		return Handler::media_cache()->url($url);
+	}
+	
+	/** 
+	 * Resolve the URLs required to render an Instagram media item.
+	 *
+	 * Carousel parents can occasionally omit media_url, so use the first
+	 * renderable child as a fallback when child data is available.
+	 *
+	 * @param object $media Instagram media object.
+	 *
+	 * @return array{media_type: string, media_url: string, thumbnail_url: string}
+	 */
+	private function get_instagram_media_data( $media ) {
+		$media_data = [
+			'media_type'   => '',
+			'media_url'    => '',
+			'thumbnail_url' => '',
+		];
+
+		if ( ! is_object( $media ) ) {
+			return $media_data;
+		}
+
+		$media_data['media_type'] = ! empty( $media->media_type ) && is_string( $media->media_type ) ? strtoupper( $media->media_type ) : '';
+		$media_data['media_url'] = ! empty( $media->media_url ) && is_string( $media->media_url ) ? $media->media_url : '';
+		$media_data['thumbnail_url'] = ! empty( $media->thumbnail_url ) && is_string( $media->thumbnail_url ) ? $media->thumbnail_url : '';
+
+		if (
+			'CAROUSEL_ALBUM' !== $media_data['media_type'] ||
+			! empty( $media_data['media_url'] ) ||
+			! isset( $media->children ) ||
+			! is_object( $media->children ) ||
+			empty( $media->children->data ) ||
+			! is_array( $media->children->data )
+		) {
+			return $media_data;
+		}
+
+		foreach ( $media->children->data as $child ) {
+			if ( ! is_object( $child ) ) {
+				continue;
+			}
+
+			$child_media_url = ! empty( $child->media_url ) && is_string( $child->media_url ) ? $child->media_url : '';
+			$child_thumbnail_url = ! empty( $child->thumbnail_url ) && is_string( $child->thumbnail_url ) ? $child->thumbnail_url : '';
+			$child_media_type = ! empty( $child->media_type ) && is_string( $child->media_type ) ? strtoupper( $child->media_type ) : '';
+
+			if ( in_array( $child_media_type, ['VIDEO', 'REELS'], true ) ) {
+				$media_data['media_url'] = $child_thumbnail_url ?: $child_media_url;
+			} else {
+				$media_data['media_url'] = $child_media_url ?: $child_thumbnail_url;
+			}
+
+			if ( ! empty( $media_data['media_url'] ) ) {
+				break;
+			}
+		}
+
+		return $media_data;
+	}
+
 	protected function render() {
 
 	    echo '<div class="ekit-wid-con" >';
@@ -1028,21 +1234,18 @@ class ElementsKit_Widget_Instagram_Feed extends Widget_Base {
 	protected function render_raw() {
 
 		$data = Handler::get_instagram_feed_from_API();
-		if(is_string($data)) {
-			echo esc_html($data);
-			return;
-		}
 
 		if(!empty($data->error->message)) {
 			echo esc_html($data->error->message);
 			return;
 		}
 
-		$userCache = Handler::get_user_info();
-		if(is_string($userCache)) {
-			echo esc_html($userCache);
+		if(!is_array($data) || empty($data)) {
+			echo esc_html__('0 posts returned!', 'elementskit');
 			return;
 		}
+
+		$userCache = Handler::get_user_info();
 
 		$settings = $this->get_settings_for_display();
 		extract($settings);
@@ -1066,31 +1269,69 @@ class ElementsKit_Widget_Instagram_Feed extends Widget_Base {
 		}
 
 		$row_class = '';
-		if($styleLayout != 'layout-list' && $styleLayout != 'layout-masonary' && $ekit_instagram_feed_column_grid == 'ekit-insta-col-auto') {
-			$row_class = 'ekit-no-wrap ekit-justify-content-between';
-		}
 		?>
 
 		<div class="ekit-instagram-area">
 			<div class="ekit-insta-row <?php echo esc_attr($masnory_column . ' ' . $styleLayout . ' ' . $row_class); ?>">
 				<?php
 				$data = !empty($limit) ? array_slice($data, 0, $limit) : $data;
+				$lightbox_index = 0;
+
+				// The profile picture is a signed CDN URL as well, so it is mirrored like the post media.
+				$profile_pic_url = !empty($userCache->profile_picture_url) ? $this->cached_media_url($userCache->profile_picture_url) : '';
+
+				if ( empty( $profile_pic_url ) && ! empty( $data ) ) {
+					foreach ( $data as $profile_media ) {
+						$profile_media_data = $this->get_instagram_media_data( $profile_media );
+						$is_profile_video = in_array( $profile_media_data['media_type'], ['VIDEO', 'REELS'], true );
+						$profile_pic_url = $is_profile_video
+							? ($profile_media_data['thumbnail_url'] ?: $profile_media_data['media_url'])
+							: ($profile_media_data['media_url'] ?: $profile_media_data['thumbnail_url']);
+
+						// Picked from a post, so it is a signed URL that expires like any other.
+						$profile_pic_url = $this->cached_media_url( $profile_pic_url );
+
+						if ( ! empty( $profile_pic_url ) ) {
+							break;
+						}
+					}
+				}
 
 				if(isset($data) && is_array($data)):
+				$slideshow_index = 0;
 				foreach($data as $no => $ins_post) {
 
-					$pic_link = $ins_post->media_url;
+					$media_data = $this->get_instagram_media_data( $ins_post );
+					$is_video = in_array( $media_data['media_type'], ['VIDEO', 'REELS'], true );
 
-					$userInfo = !empty($userCache->username) ? $userCache->username : '';
-					$pic_created_time = date('F d, Y', strtotime($ins_post->timestamp));
+					if ( ($is_video && empty( $media_data['media_url'] )) || (! $is_video && empty( $media_data['media_url'] ) && empty( $media_data['thumbnail_url'] )) ) {
+						continue;
+					}
+
+					// Both are signed CDN URLs that expire, so they are served from the local mirror.
+					$pic_link  = $this->cached_media_url( $media_data['media_url'] ?: $media_data['thumbnail_url'] );
+					$post_link = !empty($ins_post->permalink) ? $ins_post->permalink : $pic_link;
+					$thumb_src = $is_video
+						? $this->cached_media_url( $media_data['thumbnail_url'] )
+						: ($pic_link ?: $this->cached_media_url( $media_data['thumbnail_url'] ));
+					$caption   = $ins_post->caption ?? '';
+
+					$userInfo = !empty($userCache->username) ? $userCache->username : (!empty(Handler::get_data()['username']) ? Handler::get_data()['username'] : (!empty($ins_post->username) ? $ins_post->username : ''));
+					$pic_created_time = !empty($ins_post->timestamp) ? gmdate('F d, Y', strtotime($ins_post->timestamp)) : '';
 
 					?>
 					<div class="ekit-ins-feed <?php echo esc_attr($columnFeed); ?>">
-						<div class="ekit-insta-content-holder <?php if($ekit_instagram_feed_style == 'yes') : ?>ekit-insta-style-tiles<?php endif; ?> <?php if($ekit_instagram_feed_style != 'yes') : ?>ekit-insta-style-classic<?php endif; ?>">
+						<div class="ekit-insta-content-holder <?php if($ekit_instagram_feed_style == 'yes') : ?>ekit-insta-style-tiles<?php endif; ?> <?php if($ekit_instagram_feed_style != 'yes') : ?>ekit-insta-style-classic<?php endif; ?><?php if($is_video) : ?> ekit-insta-video-post<?php endif; ?>">
 							<?php if(($ekit_instagram_feed_show_profile_header == 'yes') && ($ekit_instagram_feed_style != 'yes')) : ?>
                                 <div class="ekit-nsta-user-info">
                                     <a class="ekit-insta-user-details"
                                        href="https://www.instagram.com/<?php echo esc_html($userInfo); ?>">
+
+                                        <?php if(in_array($ekit_instagram_feed_profile_settings, ['both', 'only-profile'])) : ?>
+                                            <div class="ekit-insta-user-avatar ekit-insta-<?php echo esc_attr($ekit_instagram_feed_show_profile_style); ?>">
+                                                <img src="<?php echo esc_url($profile_pic_url); ?>" alt="<?php echo esc_html($userInfo); ?>">
+                                            </div>
+                                        <?php endif; ?>
 
                                         <div class="ekit-insta-username-and-time">
 											<?php if(in_array($ekit_instagram_feed_profile_settings, ['both', 'only-name'])) : ?>
@@ -1103,7 +1344,7 @@ class ElementsKit_Widget_Instagram_Feed extends Widget_Base {
                                     </a>
 									<?php if($ekit_instagram_feed_show_ins_view == 'yes') : ?>
                                         <a class="ekit-instagram-feed-item-source-icon"
-                                           href="<?php echo esc_url($pic_link); ?>">
+                                           href="<?php echo esc_url($post_link); ?>">
                                             <svg viewBox="0 0 24 24" width="24" height="24">
                                                 <path d="M17.1,1H6.9C3.7,1,1,3.7,1,6.9v10.1C1,20.3,3.7,23,6.9,23h10.1c3.3,0,5.9-2.7,5.9-5.9V6.9C23,3.7,20.3,1,17.1,1zM21.5,17.1c0,2.4-2,4.4-4.4,4.4H6.9c-2.4,0-4.4-2-4.4-4.4V6.9c0-2.4,2-4.4,4.4-4.4h10.3c2.4,0,4.4,2,4.4,4.4V17.1z"></path>
                                                 <path d="M16.9,11.2c-0.2-1.1-0.6-2-1.4-2.8c-0.8-0.8-1.7-1.2-2.8-1.4c-0.5-0.1-1-0.1-1.4,0C10,7.3,8.9,8,8.1,9S7,11.4,7.2,12.7C7.4,14,8,15.1,9.1,15.9c0.9,0.6,1.9,1,2.9,1c0.2,0,0.5,0,0.7-0.1c1.3-0.2,2.5-0.9,3.2-1.9C16.8,13.8,17.1,12.5,16.9,11.2zM12.6,15.4c-0.9,0.1-1.8-0.1-2.6-0.6c-0.7-0.6-1.2-1.4-1.4-2.3c-0.1-0.9,0.1-1.8,0.6-2.6c0.6-0.7,1.4-1.2,2.3-1.4c0.2,0,0.3,0,0.5,0s0.3,0,0.5,0c1.5,0.2,2.7,1.4,2.9,2.9C15.8,13.3,14.5,15.1,12.6,15.4z"></path>
@@ -1113,33 +1354,62 @@ class ElementsKit_Widget_Instagram_Feed extends Widget_Base {
 									<?php endif; ?>
                                 </div>
 							<?php endif; ?>
-                            <div class="insta-media">
-                                <a href="<?php echo esc_url($pic_link); ?>" target="_blank">
-									<?php if($ins_post->media_type == 'VIDEO'): ?>
-                                        <video class="img-responsive photo-thumb"
-                                               src="<?php echo esc_url($pic_link); ?>"
-                                        ></video>
-									<?php else: ?>
-                                        <img class="img-responsive photo-thumb" src="<?php echo esc_url($pic_link); ?>"
-                                             alt="<?php echo esc_html($userInfo); ?>">
-									<?php endif; ?>
-                                </a>
+                            <div class="insta-media ekit-insta-media-wrap">
+                                <?php if($is_video): ?>
+                                    <div class="ekit-insta-video-wrap" data-video-src="<?php echo esc_url($pic_link); ?>" data-video-poster="<?php echo esc_url($thumb_src); ?>" data-permalink="<?php echo esc_url($post_link); ?>" style="cursor: pointer;">
+										<?php if(!empty($thumb_src)) : ?>
+                                        <img class="img-responsive photo-thumb" src="<?php echo esc_url($thumb_src); ?>" alt="<?php echo esc_html($userInfo); ?>">
+										<?php else : ?>
+                                        <div class="ekit-insta-video-placeholder photo-thumb" aria-hidden="true"></div>
+										<?php endif; ?>
+                                        <span class="ekit-insta-video-play-button">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48"><circle cx="12" cy="12" r="12" fill="rgba(0,0,0,0.5)"/><polygon points="10,7 18,12 10,17" fill="#fff"/></svg>
+                                        </span>
+                                    </div>
+                                <?php else: ?>
+                                    <a href="<?php echo esc_url($thumb_src); ?>"
+                                       class="elementor-clickable"
+                                       data-elementor-open-lightbox="yes"
+                                       data-elementor-lightbox-slideshow="<?php echo esc_attr('ekit-insta-' . $this->get_id()); ?>"
+                                       data-elementor-lightbox-index="<?php echo esc_attr($lightbox_index++); ?>">
+                                        <img class="img-responsive photo-thumb" src="<?php echo esc_url($thumb_src); ?>" alt="<?php echo esc_html($userInfo); ?>">
+                                    </a>
+                                <?php endif; ?>
                             </div>
-							<?php if( $ekit_instagram_feed_show_caption_box == 'yes' && isset($ins_post->caption)) : ?>
+							<?php if($ekit_instagram_feed_show_caption_box == 'yes' && !empty($caption)) : ?>
                                 <div class="ekit-instagram-feed-posts-item-content">
-									<div class="ekit-insta-captions">
-										<?php echo esc_html($ins_post->caption) ?>
-									</div>
+                                    <p class="ekit-insta-captions"><?php echo esc_html($caption); ?></p>
                                 </div>
 							<?php endif; ?>
+
+							<?php if($ekit_instagram_feed_style != 'yes' && $ekit_instagram_feed_show_classic_footer == 'yes') : ?>
+                                <div class="ekit-insta-classic-footer">
+                                    <span class="ekit-insta-reaction-item">
+                                        <?php if($ekit_instagram_feed_reaction_display !== 'only-icon') : ?><span><?php esc_html_e('Like', 'elementskit'); ?></span><?php endif; ?>
+                                        <?php if($ekit_instagram_feed_reaction_display !== 'only-text') : ?>
+                                            <?php Icons_Manager::render_icon($ekit_instagram_feed_like_icon, ['aria-hidden' => 'true']); ?>
+                                        <?php endif; ?>
+                                        <span><?php echo esc_html($this->unit_converter($ins_post->like_count ?? 0)); ?></span>
+                                    </span>
+                                    <span class="ekit-insta-reaction-item">
+                                        <?php if($ekit_instagram_feed_reaction_display !== 'only-icon') : ?><span><?php esc_html_e('Comments', 'elementskit'); ?></span><?php endif; ?>
+                                        <?php if($ekit_instagram_feed_reaction_display !== 'only-text') : ?>
+                                            <?php Icons_Manager::render_icon($ekit_instagram_feed_comment_icon, ['aria-hidden' => 'true']); ?>
+                                        <?php endif; ?>
+                                        <span><?php echo esc_html($this->unit_converter($ins_post->comments_count ?? 0)); ?></span>
+                                    </span>
+                                </div>
+							<?php endif; ?>
+
 							<?php if($ekit_instagram_feed_style == 'yes') : ?>
                                 <div class="ekit-insta-hover-overlay"></div>
 							<?php endif; ?>
 						</div>
 					</div>
 					<?php
-				}
-				endif;
+						if(!$is_video) $slideshow_index++;
+					}
+					endif;
 				?>
 
 			</div>

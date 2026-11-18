@@ -2,6 +2,8 @@
 
 namespace Elementor;
 
+use ElementsKit_Lite\Utils;
+
 class ElementsKit_Extend_Sticky {
 
     public function __construct() {
@@ -10,16 +12,6 @@ class ElementsKit_Extend_Sticky {
 		
 		// Flexbox Container support
 		add_action( 'elementor/element/container/section_layout/after_section_end', array( $this, 'register_controls' ) );
-
-		// Migrate ekit_sticky_on option
-		add_action('init', function() {
-			if(get_transient('ekit_sticky_on_option_migrate') || !version_compare(\ElementsKit::version(), '3.4.1', '>')) {
-				return;
-			};
-
-			set_transient('ekit_sticky_on_option_migrate', \ElementsKit::version());
-			$this->sticky_on_option_migrate_config();
-		});
 	}
 
 	private function get_sticky_content_assets() {
@@ -45,7 +37,7 @@ class ElementsKit_Extend_Sticky {
 		$element->start_controls_section(
 			'section_scroll_effect',
 			[
-				'label' => esc_html__( 'ElementsKit Sticky', 'elementskit' ),
+				'label' => ( method_exists( Utils::class, 'get_promo_icon' ) ? Utils::get_promo_icon() : 'ElementsKit' ) . esc_html__( 'Sticky', 'elementskit' ),
 				'tab' => Controls_Manager::TAB_ADVANCED,
 			]
 		);
@@ -163,76 +155,5 @@ class ElementsKit_Extend_Sticky {
 				]
 			);
 		}
-	}
-
-	/**
-	 * Migrate ekit_sticky_on option
-	 *
-	 * Migrate the ekit_sticky_on select option to switch control
-	 *
-	 * @todo will be removed
-	 * @since 3.3.0
-	 */
-	public function sticky_on_option_migrate_config() {
-		global $wpdb;
-
-		$post_ids = $wpdb->get_col(
-			'SELECT `post_id` FROM `' . $wpdb->postmeta . '` WHERE `meta_key` = "_elementor_data" AND `meta_value` LIKE \'%"ekit_sticky_on"%\';'
-		);
-	
-		if (empty($post_ids)) {
-			return;
-		};
-	
-		foreach ($post_ids as $post_id) {
-			$do_update = false;
-			$document  = \Elementor\Plugin::$instance->documents->get($post_id);
-	
-			if ($document) {
-				$data = $document->get_elements_data();
-			}
-	
-			if (empty($data)) {
-				continue;
-			}
-	
-			$data = \Elementor\Plugin::$instance->db->iterate_data($data, function ($element) use (&$do_update) {
-				if (empty($element['settings']['ekit_sticky_on'])) {
-					return $element;
-				}
-	
-				if (!empty($element['settings']['ekit_sticky_on'])) {
-					$devices = explode('_', $element['settings']['ekit_sticky_on']);
-					$active_devices = Plugin::$instance->breakpoints->get_active_devices_list( [ 'reverse' => true ] );
-	
-					foreach ($active_devices as $breakpoint_key) {
-						$element['settings']['ekit_sticky_on_' . $breakpoint_key] = in_array($breakpoint_key, $devices) ? $breakpoint_key : '';
-						$do_update = true;
-					}
-	
-					$element['settings']['ekit_sticky_on_widescreen'] = 'widescreen';
-				}
-	
-				// cleanup old unused settings.
-				if (!empty($element['settings']['ekit_sticky_on'])) {
-					unset($element['settings']['ekit_sticky_on']);
-				}
-	
-				return $element;
-			});
-	
-			// Only update if needed.
-			if (!$do_update) {
-				continue;
-			}
-	
-			// We need the `wp_slash` in order to avoid the unslashing during the `update_post_meta`
-			$json_value = wp_slash(wp_json_encode($data));
-	
-			update_metadata('post', $post_id, '_elementor_data', $json_value);
-	
-			// Clear WP cache for next step.
-			wp_cache_flush();
-		} // End foreach().
 	}
 }

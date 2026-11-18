@@ -308,11 +308,13 @@ class TwitterAPIExchange
             }
         }
 
+        // phpcs:disable WordPress.WP.AlternativeFunctions -- Third-party TwitterAPIExchange library; cURL is its intended transport.
         $feed = curl_init();
         curl_setopt_array($feed, $options);
         $json = curl_exec($feed);
 
         $this->httpStatusCode = curl_getinfo($feed, CURLINFO_HTTP_CODE);
+        // phpcs:enable WordPress.WP.AlternativeFunctions
 
         return $json;
     }

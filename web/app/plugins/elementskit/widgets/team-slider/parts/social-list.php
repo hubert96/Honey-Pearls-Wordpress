@@ -3,8 +3,8 @@
 		<?php 
 		for ($i=0;$i<5;$i++) : 
 			if(!empty($ekit_team_member['link_'.$i]['url'])) {
-				$this->add_link_attributes( 'social_link_'.$i.$index, $ekit_team_member['link_'.$i] ); 
-				$this->add_render_attribute( 'social_link_'.$i.$index, 'aria-label', 'social-link' );
+				$this->add_link_attributes( 'social_link_'.$i.$index, $ekit_team_member['link_'.$i] );
+				$this->add_render_attribute( 'social_link_'.$i.$index, 'aria-label', esc_attr__( 'Social link', 'elementskit' ) );
 			}
 
 			if(!empty($ekit_team_member['icon_'.$i]['value'])) : ?>

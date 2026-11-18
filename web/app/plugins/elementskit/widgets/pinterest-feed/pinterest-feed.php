@@ -22,6 +22,10 @@ class ElementsKit_Widget_Pinterest_Feed extends Widget_Base {
 		wp_localize_script('ekit-pinterest-feed-script-handle', 'pinterest_config', $data);
 	}
 
+	public function get_style_depends() {
+		return ['ekit-feeds-common', 'ekit-layout-responsive', 'ekit-pro-pinterest-feed'];
+	}
+
 	public function get_script_depends() {
 		return ['ekit-pinterest-feed-script-handle'];
 	}
@@ -473,6 +477,7 @@ class ElementsKit_Widget_Pinterest_Feed extends Widget_Base {
             'mobile_default' => [ 'unit' => 'px', 'size' => 20 ],
             'selectors' => [
                 '{{WRAPPER}} .ekit-feed-pinterest-pin .ekit-feed-pinterest-pin--top-logo i' => 'font-size: {{SIZE}}{{UNIT}};',
+                '{{WRAPPER}} .ekit-feed-pinterest-pin .ekit-feed-pinterest-pin--top-logo svg' => 'font-size: {{SIZE}}{{UNIT}};',
             ],
         ]);
 
@@ -547,6 +552,7 @@ class ElementsKit_Widget_Pinterest_Feed extends Widget_Base {
             'type'      => Controls_Manager::COLOR,
             'selectors' => [
                 '{{WRAPPER}} .ekit-feed-pinterest-pin .ekit-feed-pinterest-pin--top-logo i' => 'color: {{VALUE}}',
+                '{{WRAPPER}} .ekit-feed-pinterest-pin .ekit-feed-pinterest-pin--top-logo svg' => 'fill: {{VALUE}}',
             ],
         ]);
     }

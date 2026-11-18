@@ -25,7 +25,7 @@ check_admin_referer('ti-download-posts');
 header('Location: admin.php?page=' . sanitize_text_field(wp_unslash($_GET['page'])) . '&tab=' . sanitize_text_field(wp_unslash($_GET['tab'])));
 }
 }
-$pluginManagerInstance->registerLoaderScript();
+wp_enqueue_script($pluginManagerInstance->getLoaderScriptKey(), 'https://cdn.trustindex.io/loader-feed.js', [], $pluginManagerInstance->getVersion(), ['in_footer' => true]);
 $posts = $feedData['posts'];
 $pluginManagerInstance->setNotificationParam('post-download-finished', 'active', false);
 $pluginManagerInstance->setNotificationParam('post-download-finished', 'do-check', true);
@@ -40,7 +40,7 @@ $pluginManagerInstance->setNotificationParam('post-download-finished', 'do-check
 <?php else: ?>
 <p><?php echo esc_html(__('Get unlimited posts, multiple feed widgets with custom style settings, widget popups, and access to 9 social platforms – everything you need to showcase your content like a pro!', 'widgets-for-social-post-feed')); ?></p>
 <?php endif; ?>
-<a class="ti-btn" href="https://www.trustindex.io?a=sys&c=wp-facebook-feed-pro" target="_blank"><?php echo esc_html(__('Create a Free Account for More Features', 'widgets-for-social-post-feed')); ?></a>
+<a class="ti-btn" href="https://www.trustindex.io?url=/feed-widgets&a=sys&c=wp-facebook-feed-pro" target="_blank"><?php echo esc_html(__('Create a Free Account for More Features', 'widgets-for-social-post-feed')); ?></a>
 </div>
 <?php if (!count($posts)): ?>
 <div class="ti-notice ti-notice-warning">

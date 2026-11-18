@@ -1,6 +1,6 @@
-<?php 
+<?php
 namespace Elementor;
-// todo: this file must be spilted into multiple view files for better maintance 
+// todo: this file must be spilted into multiple view files for better maintance
 ?>
 
 
@@ -9,7 +9,7 @@ namespace Elementor;
                 <h2 class="entry-title">
                     <a href="<?php the_permalink(); ?>">
                             <?php if($ekit_blog_posts_title_trim !='' || $ekit_blog_posts_title_trim > 0):
-                                echo esc_html(wp_trim_words(get_the_title(), $ekit_blog_posts_title_trim)); 
+                                echo esc_html(wp_trim_words(get_the_title(), $ekit_blog_posts_title_trim));
                             else:
                                 the_title();
                             endif; ?>
@@ -122,25 +122,23 @@ namespace Elementor;
                 $meta_data_html .= ob_get_clean();
             endif;
 
-
-            $column_size = self::format_colname($column_size);
             // $ekit_blog_posts_column = self::format_colname($ekit_blog_posts_column);
-			$ekit_blog_posts_column = $ekit_blog_posts_enable_carousel === 'yes' ? 'swiper-slide' : self::format_colname($ekit_blog_posts_column);
+			$ekit_blog_posts_column = $ekit_blog_posts_enable_carousel === 'yes' ? 'swiper-slide' : $ekit_blog_posts_column;
             ?>
-            <div class="<?php echo esc_attr( $ekit_blog_posts_column ); ?>">
+            <div class="post-item <?php echo esc_attr( $ekit_blog_posts_column ); ?>">
 
                 <?php if ( 'elementskit-blog-block-post' == $ekit_blog_posts_layout_style ): ?>
                     <div class="<?php echo esc_attr( $ekit_blog_posts_layout_style ); ?>">
-                        <div class="row no-gutters">
+                        <div class="ekit-row no-gutters">
                             <?php if ( 'yes' == $ekit_blog_posts_feature_img && has_post_thumbnail() ): ?>
-                                <div class="<?php echo esc_attr( $column_size.' '.$img_order ); ?>">
+                                <div class="<?php echo esc_attr( $column_size . ' ' . $img_order ); ?>">
                                     <a href="<?php the_permalink(); ?>" class="elementskit-entry-thumb">
-                                        <img src="<?php the_post_thumbnail_url( esc_attr( $ekit_blog_posts_feature_img_size_size ) ); ?>" alt="<?php the_title(); ?>">
+                                        <img src="<?php the_post_thumbnail_url( esc_attr( $ekit_blog_posts_feature_img_size_size ) ); ?>" alt="<?php echo esc_attr( get_the_title() ); ?>">
                                     </a><!-- .elementskit-entry-thumb END -->
                                 </div>
                             <?php endif; ?>
 
-                            <div class="<?php echo esc_attr( $column_size.' '.$content_order ); ?>">
+                            <div class="<?php echo esc_attr( $column_size . ' ' . $content_order ); ?>">
                                 <div class="elementskit-post-body <?php echo esc_attr($highlight_border); ?>">
                                     <div class="elementskit-entry-header">
                                         <?php if ( 'yes' == $ekit_blog_posts_title && 'before_meta' == $ekit_blog_posts_title_position ): ?>
@@ -181,7 +179,7 @@ namespace Elementor;
                         <div class="elementskit-entry-header">
                             <?php if ( 'elementskit-post-image-card' == $ekit_blog_posts_layout_style && 'yes' == $ekit_blog_posts_feature_img && has_post_thumbnail() ): ?>
                                 <a href="<?php the_permalink(); ?>" class="elementskit-entry-thumb">
-                                    <img src="<?php the_post_thumbnail_url( esc_attr( $ekit_blog_posts_feature_img_size_size ) ); ?>" alt="<?php the_title(); ?>">
+                                    <img src="<?php the_post_thumbnail_url( esc_attr( $ekit_blog_posts_feature_img_size_size ) ); ?>" alt="<?php echo esc_attr( get_the_title() ); ?>">
                                 </a><!-- .elementskit-entry-thumb END -->
                                 <?php if('yes' == $settings['ekit_blog_posts_floating_date']) : ?>
                                 <?php if($ekit_blog_posts_floating_date_style == 'style1'): ?>
@@ -266,7 +264,7 @@ namespace Elementor;
                                 $btn_class = ($settings['ekit_blog_posts_btn_class'] != '') ? $settings['ekit_blog_posts_btn_class'] : '';
                                 $btn_id = ($settings['ekit_blog_posts_btn_id'] != '') ? 'id='.$settings['ekit_blog_posts_btn_id'] : '';
                                 $icon_align = $settings['ekit_blog_posts_btn_icon_align'];
-                                
+
                                 // Reset Whitespace for this specific widget
                                 $btn_class .= ' whitespace--normal';
                                 ?>
@@ -274,7 +272,7 @@ namespace Elementor;
                                     <?php if($icon_align == 'right'): ?>
                                         <a href="<?php the_permalink(); ?>" class="elementskit-btn <?php echo esc_attr( $btn_class ); ?>" <?php echo esc_attr($btn_id); ?>>
                                             <?php echo esc_html( $btn_text ); ?>
-                                            <?php if($settings['ekit_blog_posts_btn_icons__switch'] === 'yes'): 
+                                            <?php if($settings['ekit_blog_posts_btn_icons__switch'] === 'yes'):
 
                                                 // new icon
                                                 $migrated = isset( $settings['__fa4_migrated']['ekit_blog_posts_btn_icons'] );
@@ -288,14 +286,14 @@ namespace Elementor;
                                                     <i class="<?php echo esc_attr($settings['ekit_blog_posts_btn_icon']); ?>" aria-hidden="true"></i>
                                                     <?php
                                                 }
-                                                
+
                                                 endif; ?>
                                         </a>
                                     <?php endif; ?>
 
                                     <?php if($icon_align == 'left'): ?>
                                         <a href="<?php the_permalink(); ?>" class="elementskit-btn <?php echo esc_attr( $btn_class ); ?>" <?php echo esc_attr($btn_id); ?>>
-                                        <?php if($settings['ekit_blog_posts_btn_icons__switch'] === 'yes'): 
+                                        <?php if($settings['ekit_blog_posts_btn_icons__switch'] === 'yes'):
                                                 // new icon
                                                 $migrated = isset( $settings['__fa4_migrated']['ekit_blog_posts_btn_icons'] );
                                                 // Check if its a new widget without previously selected icon using the old Icon control
@@ -308,7 +306,7 @@ namespace Elementor;
                                                     <i class="<?php echo esc_attr($settings['ekit_blog_posts_btn_icon']); ?>" aria-hidden="true"></i>
                                                     <?php
                                                 }
-                                                
+
                                             endif; ?>
                                             <?php echo esc_html( $btn_text ); ?>
                                         </a>

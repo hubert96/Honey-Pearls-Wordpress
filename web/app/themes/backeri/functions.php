@@ -14,7 +14,6 @@ define( 'BACKERI_THEME_URL', get_template_directory_uri() );
 define( 'AWAIKEN_ITEM_ID', 13164 );
 define( 'AWAIKEN_ITEM_NAME', 'Backeri' );
 define( 'AWAIKEN_THEME_SLUG', 'backeri' );
-define( 'AWAIKEN_MP', 'TF' );
 
 if ( ! isset( $content_width ) ) {
 	$content_width = 800; // Pixels.
@@ -242,18 +241,21 @@ add_action( 'wp_enqueue_scripts', 'backeri_theme_load_styles', 998 );
 if ( ! function_exists( 'backeri_theme_load_scripts' ) ) {
 	function backeri_theme_load_scripts() {
 		global $BACKERI_STORAGE;
+	wp_register_script( 'isotope-theme', BACKERI_THEME_URL . '/assets/js/isotope.pkgd.min.js', array(), BACKERI_THEME_VERSION, true );
 	
 		if( get_theme_mod( 'smooth_scrolling', $BACKERI_STORAGE['smooth_scrolling'] ) ) { 
-			wp_enqueue_script( 'SmoothScroll', BACKERI_THEME_URL . '/assets/js/SmoothScroll.js', array( 'jquery' ), BACKERI_THEME_VERSION, true );
+			wp_enqueue_script( 'lenis-theme', BACKERI_THEME_URL . '/assets/js/lenis.min.js', array(), BACKERI_THEME_VERSION, true );
+			// Lenis only exposes the Lenis class, so it has to be started here.
+			wp_add_inline_script( 'lenis-theme', 'window.awaikenLenis = new Lenis( { autoRaf: true , wheelMultiplier: 1.5, touchMultiplier: 1.5 } );' );
 		}
 		
-		wp_enqueue_script( 'gsap', BACKERI_THEME_URL . '/assets/js/gsap.min.js', array( 'jquery' ), BACKERI_THEME_VERSION, true );
+		wp_enqueue_script( 'gsap-theme', BACKERI_THEME_URL . '/assets/js/gsap.min.js', array( 'jquery' ), BACKERI_THEME_VERSION, true );
 		if( get_theme_mod( 'magic_cursor', $BACKERI_STORAGE['magic_cursor'] ) ) { 
-		wp_enqueue_script( 'magiccursor', BACKERI_THEME_URL . '/assets/js/magiccursor.js', array( 'jquery' ), BACKERI_THEME_VERSION, true );
+		wp_enqueue_script( 'magiccursor-theme', BACKERI_THEME_URL . '/assets/js/magiccursor.js', array( 'jquery' ), BACKERI_THEME_VERSION, true );
 		}
 		
-		wp_enqueue_script( 'SplitText', BACKERI_THEME_URL . '/assets/js/SplitText.js', array( 'jquery' ), BACKERI_THEME_VERSION, true );
-		wp_enqueue_script( 'ScrollTrigger', BACKERI_THEME_URL . '/assets/js/ScrollTrigger.min.js', array( 'jquery' ), BACKERI_THEME_VERSION, true );
+		wp_enqueue_script( 'SplitText-theme', BACKERI_THEME_URL . '/assets/js/SplitText.js', array( 'jquery' ), BACKERI_THEME_VERSION, true );
+		wp_enqueue_script( 'ScrollTrigger-theme', BACKERI_THEME_URL . '/assets/js/ScrollTrigger.min.js', array( 'jquery' ), BACKERI_THEME_VERSION, true );
 		wp_enqueue_script( 'theme-js', BACKERI_THEME_URL . '/assets/js/function.js', array( 'jquery' ), BACKERI_THEME_VERSION, true );
 		
 		// js for comments

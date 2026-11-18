@@ -35,6 +35,14 @@ class ElementsKit_Widget_hotspot extends Widget_Base {
         return 'https://wpmet.com/doc/hotspot/';
     }
 
+	public function get_style_depends() {
+		return ['ekit-pro-hotspot'];
+	}
+
+	public function get_script_depends() {
+		return ['ekit-pro-hotspot'];
+	}
+
     protected function is_dynamic_content(): bool {
         return false;
     }
@@ -868,4 +876,5 @@ class ElementsKit_Widget_hotspot extends Widget_Base {
         </div>
     <?php
     }
+	
 }

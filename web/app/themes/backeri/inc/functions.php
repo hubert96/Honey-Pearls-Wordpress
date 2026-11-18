@@ -364,64 +364,63 @@ if ( ! function_exists( 'backeri_generate_social_share_links' ) ) {
 		endif;
 		
 		$social_links_array['facebook'] = array(
-				'url'        => 'https://www.facebook.com/sharer.php?u=' . rawurlencode( $link ) . '&t=' . rawurlencode( $title ),
-				'icon'		 => 'fab fa-facebook-f',
+				'url'  => 'https://www.facebook.com/sharer.php?u=' . rawurlencode( $link ) . '&t=' . rawurlencode( $title ),
+				'icon' => 'fab fa-facebook-f',
 			);
-		
+
 		$social_links_array['twitter'] = array(
-				'url'        => 'https://twitter.com/share?text=' . rawurlencode( html_entity_decode( $title, ENT_COMPAT, 'UTF-8' ) ) . '&url=' . rawurlencode( $link ),
-				'icon'		 => 'fab fa-x-twitter',
+				'url'  => 'https://x.com/intent/tweet?text=' . rawurlencode( html_entity_decode( $title, ENT_COMPAT, 'UTF-8' ) ) . '&url=' . rawurlencode( $link ),
+				'icon' => 'fab fa-x-twitter',
 			);
-		
+
 		$social_links_array['linkedin'] = array(
-				'url'        => 'https://www.linkedin.com/shareArticle?mini=true&url=' . $link . '&amp;title=' . rawurlencode( $title ) . '&amp;summary=' . rawurlencode( mb_substr( html_entity_decode( $content, ENT_QUOTES, 'UTF-8' ), 0, 256 ) ),
-				'icon'		 => 'fab fa-linkedin-in',
+				'url'  => 'https://www.linkedin.com/sharing/share-offsite/?url=' . rawurlencode( $link ),
+				'icon' => 'fab fa-linkedin-in',
 			);
-			
+
 		$social_links_array['reddit'] = array(
-				'url'        => 'https://reddit.com/submit?url=' . $link . '&amp;title=' . rawurlencode( $title ),
-				'icon'		 => 'fab fa-reddit-alien',
+				'url'  => 'https://www.reddit.com/submit?url=' . rawurlencode( $link ) . '&title=' . rawurlencode( $title ),
+				'icon' => 'fab fa-reddit-alien',
 			);
-		
+
 		$social_links_array['tumblr'] = array(
-				'url' => 'https://www.tumblr.com/share/link?url=' . rawurlencode( $link ) . '&amp;name=' . rawurlencode( $title ) . '&amp;description=' . rawurlencode( $content ),
-				'icon'		 => 'fab fa-tumblr',
+				'url'  => 'https://www.tumblr.com/share/link?url=' . rawurlencode( $link ) . '&name=' . rawurlencode( $title ) . '&description=' . rawurlencode( mb_substr( $content, 0, 256 ) ),
+				'icon' => 'fab fa-tumblr',
 			);
-		
-		
+
 		$social_links_array['pinterest'] = array(
-				'url' => 'https://pinterest.com/pin/create/button/?url=' . rawurlencode( $link ) . '&amp;description=' . rawurlencode( $content ) . '&amp;media=' . rawurlencode( $image ),
-				'icon'		 => 'fab fa-pinterest-p',
+				'url'  => 'https://pinterest.com/pin/create/button/?url=' . rawurlencode( $link ) . '&description=' . rawurlencode( $title ) . '&media=' . rawurlencode( $image ),
+				'icon' => 'fab fa-pinterest-p',
 			);
-		
+
 		$social_links_array['vk'] = array(
-				'url'        => 'https://vkontakte.ru/share.php?url=' . rawurlencode( $link ) . '&amp;title=' . rawurlencode( $title ) . '&amp;description=' . rawurlencode( $content ),
-				'icon'		 => 'fab fa-vk',
+				'url'  => 'https://vk.com/share.php?url=' . rawurlencode( $link ) . '&title=' . rawurlencode( $title ) . '&description=' . rawurlencode( mb_substr( $content, 0, 256 ) ),
+				'icon' => 'fab fa-vk',
 			);
-		
+
 		$social_links_array['email'] = array(
-				'url'        => 'mailto:?subject=' . rawurlencode( $title ) . '&body=' . $link,
-				'icon'		 => 'fas fa-envelope',
+				'url'  => 'mailto:?subject=' . rawurlencode( $title ) . '&body=' . rawurlencode( $link ),
+				'icon' => 'fas fa-envelope',
 			);
-		
+
 		$social_links_array['whatsapp'] = array(
-				'url'        => 'https://api.whatsapp.com/send?text=' . rawurlencode( $link ),
-				'icon'		 => 'fab fa-whatsapp',
+				'url'  => 'https://wa.me/?text=' . rawurlencode( html_entity_decode( $title, ENT_COMPAT, 'UTF-8' ) . ' ' . $link ),
+				'icon' => 'fab fa-whatsapp',
 			);
-		
+
 		$social_links_array['stumbleupon'] = array(
-				'url'        => 'https://www.stumbleupon.com/submit?url=' . rawurlencode( $link ) . '&amp;title=' . rawurlencode( $title ),
-				'icon'		 => 'fab fa-stumbleupon',
+				'url'  => 'https://mix.com/add?url=' . rawurlencode( $link ),
+				'icon' => 'fab fa-stumbleupon',
 			);
 
 		$social_links_array['telegram'] = array(
-				'url'        => 'https://telegram.me/share/url?url=' . rawurlencode( $link ) . '&amp;text=' . rawurlencode( $title ),
-				'icon'		 => 'fab fa-telegram-plane',
+				'url'  => 'https://t.me/share/url?url=' . rawurlencode( $link ) . '&text=' . rawurlencode( $title ),
+				'icon' => 'fab fa-telegram-plane',
 			);
-			
-			$social_links_array['xing'] = array(
-				'url'        => 'https://www.xing.com/social_plugins/share/new?sc_p=xing-share&amp;h=1&amp;url=' . rawurlencode( $link ),
-				'icon'		 => 'fa-brands fa-square-xing',
+
+		$social_links_array['xing'] = array(
+				'url'  => 'https://www.xing.com/spi/shares/new?url=' . rawurlencode( $link ),
+				'icon' => 'fa-brands fa-square-xing',
 			);
 		foreach($social_sharing_links as $site) {
 			if ( !empty( $site ) ) {

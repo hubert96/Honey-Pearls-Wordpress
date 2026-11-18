@@ -10,7 +10,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 	use \Elementskit_Lite\Widgets\Widget_Notice;
 
 	public $base;
-	
+
 	public function get_name() {
 		return Handler::get_name();
 	}
@@ -35,6 +35,14 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 		return 'https://wpmet.com/doc/coupon-code/';
 	}
 
+	public function get_style_depends() {
+		return ['magnific-popup','ekit-pro-coupon-code'];
+	}
+
+	public function get_script_depends() {
+		return ['ekit-pro-coupon-code', 'magnific-popup'];
+	}
+
     protected function is_dynamic_content(): bool {
         return false;
     }
@@ -48,7 +56,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 				'tab' => Controls_Manager::TAB_CONTENT,
 			]
 		);
-		
+
 		$this->add_control(
 			'ekit_coupon_style',
 			[
@@ -103,7 +111,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 			[
 				'label' => esc_html__( 'After Copy', 'elementskit' ),
 				'type' => Controls_Manager::TEXT,
-				'default' => esc_html__( 'Copied!', 'elementskit' ),	
+				'default' => esc_html__( 'Copied!', 'elementskit' ),
 				'dynamic' 		=> [ 'active' => true ],
 				'label_block' => true,
 				'condition' => [
@@ -337,8 +345,8 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 			[
 				'label' => esc_html__( 'After Copy', 'elementskit' ),
 				'type' => Controls_Manager::TEXT,
-				'default' => esc_html__( 'Copied!', 'elementskit' ),	
-				'dynamic' 		=> [ 'active' => true ],			
+				'default' => esc_html__( 'Copied!', 'elementskit' ),
+				'dynamic' 		=> [ 'active' => true ],
 			]
 		);
 
@@ -458,8 +466,8 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 			]
 		);
 
-		$this->add_control( 
-			'ekit_coupon_close_button_icons', 
+		$this->add_control(
+			'ekit_coupon_close_button_icons',
 			[
 				'label' => esc_html__( 'Icon', 'elementskit' ),
 				'type'  => Controls_Manager::ICONS,
@@ -475,7 +483,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 
 		$this->end_controls_section();
 
-		/** Coupon Button Style */ 
+		/** Coupon Button Style */
 		$this->start_controls_section(
 			'ekit_coupon_button_style',
 			[
@@ -591,8 +599,8 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 			]
 		);
 
-		$this->start_controls_tabs( 
-			'ekit_coupon_btn_tabs_style' 
+		$this->start_controls_tabs(
+			'ekit_coupon_btn_tabs_style'
 		);
 
 		$this->start_controls_tab(
@@ -657,7 +665,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 				'exclude'   => ['image'],
 				'condition' => [
 					'ekit_coupon_style!' => ['style-7']
-				], 
+				],
 			)
 		);
 
@@ -698,7 +706,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 		);
 
 		$this->add_group_control(
-			Group_Control_Box_Shadow::get_type(), 
+			Group_Control_Box_Shadow::get_type(),
 			[
 				'name' => 'ekit_coupon_btn_box_shadow',
 				'label' => esc_html__( 'Box Shadow', 'elementskit' ),
@@ -769,7 +777,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 				'exclude'   => ['image'],
 				'condition' => [
 					'ekit_coupon_style!' => 'style-7'
-				],   
+				],
 			)
 		);
 
@@ -811,7 +819,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 		);
 
 		$this->add_group_control(
-			Group_Control_Box_Shadow::get_type(), 
+			Group_Control_Box_Shadow::get_type(),
 			[
 				'name' => 'ekit_coupon_btn_box_shadow_hover',
 				'label' => esc_html__( 'Box Shadow', 'elementskit' ),
@@ -848,7 +856,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 					'ekit_coupon_style' => 'style-6',
 				],
 			]
-		); 
+		);
 
 		$this->end_controls_tab();
 		$this->end_controls_tabs();
@@ -916,7 +924,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 
 		$this->end_controls_section();
 
-		/** Coupon Icon Style */ 
+		/** Coupon Icon Style */
 		$this->start_controls_section(
 			'ekit_cupon_icon_style',
 			[
@@ -1055,7 +1063,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 		$this->end_controls_section();
 
 		/** Coupon Code style */
-		$this->start_controls_section( 
+		$this->start_controls_section(
 		'ekit_coupon_code_style',
 			[
 				'label' => esc_html__('Coupon', 'elementskit'),
@@ -1206,7 +1214,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 			]
 		);
 
-		$this->start_controls_tabs( 
+		$this->start_controls_tabs(
 			'ekit_coupon_code_styles',
 			[
 				'condition' => [
@@ -1276,7 +1284,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 		$this->end_controls_section();
 
 		/** Popup Modal Section style */
-		$this->start_controls_section( 
+		$this->start_controls_section(
 			'ekit_coupon_popup_modal_box',
 			[
 				'label' => esc_html__('Popup Modal', 'elementskit'),
@@ -1539,8 +1547,8 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 			]
 		);
 
-		$this->add_responsive_control( 
-			'ekit_coupon_close_icon_size', 
+		$this->add_responsive_control(
+			'ekit_coupon_close_icon_size',
 			[
 				'label'           => esc_html__('Font Size', 'elementskit'),
 				'type'            => Controls_Manager::SLIDER,
@@ -1558,8 +1566,8 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 			]
 		);
 
-		$this->start_controls_tabs( 
-			'ekit_icon_box_icon_colors' 
+		$this->start_controls_tabs(
+			'ekit_icon_box_icon_colors'
 		);
 
 		$this->start_controls_tab(
@@ -1646,7 +1654,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 			]
 		);
 
-		$this->end_controls_tab();  
+		$this->end_controls_tab();
 
 		$this->end_controls_tabs();
 
@@ -1711,7 +1719,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 				],
 			]
 		);
-		
+
 		$this->add_responsive_control(
 			'ekit_coupon_close_icon_height',
 			[
@@ -1736,7 +1744,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 				],
 			]
 		);
-		
+
 		$this->add_responsive_control(
 			'ekit_coupon_close_icon_lheight',
 			[
@@ -1804,7 +1812,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 				'label'     => esc_html__( 'Typography', 'elementskit' ),
 				'selector'  => '{{WRAPPER}} .ekit_coupon_modal_sub_title',
 			]
-		); 
+		);
 
 		$this->add_responsive_control(
 			'ekit_coupon_modal_sub_title_margin_bottom',
@@ -1852,7 +1860,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 				'label'     => esc_html__( 'Typography', 'elementskit' ),
 				'selector'  => '{{WRAPPER}} .ekit_coupon_modal_title',
 			]
-		); 
+		);
 
 		$this->add_responsive_control(
 			'ekit_coupon_modal_title_margin_bottom',
@@ -1873,7 +1881,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 			]
 		);
 
-		/** Popup Description style */ 
+		/** Popup Description style */
 		$this->add_control(
 			'ekit_coupon_modal_desc_heading',
 			[
@@ -1900,7 +1908,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 				'label'     => esc_html__( 'Typography', 'elementskit' ),
 				'selector'  => '{{WRAPPER}} .ekit_coupon_modal_desc',
 			]
-		); 
+		);
 
 		$this->add_responsive_control(
 			'ekit_coupon_modal_desc_margin_bottom',
@@ -1959,9 +1967,9 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 				'label'     => esc_html__( 'Typography', 'elementskit' ),
 				'selector'  => '{{WRAPPER}} .modal-content .modal-body-wrap .ekit-coupon-modal-info .ekit-coupon-outer .popup_copy_button, {{WRAPPER}} .ekit-wid-con .ekit-inline-coupon-code .click-to-copy__text',
 			]
-		); 
+		);
 
-		$this->start_controls_tabs( 
+		$this->start_controls_tabs(
 			'ekit_coupon_popup_tabs'
 		);
 
@@ -2016,7 +2024,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 			]
 		);
 
-		$this->end_controls_tab();  
+		$this->end_controls_tab();
 
 		$this->start_controls_tab(
 			'ekit_coupon_popup_tab_hover',
@@ -2069,7 +2077,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 			]
 		);
 
-		$this->end_controls_tab();  
+		$this->end_controls_tab();
 		$this->end_controls_tabs();
 
 		$this->add_responsive_control(
@@ -2077,7 +2085,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 			[
 				'label' => esc_html__( 'Padding', 'elementskit' ),
 				'type' => Controls_Manager::DIMENSIONS,
-				'size_units' => [ 'px', 'em' ],				
+				'size_units' => [ 'px', 'em' ],
 				'selectors' => [
 					'{{WRAPPER}} .modal-content .modal-body-wrap .ekit-coupon-modal-info .ekit-coupon-outer .popup_copy_button' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 					'{{WRAPPER}} .ekit-wid-con .ekit-inline-coupon-code .click-to-copy__text' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
@@ -2091,7 +2099,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 			[
 				'label' => esc_html__( 'Margin', 'elementskit' ),
 				'type' => Controls_Manager::DIMENSIONS,
-				'size_units' => [ 'px', 'em' ],				
+				'size_units' => [ 'px', 'em' ],
 				'selectors' => [
 					'{{WRAPPER}} .modal-content .modal-body-wrap .ekit-coupon-modal-info .ekit-coupon-outer .popup_copy_button' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 					'{{WRAPPER}} .ekit-wid-con .ekit-inline-coupon-code .click-to-copy__text' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
@@ -2131,7 +2139,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 				],
 			]
 		);
-		
+
 		$this->add_control(
 			'ekit_coupon_button_icon_color',
 			[
@@ -2216,9 +2224,9 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 				'label'     => esc_html__( 'Typography', 'elementskit' ),
 				'selector'  => '{{WRAPPER}} .modal-content .modal-body-wrap .ekit-coupon-modal-info .ekit-coupon-outer .ekit_modal_code, {{WRAPPER}} .ekit-wid-con .ekit-inline-coupon-code .copy_success',
 			]
-		); 
+		);
 
-		$this->start_controls_tabs( 
+		$this->start_controls_tabs(
 			'ekit_coupon_popup_copy_code_tabs'
 		);
 
@@ -2273,7 +2281,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 			]
 		);
 
-		$this->end_controls_tab();  
+		$this->end_controls_tab();
 
 		$this->start_controls_tab(
 			'ekit_coupon_popup_copy_code_tab_hover',
@@ -2325,7 +2333,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 			]
 		);
 
-		$this->end_controls_tab();  
+		$this->end_controls_tab();
 		$this->end_controls_tabs();
 
 		$this->add_responsive_control(
@@ -2333,7 +2341,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 			[
 				'label' => esc_html__( 'Padding', 'elementskit' ),
 				'type' => Controls_Manager::DIMENSIONS,
-				'size_units' => [ 'px', 'em'],				
+				'size_units' => [ 'px', 'em'],
 				'selectors' => [
 					'{{WRAPPER}} .modal-content .modal-body-wrap .ekit-coupon-modal-info .ekit-coupon-outer .ekit_modal_code' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 					'{{WRAPPER}} .ekit-wid-con .ekit-inline-coupon-code .copy_success' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
@@ -2377,18 +2385,18 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 					<?php $ekit_coupon_icon_align == 'right' && Icons_Manager::render_icon( $settings['ekit_coupon_icons'], [ 'aria-hidden' => 'true', 'class' => 'ekit-coupon-code-icon-after' ] ); ?>
 				</button>
 			</div>
-			<?php endif;       
+			<?php endif;
 			if($ekit_coupon_style !== 'inline' && $ekit_coupon_style !== 'style-7' ): ?>
-				<div class="ekit-coupon-wrapper open-button" id="ekit_coupon_wrapper" data-popup-select="<?php echo esc_attr($ekit_coupon_action_type); ?>"  ekit_modal_open="ekit_coupon_popup" href="javascript:void(0)">  
+				<div class="ekit-coupon-wrapper open-button" id="ekit_coupon_wrapper" data-popup-select="<?php echo esc_attr($ekit_coupon_action_type); ?>"  ekit_modal_open="ekit_coupon_popup" href="javascript:void(0)">
 				<a class="coupon-btn-link <?php echo esc_html($popup_class); ?>" data-mfp-src="#ekit_coupon_modal_<?php echo esc_attr($this->get_id()); ?>">
 						<div class="ekit_coupon_text <?php echo esc_html($ekit_coupon_style); ?>" id="btn_copy_code">
-							<?php $ekit_coupon_icon_align == 'left' && Icons_Manager::render_icon( $settings['ekit_coupon_icons'], [ 'aria-hidden' => 'true', 'class' => 'ekit-coupon-code-icon-before' ] ); 
-							
+							<?php $ekit_coupon_icon_align == 'left' && Icons_Manager::render_icon( $settings['ekit_coupon_icons'], [ 'aria-hidden' => 'true', 'class' => 'ekit-coupon-code-icon-before' ] );
+
 							if (!empty($settings['ekit_coupon_text']) ) : ?>
 								<span class="coupon-text"><?php echo esc_html( $settings['ekit_coupon_text'] ); ?></span>
 							<?php endif;
 
-							$ekit_coupon_icon_align == 'right' && Icons_Manager::render_icon( $settings['ekit_coupon_icons'], [ 'aria-hidden' => 'true', 'class' => 'ekit-coupon-code-icon-after' ] ); ?>                          
+							$ekit_coupon_icon_align == 'right' && Icons_Manager::render_icon( $settings['ekit_coupon_icons'], [ 'aria-hidden' => 'true', 'class' => 'ekit-coupon-code-icon-after' ] ); ?>
 						</div>
 						<div <?php $this->print_render_attribute_string( 'coupon' ); ?>>
 							<span><?php echo esc_html($ekit_coupon_code ); ?></span>
@@ -2407,10 +2415,10 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 
 			if($ekit_coupon_action_type == 'popup') : ?>
 				<!-- Popup Modal -->
-				<div class="zoom-anim-dialog mfp-hide elementskit-coupon-popup" id="ekit_coupon_modal_<?php echo esc_attr($this->get_id()); ?>" tabindex="-1" role="dialog" aria-hidden="true">
+				<div class="zoom-anim-dialog mfp-hide elementskit-coupon-popup" id="ekit_coupon_modal_<?php echo esc_attr($this->get_id()); ?>" tabindex="-1" role="dialog" aria-modal="true">
 					<div class="modal-dialog modal-dialog-centered" role="document">
 						<div class="modal-content">
-							<button type="button" class="ekit-coupon-modal-close">
+							<button type="button" class="ekit-coupon-modal-close" aria-label="<?php echo esc_attr__( 'Close', 'elementskit' ); ?>">
 								<?php Icons_Manager::render_icon( $ekit_coupon_close_button_icons, ['aria-hidden' => 'true'] ); ?>
 							</button>
 							<div class="modal-body-wrap">
@@ -2423,7 +2431,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 									if (!empty($ekit_coupon_modal_title) ) : ?>
 										<h3 class="ekit_coupon_modal_title"><?php echo esc_html( $ekit_coupon_modal_title ); ?></h3>
 									<?php endif;
-									
+
 									if (!empty($ekit_coupon_modal_desc) ) : ?>
 										<p class="ekit_coupon_modal_desc"> <?php echo wp_kses($ekit_coupon_modal_desc, \ElementsKit_Lite\Utils::get_kses_array()); ?> </p>
 									<?php endif;
@@ -2432,7 +2440,7 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 										<div class="ekit-inline-coupon-code">
 											<span class="click-to-copy__text">
 												<?php $ekit_coupon_icon_align == 'left' && Icons_Manager::render_icon( $settings['ekit_coupon_popup_button_icon'], [ 'aria-hidden' => 'true', 'class' => 'ekit-coupon-code-icon-before' ] ); ?>
-												<?php echo esc_html($ekit_after_copied_text ); ?> <?php $ekit_coupon_icon_align == 'right' && Icons_Manager::render_icon( $settings['ekit_coupon_popup_button_icon'], [ 'aria-hidden' => 'true', 'class' => 'ekit-coupon-code-icon-after' ] ); ?> 
+												<?php echo esc_html($ekit_after_copied_text ); ?> <?php $ekit_coupon_icon_align == 'right' && Icons_Manager::render_icon( $settings['ekit_coupon_popup_button_icon'], [ 'aria-hidden' => 'true', 'class' => 'ekit-coupon-code-icon-after' ] ); ?>
 											</span>
 											<span class="copy_success hide">
 												<?php echo esc_html( $ekit_copy_btn_text); ?>
@@ -2464,4 +2472,5 @@ class Elementskit_Widget_Coupon_Code extends Widget_Base {
 			<?php endif; ?>
 		<?php
 	}
+
 }

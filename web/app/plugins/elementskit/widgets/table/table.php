@@ -2,7 +2,7 @@
 namespace Elementor;
 
 use \Elementor\ElementsKit_Widget_table_Handler as Handler;
-use \ElementsKit_Lite\Modules\Controls\Controls_Manager as ElementsKit_Controls_Manager;
+
 
 if (! defined( 'ABSPATH' ) ) exit;
 
@@ -10,11 +10,6 @@ class ElementsKit_Widget_table extends Widget_Base {
     use \ElementsKit_Lite\Widgets\Widget_Notice;
 
     public $base;
-
-    public function __construct( $data = [], $args = null ) {
-		parent::__construct( $data, $args );
-		$this->add_script_depends('datatables');
-	}
 
     public function get_name() {
         return Handler::get_name();
@@ -38,6 +33,14 @@ class ElementsKit_Widget_table extends Widget_Base {
 
     public function get_help_url() {
         return 'https://wpmet.com/doc/wordpress-plugin-table-with-filter-table-widget/';
+    }
+
+	public function get_script_depends() {
+		return ['datatables', 'ekit-pro-table'];
+	}
+
+    public function get_style_depends() {
+        return ['datatables', 'datatables-responsive', 'ekit-pro-table'];
     }
 
     protected function is_dynamic_content(): bool {
@@ -199,7 +202,8 @@ class ElementsKit_Widget_table extends Widget_Base {
                 'label'     => esc_html__( 'Icon Color', 'elementskit' ),
                 'type'      => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} table.dataTable thead {{CURRENT_ITEM}} .ekit-table-icon :is(i, svg)' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} table.dataTable thead {{CURRENT_ITEM}} .ekit-table-icon i' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} table.dataTable thead {{CURRENT_ITEM}} .ekit-table-icon svg' => 'fill: {{VALUE}};',
                 ],
                 'condition' => [
                     'cell_icon_type'   => 'icon'
@@ -348,13 +352,44 @@ class ElementsKit_Widget_table extends Widget_Base {
         );
 
         $repeater_body->add_control(
+            'cell_content_type',
+            [
+                'label'       => esc_html__( 'Content Type', 'elementskit' ),
+                'type'        => Controls_Manager::CHOOSE,
+                'default'     => 'textarea',
+                'label_block' => false,
+                'options'     => [
+                    'textarea' => [
+                        'title' => esc_html__( 'Text Area', 'elementskit' ),
+                        'icon'  => 'eicon-atomic-text-area',
+                    ],
+                    'wysiwyg'  => [
+                        'title' => esc_html__( 'WYSIWYG', 'elementskit' ),
+                        'icon'  => 'eicon-text',
+                    ],
+                ],
+                'toggle' => false,
+            ]
+        );
+
+        $repeater_body->add_control(
             'cell_text',
             [
-                'label'                 => esc_html__( 'Text', 'elementskit' ),
-                'type'                  => Controls_Manager::WYSIWYG,
-                'placeholder'           => '',
-                'default'               => '',
+                'label'       => esc_html__( 'Text', 'elementskit' ),
+                'type'        => Controls_Manager::TEXTAREA,
+                'placeholder' => '',
+                'default'     => '',
+                'condition'   => [ 'cell_content_type' => 'textarea' ],
+            ]
+        );
 
+        $repeater_body->add_control(
+            'cell_text_wysiwyg',
+            [
+                'label'     => esc_html__( 'Content', 'elementskit' ),
+                'type'      => Controls_Manager::WYSIWYG,
+                'default'   => '',
+                'condition' => [ 'cell_content_type' => 'wysiwyg' ],
             ]
         );
 
@@ -508,7 +543,8 @@ class ElementsKit_Widget_table extends Widget_Base {
                     'body_cell_icon_type'   => 'icon'
 				],
                 'selectors' => [
-                    '{{WRAPPER}} .ekit_table table.dataTable tbody {{CURRENT_ITEM}} .body_cell_icon :is(i, svg)' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .ekit_table table.dataTable tbody {{CURRENT_ITEM}} .body_cell_icon i'=> 'color: {{VALUE}};',
+                    '{{WRAPPER}} .ekit_table table.dataTable tbody {{CURRENT_ITEM}} .body_cell_icon svg'=> 'fill: {{VALUE}};',
                 ],
             ]
         );
@@ -973,7 +1009,8 @@ class ElementsKit_Widget_table extends Widget_Base {
                 'label'     => esc_html__( 'Icon Color', 'elementskit' ),
                 'type'      => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} table.dataTable thead th .ekit-table-icon :is(i, svg)' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} table.dataTable thead th .ekit-table-icon i' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} table.dataTable thead th .ekit-table-icon svg' => 'fill: {{VALUE}};',
                 ],
             ]
         );
@@ -1248,7 +1285,8 @@ class ElementsKit_Widget_table extends Widget_Base {
 				'label'     => esc_html__( 'Icon Color', 'elementskit' ),
 				'type'      => Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} table.dataTable tbody .ekit_table_body_container .body_cell_icon :is(i, svg)' => 'color: {{VALUE}};',
+					'{{WRAPPER}} table.dataTable tbody .ekit_table_body_container .body_cell_icon i' => 'color: {{VALUE}};',
+					'{{WRAPPER}} table.dataTable tbody .ekit_table_body_container .body_cell_icon svg' => 'fill: {{VALUE}};',
 				],
 			]
 		);
@@ -1290,7 +1328,8 @@ class ElementsKit_Widget_table extends Widget_Base {
 				'label'     => esc_html__( 'Icon Color', 'elementskit' ),
 				'type'      => Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} table.dataTable tbody tr:hover .ekit_table_body_container .body_cell_icon :is(i, svg)' => 'color: {{VALUE}};',
+					'{{WRAPPER}} table.dataTable tbody tr:hover .ekit_table_body_container .body_cell_icon i)' => 'color: {{VALUE}};',
+					'{{WRAPPER}} table.dataTable tbody tr:hover .ekit_table_body_container .body_cell_icon svg' => 'fill: {{VALUE}};',
 				],
 			]
 		);
@@ -1332,7 +1371,8 @@ class ElementsKit_Widget_table extends Widget_Base {
 				'label'     => esc_html__( 'Icon Color', 'elementskit' ),
 				'type'      => Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} table.dataTable tbody tr.even .ekit_table_body_container .body_cell_icon :is(i, svg)' => 'color: {{VALUE}};',
+					'{{WRAPPER}} table.dataTable tbody tr.even .ekit_table_body_container .body_cell_icon i' => 'color: {{VALUE}};',
+					'{{WRAPPER}} table.dataTable tbody tr.even .ekit_table_body_container .body_cell_icon svg' => 'fill: {{VALUE}};',
 				],
 			]
 		);
@@ -2483,7 +2523,7 @@ class ElementsKit_Widget_table extends Widget_Base {
                 'label' =>esc_html__( 'Icon Color', 'elementskit' ),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .ekit-tbl-pagi-nav-icon' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .ekit-tbl-pagi-nav-icon' => 'color: {{VALUE}}; fill: {{VALUE}};',
                 ],
             ]
         );
@@ -2889,18 +2929,15 @@ class ElementsKit_Widget_table extends Widget_Base {
             'info_text'         => !empty($settings['info_text']) ? $settings['info_text'] : '',
             'entries_text'      => !empty($settings['entries_text']) ? $settings['entries_text'] : '',
             'ordering'          => $settings['show_ordering'] == 'yes' ? true : false,
-			'searchIcon'        => $settings['ekit_table_search_icon'] ?  Icons_Manager::try_get_icon_html( $settings['ekit_table_search_icon'], [ 'aria-hidden' => 'true' ] ): '',
-            'item_per_page'     => $settings['ekit_data_per_page']['size'] ? $settings['ekit_data_per_page']['size'] : false,
+            'item_per_page'     => $settings['ekit_data_per_page']['size'] ? (int) $settings['ekit_data_per_page']['size'] : false,
             'nav_style'         => $settings['ekit_table_navigation_style'] ? $settings['ekit_table_navigation_style'] : '',
             'prev_text'         => !empty($settings['ekit_table_navigation_prev_text']) ? trim($settings['ekit_table_navigation_prev_text']) : '',
             'next_text'         => !empty($settings['ekit_table_navigation_next_text']) ? trim($settings['ekit_table_navigation_next_text']) : '',
-            'prev_arrow'         => ($is_new_prev || $migrated_prev) ? (!empty($settings['ekit_table_navigation_prev_arrows']) && $settings['ekit_table_navigation_prev_arrows']['library'] != 'svg' ? trim($settings['ekit_table_navigation_prev_arrows']['value']) : '') : trim($settings['ekit_table_navigation_prev_arrow']),
-            'next_arrow'         => ($is_new_next || $migrated_next) ? (!empty($settings['ekit_table_navigation_prev_arrows']) && $settings['ekit_table_navigation_prev_arrows']['library'] != 'svg' ?  trim($settings['ekit_table_navigation_next_arrows']['value']) : '') : trim($settings['ekit_table_navigation_next_arrow'])
         ];
         $this->add_render_attribute('table', 'data-settings', wp_json_encode($table_settings));
         ?>
 
-<div class="ekit_table display  ekit_table_data_type-<?php echo esc_attr( $ekit_table_data_type ); ?>"
+<div class="ekit_table display  ekit_table_data_type-<?php echo esc_attr( $ekit_table_data_type ); ?><?php echo ($settings['fixed_header'] == 'yes') ? ' ekit-sticky-header' : ''; ?>"
 	<?php $this->print_render_attribute_string('table'); ?>>
 	<?php
 
@@ -2923,7 +2960,7 @@ class ElementsKit_Widget_table extends Widget_Base {
                                     echo esc_html( $head['table_header_content'] );
 
                                     if ( $head['cell_icon_type'] != 'none') { ?>
-			<span <?php echo $this->get_render_attribute_string( 'headicon-' . esc_attr($id) ); ?>> <?php
+			<span <?php echo $this->get_render_attribute_string( 'headicon-' . esc_attr($id) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Elementor escapes render attribute strings. ?>> <?php
 
                                             if ( $head['cell_icon_type'] == 'icon' && $head['cell_icons'] != '' ) {
                                                 // new icon
@@ -2965,14 +3002,17 @@ class ElementsKit_Widget_table extends Widget_Base {
 
                         if($bodycon['ekit_table_row'] == 'Row') {
                             echo "<tr>";
-                            echo \ElementsKit_Lite\Utils::render($settings['show_serial'] === 'yes' ? '<td class="elementor-repeater-item-'. esc_attr($bodycon['_id']) .' ekit_table_data_'. esc_attr( $bodycon['cell_icon_position'] ) .'"><div class="ekit_table_body_container ekit_table_data_'. esc_attr( $bodycon['cell_icon_position'] ) .' ekit_body_align_'. esc_attr( $settings['body_align'] ) .'">'. esc_html($row_count) .'</div></td>' : '');
+                            echo \ElementsKit_Lite\Utils::render($settings['show_serial'] === 'yes' ? '<td class="elementor-repeater-item-'. esc_attr($bodycon['_id']) .' ekit_table_data_'. esc_attr( $bodycon['cell_icon_position'] ) .'"><div class="ekit_table_body_container ekit_table_data_'. esc_attr( $bodycon['cell_icon_position'] ) .' ekit_body_align_'. esc_attr( $settings['body_align'] ) .'">'. esc_html($row_count) .'</div></td>' : ''); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Markup assembled from esc_attr()/esc_html() escaped parts.
                             $row_count++;
                         }
 
+                        $cell_content = ( isset( $bodycon['cell_content_type'] ) && $bodycon['cell_content_type'] === 'wysiwyg' )
+    ? $bodycon['cell_text_wysiwyg']
+    : $bodycon['cell_text'];
 
                         // Output: table data
                         ?>
-	<td data-order="<?php echo wp_strip_all_tags( wp_kses($bodycon['cell_text'], \ElementsKit_Lite\Utils::get_kses_array())); ?>"
+	<td data-order="<?php echo esc_attr( wp_strip_all_tags( wp_kses( $cell_content, \ElementsKit_Lite\Utils::get_kses_array())) ); ?>"
 		class="elementor-repeater-item-<?php echo esc_attr($bodycon['_id']); ?> ekit_table_data_<?php echo esc_attr($bodycon['cell_icon_position']); ?>">
 		<?php if($enabledUrl === 'yes') : ?>
 		<a <?php $this->print_render_attribute_string( 'link-'. $key ); ?>>
@@ -2982,7 +3022,7 @@ class ElementsKit_Widget_table extends Widget_Base {
 				class="ekit_table_body_container ekit_table_data_<?php echo esc_attr($bodycon['cell_icon_position']); ?> ekit_body_align_<?php echo esc_attr($settings['body_align']); ?>">
 				<?php
 
-                                            echo wp_kses($bodycon['cell_text'], \ElementsKit_Lite\Utils::get_kses_array());
+                                            echo wp_kses( $cell_content, \ElementsKit_Lite\Utils::get_kses_array());
 
                                             if ( $bodycon['body_cell_icon_type'] != 'none') { ?>
 
@@ -3020,45 +3060,51 @@ class ElementsKit_Widget_table extends Widget_Base {
 		<?php endif; ?>
 	</td>
 	<?php
+                $count++;
+            }
 
-                        $count++;
-                    }
-
-                    // filled up empty table data with empty <td></td> tag
-                    $headerCount = count($ekit_table_build_header);
-                    if($count % $headerCount !== 0){
-                        for($i = 0; $i < abs(($count % $headerCount) - $headerCount); $i++){
-                            echo "<td></td>";
-                        }
-                    }
-                    echo ' </tbody></table>';
-
-
-                } else if($ekit_table_data_type == 'csv'){
-                    // checking csv file type
-                    if($ekit_table_csv_type === 'file'){
-
-                        if($ekit_table_upload_csv['url'] != ''){
-                            echo \ElementsKit_Lite\Utils::render($this->render_csv_data($ekit_table_upload_csv['url'])); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                        }
-
-                    } else if($ekit_table_csv_type === 'url'){
-                        if($ekit_table_csv_url['url'] != ''){
-                            echo \ElementsKit_Lite\Utils::render($this->render_csv_data($ekit_table_csv_url['url'])); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                        }
-
-                    } else if($ekit_table_csv_type === 'google_sheet_viewer_url') {
-                        if($ekit_table_google_sheet_viewer_url['url'] != ''){
-                            echo \ElementsKit_Lite\Utils::render($this->render_google_sheet_data($ekit_table_google_sheet_viewer_url['url'])); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                        }
-                    }
-
+            // filled up empty table data with empty <td></td> tag
+            $headerCount = count($ekit_table_build_header);
+            if($count % $headerCount !== 0){
+                for($i = 0; $i < abs(($count % $headerCount) - $headerCount); $i++){
+                    echo "<td></td>";
                 }
-                ?>
+            }
+            echo ' </tbody></table>';
+
+
+        } else if($ekit_table_data_type == 'csv'){
+            // checking csv file type
+            if($ekit_table_csv_type === 'file'){
+
+                if($ekit_table_upload_csv['url'] != ''){
+                    echo \ElementsKit_Lite\Utils::render($this->render_csv_data($ekit_table_upload_csv['url'])); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                }
+
+            } else if($ekit_table_csv_type === 'url'){
+                if($ekit_table_csv_url['url'] != ''){
+                    echo \ElementsKit_Lite\Utils::render($this->render_csv_data($ekit_table_csv_url['url'])); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                }
+
+            } else if($ekit_table_csv_type === 'google_sheet_viewer_url') {
+                if($ekit_table_google_sheet_viewer_url['url'] != ''){
+                    echo \ElementsKit_Lite\Utils::render($this->render_google_sheet_data($ekit_table_google_sheet_viewer_url['url'])); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                }
+            }
+
+        }
+        ?>
+    <div class="ekit-hidden-icons" hidden aria-hidden="true"> <?php
+        !empty( $settings['ekit_table_search_icon'] ) && Icons_Manager::render_icon( $settings['ekit_table_search_icon'], [ 'class' => 'ekit-tbl-search-icon' ] );
+        !empty( $settings['ekit_table_navigation_prev_arrows'] ) && Icons_Manager::render_icon( $settings['ekit_table_navigation_prev_arrows'], [ 'class' => 'ekit-tbl-pagi-nav-icon ekit-tbl-pagi-nav-prev-icon' ] );
+        !empty( $settings['ekit_table_navigation_next_arrows'] ) && Icons_Manager::render_icon( $settings['ekit_table_navigation_next_arrows'], [ 'class' => 'ekit-tbl-pagi-nav-icon ekit-tbl-pagi-nav-next-icon' ] );
+        ?>
+    </div>
 </div>
 
 
 
 <?php
     }
+
 }

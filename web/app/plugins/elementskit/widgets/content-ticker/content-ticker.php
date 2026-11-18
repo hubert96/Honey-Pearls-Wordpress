@@ -33,6 +33,14 @@ class ElementsKit_Widget_Content_Ticker extends Widget_Base {
 	public function get_help_url() {
 		return Handler::get_help_url();
 	}
+
+	public function get_style_depends() {
+		return ['ekit-pro-content-ticker'];
+	}
+
+	public function get_script_depends() {
+		return ['ekit-pro-content-ticker'];
+	}
 	
 	protected function is_dynamic_content(): bool {
 		return false;
@@ -471,6 +479,20 @@ class ElementsKit_Widget_Content_Ticker extends Widget_Base {
 							],
 						],
 					],
+					'scripts' => [
+						[
+							'name' => 'swiper',
+							'conditions' => [
+								'terms' => [
+									[
+										'name' => 'ekit_content_ticker_effect_style',
+										'operator' => '!==',
+										'value' => 'marquee',
+									],
+								],
+							],
+						],
+					]
 				],
 			]
 		);
@@ -2212,7 +2234,8 @@ class ElementsKit_Widget_Content_Ticker extends Widget_Base {
 	}
 
 	protected function get_post_content($settings, $ticker_item = '') {
-		extract($settings);
+	    ob_start();
+	    extract($settings);
 		$default    = [
 			'orderby'           =>  $ekit_content_ticker_sort,
 			'posts_per_page'    => $ekit_content_ticker_num,
@@ -2266,10 +2289,12 @@ class ElementsKit_Widget_Content_Ticker extends Widget_Base {
 		else : ?>
 			<div class="ekit-marquee-item <?php echo esc_attr($ticker_item); ?>"> <a href="#"> <?php echo esc_html__('No content found!', 'elementskit'); ?> </a> </div>
 		<?php endif; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- It will escape finally inside $this->render_raw() method
+		return ob_get_clean();
 	}
 
 	protected function get_custom_content($settings, $ticker_item = '') {
-		extract($settings);
+		ob_start();
+	    extract($settings);
 		
 		foreach ($ekit_content_ticker_text_list as $index => $item) : 
 			if (!empty($item['ekit_content_ticker_text_url']['url'])) :
@@ -2289,5 +2314,7 @@ class ElementsKit_Widget_Content_Ticker extends Widget_Base {
 				</div>
 			</div>
 		<?php endforeach; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- It will escape finally inside $this->render_raw() method
+		return ob_get_clean();
 	}
+	
 }

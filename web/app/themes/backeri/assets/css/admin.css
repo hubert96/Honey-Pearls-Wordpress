@@ -1,11 +1,10 @@
 .notice.wpmet-notice,
 #elementskit-lite-_plugin_rating_msg_used_in_day,
-.notice-elementskit-pro-not-active {
+.notice-elementskit-pro-not-active,
+.shopengine-container-fluid.shopengine-admin-section-getpro,
+#adminmenu a[href^="admin.php?page=elementor-one-upgrade"]{
     display: none!important;
 }
-
 a.toplevel_page_elementskit.wp-menu-open{
-    background: #2271b1 !important;
+    background: #3858e9 !important;
 }
-
-#adminmenu a[href^="themes.php?page=at-license-activation-failed"] { display:none; }

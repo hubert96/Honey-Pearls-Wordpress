@@ -33,7 +33,16 @@ if ($settings['ekit_team_chose_button_popup'] == 'yes') {
     <?php endif;?>
 
     <?php if($settings['ekit_team_chose_button'] == 'yes') : ?>
-        <a aria-label="chose-button" class="<?php echo esc_html($button_class); ?>" <?php echo $popup_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Already escaped by elementor ?>>
+        <?php
+            // This link normally shows the author's own button text, so no aria-label
+            // is added — an aria-label would override the visible label (WCAG 2.5.3
+            // Label in Name). Only fall back to a generic name when the text is empty
+            // and the control is icon-only, which would otherwise leave it unnamed.
+            $ekit_team_btn_a11y_attr = ( '' === trim( (string) $ekit_team_member['button_text'] ) )
+                ? ' aria-label="' . esc_attr__( 'View profile', 'elementskit' ) . '"'
+                : '';
+        ?>
+        <a<?php echo $ekit_team_btn_a11y_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped on assignment above. ?> class="<?php echo esc_html($button_class); ?>" <?php echo $popup_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Already escaped by elementor ?>>
             <?php $ekit_team_member['button_icon'] != '' && $ekit_team_member['button_icon_position'] == 'before' &&  \Elementor\Icons_Manager::render_icon( $ekit_team_member['button_icon'], [ 'aria-hidden' => 'true', 'class' => 'elementskit-btn-icon' ]);
             echo esc_html( $ekit_team_member['button_text'] );
             $ekit_team_member['button_icon'] != '' && $ekit_team_member['button_icon_position'] == 'after' &&  \Elementor\Icons_Manager::render_icon( $ekit_team_member['button_icon'], [ 'aria-hidden' => 'true', 'class' => 'elementskit-btn-icon' ]); ?>

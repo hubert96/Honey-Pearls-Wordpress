@@ -5,6 +5,7 @@ $licenseClass = ElementsKit\Libs\Framework\Classes\License::instance();
 <div class="ekit-wid-con">
     <div class="ekit_container" style="max-width: 768px;">
         <form action="" method="POST" class="ekit-admin-form" id="ekit-admin-license-form">
+			<?php wp_nonce_field( 'elementskit-license', 'elementskit_license_nonce' ); ?>
             <div class="ekit_tab_wraper">
                 <div class="ekit-admin-section-header">
                     <h2 class="ekit-admin-section-heaer-title"><i class="icon icon-key2"></i><?php echo esc_html__('License Settings', 'elementskit'); ?></h2>
@@ -17,7 +18,7 @@ $licenseClass = ElementsKit\Libs\Framework\Classes\License::instance();
 
                         <ol>
                             <li>
-								<?php printf('%1$s <a href="%2$s" target="_blank"> %3$s </a> %4$s', 
+								<?php printf('%1$s <a href="%2$s" target="_blank"> %3$s </a> %4$s',
 										esc_html__('Log in to your', 'elementskit'),
 										esc_url('https://account.wpmet.com/'),
 										esc_html__('Wpmet account', 'elementskit'),
@@ -46,13 +47,13 @@ $licenseClass = ElementsKit\Libs\Framework\Classes\License::instance();
                                 name="elementkit_pro_license_key"
                                 value="<?php echo esc_attr($licenseClass->get_license_info()); ?>"
                             >
-                            
+
                         </div>
-                        
+
 
                         <div class="elementskit-license-form-result">
                             <p class="attr-alert attr-alert-info">
-                                <?php 
+                                <?php
 									printf('%1$s <a target="_blank" href="%2$s"> %3$s </a>',
 										esc_html__('Still can\'t find your license key?', 'elementskit'),
 										esc_url('https://wpmet.com/support-ticket'),
@@ -68,10 +69,12 @@ $licenseClass = ElementsKit\Libs\Framework\Classes\License::instance();
                         <?php else: ?>
                             <div class="elementskit-license-form-result">
                                 <p class="attr-alert attr-alert-success">
-                                    <?php 
+                                    <?php
 										printf('%1$s "%2$s"',
 											esc_html__( 'Congratulations! Your product is activated for ', 'elementskit' ),
-											esc_url(wp_parse_url(get_site_url(), PHP_URL_HOST)),
+                                               esc_url(
+                                                   wp_parse_url(get_site_url(), PHP_URL_SCHEME) . '://' . wp_parse_url(get_site_url(), PHP_URL_HOST)
+                                               ),
 										);
 									;?>
                                 </p>
@@ -80,7 +83,7 @@ $licenseClass = ElementsKit\Libs\Framework\Classes\License::instance();
                                 <input type="hidden" name="type" value="revoke" />
                                 <span data-attr-toggle='modal' data-target='#elementskit_revoke_license_modal' class="attr-btn attr-btn-primary" >
 									<?php esc_html_e('Remove license from this domain', 'elementskit'); ?>
-								</span> 
+								</span>
 								<span style="padding-left:20px">
 									<?php echo sprintf('%1$s <a target="_blank" href="%2$s"> %3$s </a>',
 										esc_html__( 'See documention', 'elementskit' ),
@@ -97,7 +100,7 @@ $licenseClass = ElementsKit\Libs\Framework\Classes\License::instance();
                                     <button type="button" class="close ekit-go-pro-close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                                         <div class="attr-modal-body attr-text-center">
                                             <h3><?php esc_html_e('Are you sure to remove license from this site?', 'elementskit'); ?></h3>
-                                            <a href="<?php echo esc_url(admin_url( 'admin-ajax.php' )) ;?>?action=ekit_admin_license&type=revoke" class="" ><?php esc_html_e('Yes, I confrim', 'elementskit'); ?></a>
+											<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-ajax.php?action=ekit_admin_license&type=revoke' ), 'elementskit-license', 'elementskit_license_nonce' ) ); ?>" class=""><?php esc_html_e('Yes, I confirm', 'elementskit'); ?></a>
                                         </div>
                                     </div>
                                 </div>

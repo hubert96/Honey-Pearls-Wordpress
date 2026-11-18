@@ -5,9 +5,9 @@ Plugin Title: Widgets for Social Photo Feed Plugin
 Plugin URI: https://wordpress.org/plugins/social-photo-feed-widget/
 Description: Instagram Feed Widgets. Display your Instagram feed on your website to increase engagement, sales and SEO.
 Tags: instagram, instagram feed, instagram gallery, instagram photos, instagram widget
-Version: 1.7.8
+Version: 1.8.3
 Requires at least: 6.2
-Requires PHP: 7.0
+Requires PHP: 7.2
 Author: Trustindex.io <support@trustindex.io>
 Author URI: https://www.trustindex.io/
 Contributors: trustindex
@@ -27,7 +27,7 @@ Copyright 2019 Trustindex Kft (email: support@trustindex.io)
 defined('ABSPATH') or die('No script kiddies please!');
 require_once plugin_dir_path(__FILE__) . 'include' . DIRECTORY_SEPARATOR . 'cache-plugin-filters.php';
 require_once plugin_dir_path( __FILE__ ) . 'trustindex-feed-plugin.class.php';
-$trustindex_feed_instagram = new TRUSTINDEX_Feed_Instagram("instagram", __FILE__, "1.7.8", "Widgets for Social Photo Feed", "Instagram");
+$trustindex_feed_instagram = new TRUSTINDEX_Feed_Instagram("instagram", __FILE__, "1.8.3", "Widgets for Social Photo Feed", "Instagram");
 $pluginManagerInstance = $trustindex_feed_instagram;
 register_activation_hook(__FILE__, [ $pluginManagerInstance, 'activate' ]);
 register_deactivation_hook(__FILE__, [ $pluginManagerInstance, 'deactivate' ]);
@@ -59,19 +59,6 @@ add_filter('script_loader_tag', function($tag, $handle, $src) {
 if ($handle === 'trustindex-feed-loader-js' && strpos($tag, 'defer async') === false) {
 $tag = str_replace(' src', ' defer async src', $tag);
 }
-if (strpos($handle, 'trustindex-feed-data') !== false) {
-$content = [];
-$content_pattern = '/script_content_start(.*)script_content_end/';
-if (preg_match($content_pattern, $tag, $content)) {
-$replace = [
- '/\s+type\s*=\s*["\'][^"\']+["\']/' => '',
-'/\s+src\s*=\s*/' => ' type="application/json" data-src=',
-$content_pattern => '',
-'/><\//' => '>'. base64_decode($content[1]) .'</',
-];
-$tag = preg_replace(array_keys($replace), array_values($replace), $tag);
-}
-}
 return $tag;
 }, 10, 3);
 add_action('rest_api_init', function () use ($pluginManagerInstance) {
@@ -81,22 +68,6 @@ register_rest_route($pluginManagerInstance->getWebhookAction(), '/get-token', [
 return rest_ensure_response([
 'nonce' => wp_create_nonce('admin_action_nonce'),
 ]);
-},
-'permission_callback' => '__return_true',
-]);
-register_rest_route($pluginManagerInstance->getWebhookAction(), '/troubleshooting', [
-'methods' => 'GET',
-'callback' => function (WP_REST_Request $request) use ($pluginManagerInstance) {
-$authError = $pluginManagerInstance->getAuthError($request);
-if (null !== $authError) {
-return $authError;
-}
-header('Content-Type: text/html; charset=UTF-8');
-global $wpdb, $wp_version;
-echo '<pre>';
-include $pluginManagerInstance->getPluginDir() . 'include' . DIRECTORY_SEPARATOR . 'troubleshooting.php';
-echo '</pre>';
-exit;
 },
 'permission_callback' => '__return_true',
 ]);
@@ -114,8 +85,9 @@ This function ensures that each element of the JSON object is sanitized individu
 */
 // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 $source = $pluginManagerInstance->sanitizeJsonData(wp_unslash($request->get_param('data')), false);
+$source['feed_data'] = $pluginManagerInstance->getFeedDataFromCdn();
 if (empty($source['feed_data']['style']['type'])) {
-$oldFeedData = $pluginManagerInstance->getFeedData();
+$oldFeedData = $pluginManagerInstance->getFeedDataLocal();
 $source['feed_data']['style'] = array_merge($source['feed_data']['style'], $oldFeedData['style'] ?? []);
 }
 $source = $pluginManagerInstance->saveConnectedSource($source);

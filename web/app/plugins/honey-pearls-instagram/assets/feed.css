@@ -63,3 +63,31 @@
 .hp-ig[data-hp-density=low] .hp-ig__comment-list{margin-bottom:0}
 .hp-ig[data-hp-density=low] .hp-ig__comment{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:0}
 .hp-ig[data-hp-density=low] .hp-ig__likes,.hp-ig[data-hp-density=low] a.hp-ig__comments{margin-bottom:4px}
+
+/* Keep theme/Elementor button presets outside this widget's controls. */
+.hp-ig.hp-ig--carousel{border-radius:24px;isolation:isolate}
+.hp-ig .hp-ig__controls{gap:8px;padding-inline:12px;min-width:0;overflow:hidden}
+.hp-ig .hp-ig__controls button,.hp-ig .hp-ig__close{
+ appearance:none!important;min-width:0!important;min-height:0!important;max-width:none!important;
+ margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;
+ background-image:none!important;text-indent:0!important;text-transform:none!important;
+ letter-spacing:normal!important;line-height:1!important;font:14px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+ transform:none!important;position:relative!important;overflow:visible!important;
+}
+.hp-ig .hp-ig__controls>button{display:grid!important;place-items:center;flex:0 0 32px!important;width:32px!important;height:32px!important;border-radius:50%!important;background:#f3f5f7!important;color:#0c1014!important}
+.hp-ig .hp-ig__controls>button:hover{background:#e7ebef!important}
+.hp-ig .hp-ig__controls>button::before,.hp-ig .hp-ig__controls>button::after,.hp-ig .hp-ig__dots button::before{content:none!important;display:none!important}
+.hp-ig .hp-ig__dots{min-width:0;max-width:calc(100% - 120px);gap:0;flex:0 1 auto;overflow-x:auto;overflow-y:hidden}
+.hp-ig .hp-ig__dots button{display:block!important;flex:0 0 18px!important;width:18px!important;height:32px!important;border-radius:0!important;background:transparent!important;color:#0c1014!important}
+.hp-ig .hp-ig__dots button::after{content:""!important;display:block!important;position:absolute!important;inset:13px auto auto 6px!important;width:6px!important;height:6px!important;padding:0!important;border:0!important;border-radius:50%!important;background:#c8cdd2!important;box-shadow:none!important;transform:none!important}
+.hp-ig .hp-ig__dots button[aria-current=true]::after{background:#4a5df9!important;transform:scale(1.25)!important}
+.hp-ig .hp-ig__controls [data-hp-play]{background:transparent!important;color:#6a717a!important}
+.hp-ig .hp-ig__controls svg{display:block;width:16px!important;height:16px!important;fill:none}
+.hp-ig .hp-ig__close{position:absolute!important;width:36px!important;height:36px!important;border-radius:50%!important;background:#fff!important;color:#0c1014!important;font-size:24px!important;z-index:2}
+.hp-ig .hp-ig__close::before,.hp-ig .hp-ig__close::after{content:none!important}
+.hp-ig .hp-ig__avatar,.hp-ig .hp-ig__avatar img{border-radius:50%!important;overflow:hidden}
+.hp-ig .hp-ig__body,.hp-ig .hp-ig__body p,.hp-ig .hp-ig__body a,.hp-ig .hp-ig__body time{font-family:inherit!important;font-style:normal!important;letter-spacing:normal!important}
+.hp-ig .hp-ig__body p,.hp-ig .hp-ig__body a{font-size:14px!important;line-height:18px!important}
+.hp-ig .hp-ig__body time{font-size:12px!important;line-height:16px!important}
+.hp-ig .hp-ig__controls button:focus-visible{outline:2px solid #4150f7!important;outline-offset:-2px!important}
+@container(max-width:380px){.hp-ig.hp-ig--carousel{border-radius:20px}.hp-ig .hp-ig__controls{gap:4px;padding-inline:8px}}

@@ -119,6 +119,9 @@ Config::define('NONCE_SALT', env('NONCE_SALT'));
 /**
  * Custom Settings
  */
+// Theme requirements: align frontend/admin memory budgets with the PHP container.
+Config::define('WP_MEMORY_LIMIT', '512M');
+Config::define('WP_MAX_MEMORY_LIMIT', '512M');
 Config::define('AUTOMATIC_UPDATER_DISABLED', true);
 Config::define('DISABLE_WP_CRON', env('DISABLE_WP_CRON') ?: false);
 

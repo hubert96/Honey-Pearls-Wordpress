@@ -37,7 +37,7 @@
     "oscarotero/env": "^2.1",
     "roots/bedrock-autoloader": "^1.0",
     "roots/bedrock-disallow-indexing": "^2.0",
-    "roots/wordpress": "7.1.4",
+    "roots/wordpress": "7.1.5",
     "roots/wp-config": "1.0.0",
     "wpackagist-theme/twentytwentyfive": "1.5",
     "wpackagist-plugin/cloudflare": "4.14.5",
@@ -49,7 +49,8 @@
     "wpackagist-plugin/elementskit-lite": "4.2.0",
     "wpackagist-plugin/one-click-demo-import": "3.4.1",
     "wpackagist-plugin/woocommerce": "11.3.0",
-    "wpackagist-plugin/wp-reviews-plugin-for-google": "15.0"
+    "wpackagist-plugin/wp-reviews-plugin-for-google": "15.0",
+    "wpackagist-plugin/mcp-adapter": "0.7.1"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",

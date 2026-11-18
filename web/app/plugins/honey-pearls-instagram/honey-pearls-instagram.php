@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Honey Pearls Instagram
  * Description: Instagram feed with local image caching, automatic updates and an accessible gallery.
- * Version: 1.2.0
+ * Version: 1.3.0
  * Requires PHP: 8.1
  * License: GPL-2.0-or-later
  * Author: Honey Pearls
@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
 require_once __DIR__ . '/includes/feed.php';
 require_once __DIR__ . '/includes/admin.php';
 
-const VERSION = '1.2.0';
+const VERSION = '1.3.0';
 const FILE = __FILE__;
 const CRON = 'hp_instagram_sync';
 
@@ -72,16 +72,17 @@ function icon(string $name): string
 function render($atts = []): string
 {
     $s = settings();
-    $atts = shortcode_atts(['layout' => $s['layout'], 'limit' => $s['limit']], (array) $atts);
+    $atts = shortcode_atts(['layout' => $s['layout'], 'limit' => $s['limit'], 'height' => 'auto'], (array) $atts);
     $layout = $atts['layout'] === 'grid' ? 'grid' : 'carousel';
     $posts = array_values(array_filter((array) get_option('hp_ig_posts', []),
         fn ($p) => !in_array($p['id'], $s['hidden'], true)));
     $posts = array_slice($posts, 0, max(1, min(50, (int) $atts['limit'])));
+    $height = $atts['height'] === 'auto' ? 'auto' : (string) max(280, min(1600, (int) $atts['height']));
     $profile = 'https://www.instagram.com/' . rawurlencode($s['username']) . '/';
     $id = wp_unique_id('hp-ig-');
     ob_start();
     ?>
-    <section class="hp-ig hp-ig--<?php echo esc_attr($layout); ?>" aria-label="<?php echo esc_attr($s['title']); ?>" style="--hp-ig-columns:<?php echo (int) $s['columns']; ?>;--hp-ig-accent:<?php echo esc_attr($s['accent']); ?>">
+    <section class="hp-ig hp-ig--<?php echo esc_attr($layout); ?>" data-hp-height="<?php echo esc_attr($height); ?>" aria-label="<?php echo esc_attr($s['title']); ?>" style="--hp-ig-columns:<?php echo (int) $s['columns']; ?>;--hp-ig-accent:<?php echo esc_attr($s['accent']); ?>">
         <header class="hp-ig__header">
             <a class="hp-ig__brand" href="<?php echo esc_url($profile); ?>" target="_blank" rel="noopener noreferrer" aria-label="Open Instagram profile"><img src="<?php echo esc_url(plugins_url('assets/instagram-logo.svg', FILE)); ?>" width="24" height="24" alt="Instagram"><span>Instagram</span></a>
             <a class="hp-ig__follow" href="<?php echo esc_url($profile); ?>" target="_blank" rel="noopener noreferrer">Follow</a>
@@ -100,7 +101,7 @@ function render($atts = []): string
                         <?php if ($post['type'] !== 'IMAGE'): ?><span class="hp-ig__badge" aria-hidden="true"><?php echo $post['type'] === 'VIDEO' ? '▶' : '▧'; ?></span><?php endif; ?>
                     </a>
                     <div class="hp-ig__actions"><?php foreach (['heart' => 'Like on Instagram', 'comment' => 'Comment on Instagram', 'share' => 'Open post on Instagram', 'save' => 'Save on Instagram'] as $symbol => $label): ?><a class="hp-ig__action hp-ig__action--<?php echo esc_attr($symbol); ?>" href="<?php echo esc_url($post['permalink']); ?>" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr($label); ?>"><?php echo icon($symbol); ?></a><?php endforeach; ?></div>
-                    <div class="hp-ig__body">
+                    <div class="hp-ig__body" tabindex="0" role="region" aria-label="Post caption and comments">
                     <?php if (isset($post['like_count'])): ?><div class="hp-ig__likes"><?php echo esc_html(number_format((int) $post['like_count']) . ((int) $post['like_count'] === 1 ? ' like' : ' likes')); ?></div><?php endif; ?>
                     <?php if ($s['captions']): ?><p><strong><?php echo esc_html($s['username']); ?></strong> <?php echo esc_html($post['caption']); ?></p><?php endif; ?>
                     <a class="hp-ig__comments" href="<?php echo esc_url($post['permalink']); ?>" target="_blank" rel="noopener noreferrer"><?php echo isset($post['comments_count']) ? esc_html('View all ' . number_format((int) $post['comments_count']) . ((int) $post['comments_count'] === 1 ? ' comment on Instagram' : ' comments on Instagram')) : 'View post on Instagram'; ?></a>

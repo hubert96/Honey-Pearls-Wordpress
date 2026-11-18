@@ -5,6 +5,27 @@
       if (feed.dataset.hpReady) return;
       feed.dataset.hpReady = 'true';
       const track = feed.querySelector('.hp-ig__posts');
+      // A host can set --hp-ig-height or shortcode height. Auto follows the viewport.
+      if (track && feed.classList.contains('hp-ig--carousel')) {
+        const resize = () => {
+          const custom = parseFloat(getComputedStyle(feed).getPropertyValue('--hp-ig-height'));
+          const explicit = Number(feed.dataset.hpHeight);
+          const host = feed.closest('[data-hp-ig-container]');
+          const hostStyle = host ? getComputedStyle(host) : null;
+          const hostHeight = host ? host.clientHeight - parseFloat(hostStyle.paddingTop) - parseFloat(hostStyle.paddingBottom) : 0;
+          const height = Math.max(280, Math.min(1600, custom || explicit || hostHeight || Math.min(1000, window.innerHeight - 32)));
+          feed.style.setProperty('--hp-ig-available-height', `${height}px`);
+          feed.dataset.hpDensity = height >= 800 ? 'full' : height >= 520 ? 'compact' : 'low';
+        };
+        resize();
+        const hostObserver = new ResizeObserver(resize);
+        hostObserver.observe(feed.closest('[data-hp-ig-container]') || feed.parentElement);
+        const onResize = () => {
+          if (!feed.isConnected) { hostObserver.disconnect(); window.removeEventListener('resize', onResize); return; }
+          resize();
+        };
+        window.addEventListener('resize', onResize, {passive: true});
+      }
       const prev = feed.querySelector('[data-hp-prev]');
       const next = feed.querySelector('[data-hp-next]');
       if (track && prev && next) {
@@ -15,14 +36,14 @@
         let index = 0, frame = 0, paused = reduced.matches, hovered = false, focused = false;
         let lastMove = Date.now();
         const slideWidth = () => track.getBoundingClientRect().width;
-        const fitHeight = i => { track.style.height = `${cards[i].getBoundingClientRect().height}px`; };
+        const fitHeight = i => { if (!feed.dataset.hpDensity) track.style.height = `${cards[i].getBoundingClientRect().height}px`; };
         const reflectPlay = () => {
           play.textContent = paused ? '▶' : 'Ⅱ';
           play.setAttribute('aria-label', paused ? 'Play automatic slideshow' : 'Pause automatic slideshow');
         };
         reflectPlay();
         const update = () => {
-          index = Math.round(track.scrollLeft / Math.max(1, slideWidth()));
+          index = Math.max(0, Math.min(cards.length - 1, Math.round(track.scrollLeft / Math.max(1, slideWidth()))));
           dots.forEach((dot, i) => { if (i === index) dot.setAttribute('aria-current', 'true'); else dot.removeAttribute('aria-current'); });
           if (!frame) fitHeight(index);
         };

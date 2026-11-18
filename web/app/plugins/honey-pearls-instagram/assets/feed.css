@@ -40,3 +40,26 @@
 .hp-ig__comment-list summary{cursor:pointer;color:#6a717a;margin:6px 0;list-style:none}
 .hp-ig__comment-list summary::-webkit-details-marker{display:none}
 .hp-ig a.hp-ig__add-comment{display:block;color:#6a717a;font-size:14px;line-height:18px;margin:8px 0 12px}
+
+/* Height-aware carousel: stable frame, uncropped image and scrollable discussion. */
+.hp-ig--carousel[data-hp-density]{height:var(--hp-ig-available-height);display:flex;flex-direction:column}
+.hp-ig[data-hp-density]>.hp-ig__header,.hp-ig[data-hp-density]>.hp-ig__controls{flex-shrink:0}
+.hp-ig[data-hp-density]>.hp-ig__posts{flex:1;min-height:0;height:auto!important;align-items:stretch;transition:none;overflow-y:hidden}
+.hp-ig[data-hp-density] .hp-ig__card{height:100%;min-height:0;display:grid;grid-template-rows:auto minmax(60px,1fr) 44px auto}
+.hp-ig[data-hp-density] .hp-ig__photo{min-height:0;height:100%}
+.hp-ig[data-hp-density] .hp-ig__photo img{height:100%;width:100%;object-fit:contain}
+.hp-ig[data-hp-density] .hp-ig__body{max-height:260px;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.hp-ig[data-hp-density=compact] .hp-ig__header,.hp-ig[data-hp-density=low] .hp-ig__header{padding:8px 16px}
+.hp-ig[data-hp-density=compact] .hp-ig__profile,.hp-ig[data-hp-density=low] .hp-ig__profile{height:52px;padding-block:2px}
+.hp-ig[data-hp-density=compact] .hp-ig__body{max-height:150px}
+.hp-ig[data-hp-density=compact] .hp-ig__body>p{-webkit-line-clamp:2}
+.hp-ig[data-hp-density=compact] .hp-ig__controls,.hp-ig[data-hp-density=low] .hp-ig__controls{padding-block:5px}
+.hp-ig[data-hp-density=low] .hp-ig__card{grid-template-columns:44% 56%;grid-template-rows:52px 44px minmax(0,1fr)}
+.hp-ig[data-hp-density=low] .hp-ig__profile{grid-column:1/-1}
+.hp-ig[data-hp-density=low] .hp-ig__photo{grid-column:1;grid-row:2/4}
+.hp-ig[data-hp-density=low] .hp-ig__actions{grid-column:2;grid-row:2;margin-inline:8px}
+.hp-ig[data-hp-density=low] .hp-ig__action{flex-basis:34px;width:34px;padding:5px}
+.hp-ig[data-hp-density=low] .hp-ig__body{grid-column:2;grid-row:3;max-height:none;padding-inline:8px}
+.hp-ig[data-hp-density=low] .hp-ig__body>p{-webkit-line-clamp:2}
+.hp-ig[data-hp-density=low] .hp-ig__location{display:none}
+@container(max-width:360px){.hp-ig[data-hp-density=low] .hp-ig__action{flex-basis:28px;width:28px;padding:2px}.hp-ig[data-hp-density=low] .hp-ig__actions{margin-inline:6px}}

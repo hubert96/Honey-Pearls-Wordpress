@@ -89,6 +89,6 @@ References: https://developers.facebook.com/documentation/instagram-platform/com
 
 
 ### Adaptive height (1.3)
-Carousel modes switch automatically: full at 800 px and above, compact at 520–799 px, low with image beside discussion at 280–519 px. Images use contain (no cropping). Long discussions scroll inside a keyboard-focusable region; controls stay visible and slide changes do not change the frame height. Grid layout remains content-sized.
+Carousel modes switch automatically: full at 800 px and above, compact at 520–799 px, low with one single-line comment below the image at 280–519 px. Images use contain (no cropping). Full/compact discussions scroll inside a keyboard-focusable region; low mode shows one comment and links to the full Instagram discussion; controls stay visible and slide changes do not change the frame height. Grid layout remains content-sized.
 
 Default height is viewport height minus 32 px, capped at 1000 px. For a page section use `[honey_pearls_instagram height="650"]` (pixels, clamped to 280–1600). Alternatively set `--hp-ig-height:650` on the widget/ancestor, or wrap it in an independently sized element with `data-hp-ig-container`; its content height is observed, including resize changes. Do not mark an auto-height ancestor as the sizing container (that would create circular sizing). Priority: CSS numeric variable, shortcode height, marked container, viewport. Space below 280 px requires a larger host.

@@ -54,12 +54,12 @@
 .hp-ig[data-hp-density=compact] .hp-ig__body{max-height:150px}
 .hp-ig[data-hp-density=compact] .hp-ig__body>p{-webkit-line-clamp:2}
 .hp-ig[data-hp-density=compact] .hp-ig__controls,.hp-ig[data-hp-density=low] .hp-ig__controls{padding-block:5px}
-.hp-ig[data-hp-density=low] .hp-ig__card{grid-template-columns:44% 56%;grid-template-rows:52px 44px minmax(0,1fr)}
-.hp-ig[data-hp-density=low] .hp-ig__profile{grid-column:1/-1}
-.hp-ig[data-hp-density=low] .hp-ig__photo{grid-column:1;grid-row:2/4}
-.hp-ig[data-hp-density=low] .hp-ig__actions{grid-column:2;grid-row:2;margin-inline:8px}
-.hp-ig[data-hp-density=low] .hp-ig__action{flex-basis:34px;width:34px;padding:5px}
-.hp-ig[data-hp-density=low] .hp-ig__body{grid-column:2;grid-row:3;max-height:none;padding-inline:8px}
-.hp-ig[data-hp-density=low] .hp-ig__body>p{-webkit-line-clamp:2}
-.hp-ig[data-hp-density=low] .hp-ig__location{display:none}
-@container(max-width:360px){.hp-ig[data-hp-density=low] .hp-ig__action{flex-basis:28px;width:28px;padding:2px}.hp-ig[data-hp-density=low] .hp-ig__actions{margin-inline:6px}}
+.hp-ig[data-hp-density=low] .hp-ig__card{grid-template-rows:48px minmax(24px,1fr) 40px auto}
+.hp-ig[data-hp-density=low] .hp-ig__profile{height:48px}
+.hp-ig[data-hp-density=low] .hp-ig__actions{height:40px;margin-top:0}
+.hp-ig[data-hp-density=low] .hp-ig__body{max-height:none;overflow:hidden;padding-bottom:6px}
+.hp-ig[data-hp-density=low] .hp-ig__body>p,.hp-ig[data-hp-density=low] .hp-ig__body>time,.hp-ig[data-hp-density=low] .hp-ig__add-comment,.hp-ig[data-hp-density=low] .hp-ig__location{display:none}
+.hp-ig[data-hp-density=low] .hp-ig__comment-list>.hp-ig__comment:not(:first-child),.hp-ig[data-hp-density=low] .hp-ig__comment-list>details{display:none}
+.hp-ig[data-hp-density=low] .hp-ig__comment-list{margin-bottom:0}
+.hp-ig[data-hp-density=low] .hp-ig__comment{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:0}
+.hp-ig[data-hp-density=low] .hp-ig__likes,.hp-ig[data-hp-density=low] a.hp-ig__comments{margin-bottom:4px}

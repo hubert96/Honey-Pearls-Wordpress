@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Honey Pearls Instagram
  * Description: Instagram feed with local image caching, automatic updates and an accessible gallery.
- * Version: 1.1.1
+ * Version: 1.2.0
  * Requires PHP: 8.1
  * License: GPL-2.0-or-later
  * Author: Honey Pearls
@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
 require_once __DIR__ . '/includes/feed.php';
 require_once __DIR__ . '/includes/admin.php';
 
-const VERSION = '1.1.1';
+const VERSION = '1.2.0';
 const FILE = __FILE__;
 const CRON = 'hp_instagram_sync';
 
@@ -100,8 +100,16 @@ function render($atts = []): string
                         <?php if ($post['type'] !== 'IMAGE'): ?><span class="hp-ig__badge" aria-hidden="true"><?php echo $post['type'] === 'VIDEO' ? '▶' : '▧'; ?></span><?php endif; ?>
                     </a>
                     <div class="hp-ig__actions"><?php foreach (['heart' => 'Like on Instagram', 'comment' => 'Comment on Instagram', 'share' => 'Open post on Instagram', 'save' => 'Save on Instagram'] as $symbol => $label): ?><a class="hp-ig__action hp-ig__action--<?php echo esc_attr($symbol); ?>" href="<?php echo esc_url($post['permalink']); ?>" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr($label); ?>"><?php echo icon($symbol); ?></a><?php endforeach; ?></div>
-                    <div class="hp-ig__body"><?php if ($s['captions']): ?><p><strong><?php echo esc_html($s['username']); ?></strong> <?php echo esc_html($post['caption']); ?></p><?php endif; ?>
-                    <a class="hp-ig__comments" href="<?php echo esc_url($post['permalink']); ?>" target="_blank" rel="noopener noreferrer">View post on Instagram</a>
+                    <div class="hp-ig__body">
+                    <?php if (isset($post['like_count'])): ?><div class="hp-ig__likes"><?php echo esc_html(number_format((int) $post['like_count']) . ((int) $post['like_count'] === 1 ? ' like' : ' likes')); ?></div><?php endif; ?>
+                    <?php if ($s['captions']): ?><p><strong><?php echo esc_html($s['username']); ?></strong> <?php echo esc_html($post['caption']); ?></p><?php endif; ?>
+                    <a class="hp-ig__comments" href="<?php echo esc_url($post['permalink']); ?>" target="_blank" rel="noopener noreferrer"><?php echo isset($post['comments_count']) ? esc_html('View all ' . number_format((int) $post['comments_count']) . ((int) $post['comments_count'] === 1 ? ' comment on Instagram' : ' comments on Instagram')) : 'View post on Instagram'; ?></a>
+                    <?php $comments = (time() - ($post['comments_checked'] ?? 0) < DAY_IN_SECONDS) ? array_slice($post['comments'] ?? [], 0, 5) : []; ?>
+                    <?php if ($comments): ?><div class="hp-ig__comment-list" aria-label="Comment preview">
+                        <?php foreach (array_slice($comments, 0, 2) as $comment): ?><div class="hp-ig__comment"><strong><?php echo esc_html($comment['username'] ?: 'Instagram user'); ?></strong> <?php echo esc_html($comment['text']); ?></div><?php endforeach; ?>
+                        <?php if (count($comments) > 2): ?><details><summary>View more comments</summary><?php foreach (array_slice($comments, 2) as $comment): ?><div class="hp-ig__comment"><strong><?php echo esc_html($comment['username'] ?: 'Instagram user'); ?></strong> <?php echo esc_html($comment['text']); ?></div><?php endforeach; ?></details><?php endif; ?>
+                    </div><?php endif; ?>
+                    <a class="hp-ig__add-comment" href="<?php echo esc_url($post['permalink']); ?>" target="_blank" rel="noopener noreferrer">Add a comment on Instagram…</a>
                     <?php if ($post['timestamp']): ?><time datetime="<?php echo esc_attr($post['timestamp']); ?>"><?php echo esc_html(wp_date('j F', strtotime($post['timestamp']))); ?></time><?php endif; ?></div>
                 </article>
             <?php endforeach; ?>

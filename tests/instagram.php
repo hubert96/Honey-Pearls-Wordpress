@@ -78,3 +78,30 @@ sync();
 check(unseal($options['hp_ig_auth']['token']) === 'refreshed-token', 'Long-lived token refreshed automatically');
 check($options['hp_ig_posts'] === [], 'Authoritative empty feed removes obsolete posts');
 echo "Instagram regression tests passed.\n";
+
+check(HoneyPearls\Instagram\engagement_count(null) === null && HoneyPearls\Instagram\engagement_count(0) === 0, 'Unknown engagement differs from zero');
+$clean = HoneyPearls\Instagram\normalize_comments([
+    ['id'=>'1','hidden'=>true,'text'=>'hidden'],
+    ['id'=>'2','username'=>'<b>guest</b>','text'=>'<script>x</script>Nice'],
+]);
+check(count($clean) === 1 && $clean[0]['username'] === 'guest' && $clean[0]['text'] === 'xNice', 'Hidden comments excluded and comment text sanitized');
+$post['like_count'] = 0; $post['comments_count'] = 1;
+$post['comments'] = [['username'=>'guest','text'=>'<script>unsafe</script>']]; $post['comments_checked'] = time();
+$options['hp_ig_posts'] = [$post];
+check(str_contains(render(), '0 likes') && str_contains(render(), '&lt;script&gt;unsafe') && !str_contains(render(), '<script>unsafe'), 'Zero likes and escaped comment preview rendered');
+$options['hp_ig_posts'][0]['comments_checked'] = time() - 2 * DAY_IN_SECONDS;
+check(!str_contains(render(), 'unsafe'), 'Stale comment previews expire');
+$options['hp_ig_auth']['comments_requested'] = true;
+$media = ['id'=>'123','caption'=>'Updated','permalink'=>$post['permalink'],'like_count'=>12,'comments_count'=>1];
+$responses[] = ['status'=>200,'body'=>['data'=>[$media]]];
+$responses[] = ['status'=>403,'body'=>['error'=>['code'=>10,'message'=>'secret']]];
+sync();
+check($options['hp_ig_posts'][0]['like_count'] === 12 && str_contains($options['hp_ig_status']['message'], 'comments could not'), 'Comment permission failure preserves feed and updates likes');
+$responses[] = ['status'=>200,'body'=>['data'=>[$media]]];
+$responses[] = ['status'=>200,'body'=>['data'=>[['id'=>'3','username'=>'guest','text'=>'Lovely!','hidden'=>false]]]];
+sync();
+check($options['hp_ig_posts'][0]['comments'][0]['text'] === 'Lovely!', 'Comment sync replaces old preview');
+$responses[] = ['status'=>200,'body'=>['data'=>[$media]]];
+$responses[] = ['status'=>200,'body'=>['data'=>[]]];
+sync();
+check($options['hp_ig_posts'][0]['comments'] === [], 'Authoritative empty comments remove deleted comments');

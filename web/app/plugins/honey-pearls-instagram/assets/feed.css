@@ -33,3 +33,10 @@
 .hp-ig__brand span{font-family:inherit;font-style:normal;font-size:14px;font-weight:600;line-height:18px;letter-spacing:normal}
 .hp-ig a.hp-ig__follow{background:#4a5df9;font-size:14px;line-height:18px;font-weight:600;padding:7px 16px}
 .hp-ig a.hp-ig__follow:hover{background:#4150f7}
+
+.hp-ig__likes{font-size:14px;line-height:18px;font-weight:600;margin:0 0 8px}
+.hp-ig__comment-list{font-size:14px;line-height:18px;margin:0 0 8px;overflow-wrap:anywhere}
+.hp-ig__comment{margin-bottom:6px}.hp-ig__comment strong{font-weight:600}
+.hp-ig__comment-list summary{cursor:pointer;color:#6a717a;margin:6px 0;list-style:none}
+.hp-ig__comment-list summary::-webkit-details-marker{display:none}
+.hp-ig a.hp-ig__add-comment{display:block;color:#6a717a;font-size:14px;line-height:18px;margin:8px 0 12px}

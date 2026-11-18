@@ -64,7 +64,7 @@ function admin_action(): void
             if (!$s['app_id'] || !secret()) { throw new \RuntimeException('Save the Instagram App ID and App Secret first.'); }
             $state = bin2hex(random_bytes(32));
             update_user_meta(get_current_user_id(), 'hp_ig_oauth', ['hash' => hash('sha256', $state), 'expires' => time() + 600]);
-            $url = add_query_arg(['client_id' => $s['app_id'], 'redirect_uri' => callback_url(), 'response_type' => 'code', 'scope' => 'instagram_business_basic', 'state' => $state, 'force_reauth' => 'true'], 'https://www.instagram.com/oauth/authorize');
+            $url = add_query_arg(['client_id' => $s['app_id'], 'redirect_uri' => callback_url(), 'response_type' => 'code', 'scope' => 'instagram_business_basic,instagram_business_manage_comments', 'state' => $state, 'force_reauth' => 'true'], 'https://www.instagram.com/oauth/authorize');
             wp_redirect($url); exit;
         }
     } catch (\Throwable $e) { set_status($e->getMessage()); }
@@ -100,7 +100,7 @@ function oauth_callback(): void
         if (get_option('hp_ig_posts', []) && strcasecmp(settings()['username'], $me['username']) !== 0) {
             throw new \RuntimeException('This feed contains posts for a different username. Connect the matching account.');
         }
-        update_option('hp_ig_auth', ['token' => seal($long['access_token']), 'user_id' => (string) $me['user_id'], 'refreshed' => time(), 'expires' => time() + (int) $long['expires_in']], false);
+        update_option('hp_ig_auth', ['comments_requested' => true, 'token' => seal($long['access_token']), 'user_id' => (string) $me['user_id'], 'refreshed' => time(), 'expires' => time() + (int) $long['expires_in']], false);
         $s = settings(); $s['username'] = sanitize_text_field($me['username']); update_option('hp_ig_settings', $s, false);
         sync();
     } catch (\Throwable $e) { set_status($e->getMessage()); }
@@ -144,7 +144,7 @@ function admin_page(): void
                 <p>Register this exact OAuth redirect URI:</p><code><?php echo esc_html(callback_url()); ?></code>
                 <div class="hp-ig-admin-fields"><label>Instagram App ID<input name="app_id" inputmode="numeric" value="<?php echo esc_attr($s['app_id']); ?>"></label>
                 <label>Instagram App Secret<input type="password" name="app_secret" value="" autocomplete="new-password" placeholder="<?php echo secret() ? 'Saved — leave blank to keep' : 'Not configured'; ?>"></label></div>
-                <p>Save these settings, then choose Connect Instagram. Only permission to read the account profile and media is requested.</p>
+                <p>Save these settings, then choose Connect Instagram. Enable instagram_business_basic and instagram_business_manage_comments in your Meta app. Reconnect existing accounts to enable comment previews. The widget only reads comments; likes and new comments are made on Instagram.</p>
                 <p><a href="https://developers.facebook.com/docs/instagram-platform/instagram-api-with-instagram-login/business-login/" target="_blank" rel="noopener noreferrer">Meta setup documentation ↗</a></p>
             </details>
             <?php submit_button('Save settings'); ?>

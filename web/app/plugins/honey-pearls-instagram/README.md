@@ -78,3 +78,11 @@ URLs cannot be recovered by this importer; a new Instagram connection is require
 
 Official API reference:
 https://developers.facebook.com/docs/instagram-platform/instagram-api-with-instagram-login/business-login/
+
+
+### Likes and comment previews (1.2)
+Media synchronization reads `like_count` and `comments_count`; absent counts remain unknown, never fabricated as zero. Reconnect with `instagram_business_manage_comments` to read comments. This permission must be enabled in the Meta application. The plugin performs no comment/like writes.
+
+Each sync reads up to 5 comments per post, at most 12 posts, with a 35-second scheduling budget (an in-flight request may take another 20 seconds). Least recently checked posts go first. Two comments appear below the caption; up to three more expand in place. Hidden comments are discarded, previews older than 24 hours are not displayed, and successful empty responses remove obsolete comments. Comment API failures leave media synchronization working and show an administrator notice. Links open Instagram for the full discussion, liking and adding comments. API counts/order can differ for promoted posts; no promise of the exact native ranked comment order.
+
+References: https://developers.facebook.com/documentation/instagram-platform/comment-moderation and https://developers.facebook.com/documentation/instagram-platform/instagram-graph-api/reference/ig-comment . Live API verification requires the account owner to connect Meta; automated tests use mocked API responses.

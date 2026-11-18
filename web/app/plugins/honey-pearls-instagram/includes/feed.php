@@ -94,8 +94,51 @@ function normalize(array $item): array
         'type' => in_array($item['media_type'] ?? '', ['IMAGE', 'VIDEO', 'CAROUSEL_ALBUM'], true) ? $item['media_type'] : 'IMAGE',
         'permalink' => instagram_link((string) ($item['permalink'] ?? '')),
         'timestamp' => $stamp ? gmdate('c', $stamp) : '',
+        'like_count' => engagement_count($item['like_count'] ?? null),
+        'comments_count' => engagement_count($item['comments_count'] ?? null),
         'remote_image' => ($item['media_type'] ?? '') === 'VIDEO' ? ($item['thumbnail_url'] ?? '') : ($item['media_url'] ?? ''),
     ];
+}
+
+function engagement_count($value): ?int
+{
+    return is_numeric($value) && $value >= 0 ? (int) $value : null;
+}
+
+function normalize_comments(array $items): array
+{
+    $comments = [];
+    foreach ($items as $item) {
+        if (!is_array($item) || !empty($item['hidden']) || empty($item['id']) || !isset($item['text'])) { continue; }
+        $comments[] = [
+            'id' => sanitize_text_field((string) $item['id']),
+            'username' => sanitize_text_field((string) ($item['username'] ?? $item['from']['username'] ?? '')),
+            'text' => sanitize_textarea_field((string) $item['text']),
+        ];
+        if (count($comments) === 5) { break; }
+    }
+    return $comments;
+}
+
+/** Read a bounded preview, oldest checked first so larger feeds do not starve. */
+function sync_comments(array &$posts, string $token): bool
+{
+    $order = array_keys($posts);
+    usort($order, fn ($a, $b) => ($posts[$a]['comments_checked'] ?? 0) <=> ($posts[$b]['comments_checked'] ?? 0));
+    $started = microtime(true);
+    foreach (array_slice($order, 0, 12) as $index) {
+        if (microtime(true) - $started > 35) { break; }
+        try {
+            $r = api(rawurlencode($posts[$index]['id']) . '/comments', $token, ['fields' => 'id,text,username,hidden', 'limit' => 5]);
+            if (!isset($r['data']) || !is_array($r['data'])) { throw new \RuntimeException('Incomplete comments'); }
+            $posts[$index]['comments'] = normalize_comments($r['data']);
+            $posts[$index]['comments_checked'] = time();
+        } catch (\Throwable $e) {
+            // Permission failures must not discard images or prevent metadata updates.
+            return false;
+        }
+    }
+    return true;
 }
 
 function set_status(string $message): void
@@ -120,7 +163,7 @@ function sync(): void
             $auth = array_merge($auth, ['token' => seal($token), 'refreshed' => time(), 'expires' => time() + (int) $r['expires_in']]);
             update_option('hp_ig_auth', $auth, false);
         }
-        $r = api('me/media', $token, ['fields' => 'id,caption,media_type,media_url,thumbnail_url,permalink,timestamp', 'limit' => 50]);
+        $r = api('me/media', $token, ['fields' => 'id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,like_count,comments_count', 'limit' => 50]);
         if (!isset($r['data']) || !is_array($r['data'])) { throw new \RuntimeException('Instagram returned an incomplete feed. The previous feed has been kept.'); }
         $old = array_column((array) get_option('hp_ig_posts', []), null, 'id');
         $posts = [];
@@ -131,6 +174,9 @@ function sync(): void
             $p = normalize($item);
             if (!$p['id'] || !$p['permalink']) { continue; }
             $p['image'] = $old[$p['id']]['image'] ?? '';
+            $p['comments'] = $old[$p['id']]['comments'] ?? [];
+            $p['comments_checked'] = $old[$p['id']]['comments_checked'] ?? 0;
+            if ($p['comments_count'] === 0) { $p['comments'] = []; }
             if (!$p['image'] && microtime(true) - $started < 35) {
                 $p['image'] = local_image((string) $p['remote_image'], $p['id']);
             }
@@ -139,9 +185,10 @@ function sync(): void
         }
         if ($r['data'] && !$posts) { throw new \RuntimeException('Could not cache Instagram images. The previous feed has been kept.'); }
         usort($posts, fn ($a, $b) => strcmp($b['timestamp'], $a['timestamp']));
+        $comments_ok = empty($auth['comments_requested']) || sync_comments($posts, $token);
         update_option('hp_ig_posts', $posts, false);
         update_option('hp_ig_last_sync', time(), false);
-        set_status($failed ? 'Feed updated. Some images are pending; the next sync will retry them.' : 'Feed updated successfully.');
+        set_status(!$comments_ok ? 'Feed updated, but comments could not be refreshed. Check instagram_business_manage_comments in your Meta app and reconnect Instagram.' : ($failed ? 'Feed updated. Some images are pending; the next sync will retry them.' : 'Feed updated successfully.'));
     } catch (\Throwable $e) {
         set_status($e->getMessage());
     } finally {

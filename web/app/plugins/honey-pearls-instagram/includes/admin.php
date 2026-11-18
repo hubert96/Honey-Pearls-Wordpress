@@ -41,6 +41,7 @@ function admin_action(): void
             $s['captions'] = isset($_POST['captions']);
             $s['replace_legacy'] = isset($_POST['replace_legacy']);
             $s['app_id'] = preg_replace('/[^0-9]/', '', (string) ($_POST['app_id'] ?? ''));
+            $s['config_id'] = preg_replace('/[^0-9]/', '', (string) ($_POST['config_id'] ?? ''));
             update_option('hp_ig_settings', $s, false);
             $value = trim(wp_unslash($_POST['app_secret'] ?? ''));
             if ($value !== '') { update_option('hp_ig_app_secret', seal($value), false); }
@@ -65,6 +66,9 @@ function admin_action(): void
             $state = bin2hex(random_bytes(32));
             update_user_meta(get_current_user_id(), 'hp_ig_oauth', ['hash' => hash('sha256', $state), 'expires' => time() + 600]);
             $url = add_query_arg(['client_id' => $s['app_id'], 'redirect_uri' => callback_url(), 'response_type' => 'code', 'scope' => 'instagram_business_basic,instagram_business_manage_comments', 'state' => $state, 'force_reauth' => 'true'], 'https://www.instagram.com/oauth/authorize');
+            if (!empty($s['config_id'])) {
+                $url = add_query_arg(['client_id' => $s['app_id'], 'config_id' => $s['config_id'], 'redirect_uri' => callback_url(), 'response_type' => 'code', 'override_default_response_type' => 'true', 'state' => $state, 'prompt' => 'login'], 'https://www.facebook.com/dialog/oauth');
+            }
             wp_redirect($url); exit;
         }
     } catch (\Throwable $e) { set_status($e->getMessage()); }
@@ -83,6 +87,11 @@ function oauth_callback(): void
     try {
         $code = sanitize_text_field(wp_unslash($_GET['code'] ?? ''));
         if (!$code || isset($_GET['error'])) { throw new \RuntimeException('Instagram connection was cancelled.'); }
+        if (!empty(settings()['config_id'])) {
+            connect_unified($code);
+            sync();
+            finish();
+        }
         $r = response(wp_remote_post('https://api.instagram.com/oauth/access_token', ['timeout' => 20, 'redirection' => 0, 'body' => [
             'client_id' => settings()['app_id'], 'client_secret' => secret(), 'grant_type' => 'authorization_code', 'redirect_uri' => callback_url(), 'code' => $code,
         ]]));
@@ -107,6 +116,44 @@ function oauth_callback(): void
     finish();
 }
 
+/** Select only the configured account, never the first account granted by Meta. */
+function matching_account(array $accounts, string $username): array
+{
+    foreach ($accounts as $account) {
+        if (!empty($account['id']) && strcasecmp($account['username'] ?? '', $username) === 0) { return $account; }
+    }
+    throw new \RuntimeException('The configured Instagram account was not shared. Reconnect and select the matching account.');
+}
+
+function connect_unified(string $code): void
+{
+    $s = settings();
+    $r = response(wp_remote_get(add_query_arg([
+        'client_id' => $s['app_id'], 'client_secret' => secret(), 'code' => $code, 'redirect_uri' => callback_url(),
+    ], 'https://graph.facebook.com/v27.0/oauth/access_token'), ['timeout' => 20, 'redirection' => 0]));
+    $token = $r['access_token'] ?? '';
+    if (!$token) { throw new \RuntimeException('Meta did not return an access token.'); }
+    $business = api('me', $token, ['fields' => 'client_business_id'], 'unified');
+    if (empty($business['client_business_id'])) { throw new \RuntimeException('Meta did not return the connected business portfolio.'); }
+    $accounts = [];
+    $after = null;
+    for ($page = 0; $page < 10; $page++) {
+        $params = ['fields' => 'id,username', 'limit' => 100];
+        if ($after) { $params['after'] = $after; }
+        $batch = api('me/assigned_instagram_accounts', $token, $params, 'unified');
+        $accounts = array_merge($accounts, $batch['data'] ?? []);
+        $after = !empty($batch['paging']['next']) ? ($batch['paging']['cursors']['after'] ?? null) : null;
+        if (!$after) { break; }
+    }
+    $account = matching_account($accounts, $s['username']);
+    update_option('hp_ig_auth', [
+        'provider' => 'unified', 'comments_requested' => true, 'token' => seal($token),
+        'user_id' => (string) $account['id'], 'business_id' => (string) $business['client_business_id'],
+        'config_id' => $s['config_id'], 'refreshed' => time(),
+        'expires' => !empty($r['expires_in']) ? time() + (int) $r['expires_in'] : 0,
+    ], false);
+}
+
 function admin_page(): void
 {
     guard(); assets();
@@ -120,7 +167,7 @@ function admin_page(): void
         <?php if (!empty($status['message'])): ?><div class="notice notice-info"><p><?php echo esc_html($status['message']); ?></p></div><?php endif; ?>
         <div class="hp-ig-admin-panel">
             <h2>Connection</h2>
-            <p><strong><?php echo empty($auth['token']) ? 'Not connected — automatic updates are not active.' : (($auth['expires'] ?? 0) <= time() ? 'Authorization expired — reconnect Instagram.' : 'Connected to @' . esc_html($s['username'])); ?></strong></p>
+            <p><strong><?php echo empty($auth['token']) ? 'Not connected — automatic updates are not active.' : (!empty($auth['expires']) && $auth['expires'] <= time() ? 'Authorization expired — reconnect Instagram.' : 'Connected to @' . esc_html($s['username'])); ?></strong></p>
             <p><?php echo count($posts); ?> cached posts. Last successful sync: <?php echo esc_html(get_option('hp_ig_last_sync') ? wp_date('j M Y, H:i', get_option('hp_ig_last_sync')) : 'not yet'); ?>.</p>
             <?php if (!empty($auth['expires'])): ?><p>Token expires: <?php echo esc_html(wp_date('j M Y', $auth['expires'])); ?>. Renewed automatically during sync after seven days.</p><?php endif; ?>
             <?php action_form('connect', empty($auth['token']) ? 'Connect Instagram' : 'Reconnect Instagram'); action_form('sync', 'Sync now'); action_form('import', 'Import saved Trustindex posts'); if (!empty($auth['token'])) { action_form('disconnect', 'Disconnect automatic updates'); } ?>
@@ -140,12 +187,13 @@ function admin_page(): void
             <p><label><input type="checkbox" name="captions" <?php checked($s['captions']); ?>> Show captions and dates</label></p>
             <p><label><input type="checkbox" name="replace_legacy" <?php checked($s['replace_legacy']); ?>> Use this feed for the existing <code>[trustindex-feed-instagram]</code> shortcode</label></p>
             <details><summary>Meta application setup</summary>
-                <p>Create an app with Instagram API with Instagram Login. Add your Business or Creator account as an app tester/admin. For this site's own account, Standard Access is sufficient.</p>
+                <p>For new apps, use Instagram API with Unified Login and a business portfolio. Add your Business or Creator account as an app tester/admin. For this site's own account, Standard Access is sufficient.</p>
                 <p>Register this exact OAuth redirect URI:</p><code><?php echo esc_html(callback_url()); ?></code>
-                <div class="hp-ig-admin-fields"><label>Instagram App ID<input name="app_id" inputmode="numeric" value="<?php echo esc_attr($s['app_id']); ?>"></label>
-                <label>Instagram App Secret<input type="password" name="app_secret" value="" autocomplete="new-password" placeholder="<?php echo secret() ? 'Saved — leave blank to keep' : 'Not configured'; ?>"></label></div>
-                <p>Save these settings, then choose Connect Instagram. Enable instagram_business_basic and instagram_business_manage_comments in your Meta app. Reconnect existing accounts to enable comment previews. The widget only reads comments; likes and new comments are made on Instagram.</p>
-                <p><a href="https://developers.facebook.com/docs/instagram-platform/instagram-api-with-instagram-login/business-login/" target="_blank" rel="noopener noreferrer">Meta setup documentation ↗</a></p>
+                <div class="hp-ig-admin-fields"><label>Meta App ID<input name="app_id" inputmode="numeric" value="<?php echo esc_attr($s['app_id']); ?>"></label>
+                <label>Configuration ID (Unified Login)<input name="config_id" inputmode="numeric" value="<?php echo esc_attr($s['config_id']); ?>"></label>
+                <label>Meta App Secret<input type="password" name="app_secret" value="" autocomplete="new-password" placeholder="<?php echo secret() ? 'Saved — leave blank to keep' : 'Not configured'; ?>"></label></div>
+                <p>Save these settings, then choose Connect Instagram. For Unified Login, configure instagram_basic, instagram_manage_comments and the mandatory instagram_manage_messages scope. This widget does not fetch messages. Leave Configuration ID empty only for older Instagram Login apps. Reconnect existing accounts to enable comment previews. The widget only reads comments; likes and new comments are made on Instagram.</p>
+                <p><a href="https://developers.facebook.com/documentation/instagram-platform/instagram-api-with-unified-login/" target="_blank" rel="noopener noreferrer">Meta setup documentation ↗</a></p>
             </details>
             <?php submit_button('Save settings'); ?>
         </form>

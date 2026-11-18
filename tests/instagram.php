@@ -105,3 +105,22 @@ $responses[] = ['status'=>200,'body'=>['data'=>[$media]]];
 $responses[] = ['status'=>200,'body'=>['data'=>[]]];
 sync();
 check($options['hp_ig_posts'][0]['comments'] === [], 'Authoritative empty comments remove deleted comments');
+
+// Unified Login uses the Instagram asset ID, not the system user's /me/media.
+$options['hp_ig_auth'] = ['provider' => 'unified', 'user_id' => 'ig-asset-42', 'token' => seal('unified-private-token'), 'refreshed' => time() - 30 * DAY_IN_SECONDS, 'expires' => 0];
+$requests = [];
+$responses = [['status' => 200, 'body' => ['data' => []]]];
+sync();
+check(count($requests) === 1 && str_starts_with($requests[0]['url'], 'https://graph.facebook.com/v27.0/ig-asset-42/media?'), 'Unified token uses asset ID and skips legacy refresh');
+check($requests[0]['args']['headers']['Authorization'] === 'Bearer unified-private-token', 'Unified token sent only in authorization header');
+check(HoneyPearls\Instagram\matching_account([['id' => 'wrong', 'username' => 'other'], ['id' => 'right', 'username' => 'HoneyPearls.Patisserie']], 'honeypearls.patisserie')['id'] === 'right', 'Shared accounts matched by configured username');
+try {
+    HoneyPearls\Instagram\matching_account([['id' => 'wrong', 'username' => 'other']], 'honeypearls.patisserie');
+    throw new RuntimeException('Wrong account was accepted');
+} catch (RuntimeException $e) {
+    check(str_contains($e->getMessage(), 'not shared'), 'Unrelated account rejected');
+}
+$options['hp_ig_auth']['expires'] = time() - 1;
+$requests = [];
+sync();
+check(!$requests, 'Expired Unified token does not make API requests');

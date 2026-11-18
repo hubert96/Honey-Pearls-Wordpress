@@ -35,9 +35,11 @@ function response($response): array
     return $body;
 }
 
-function api(string $path, string $token, array $params = []): array
+function api(string $path, string $token, array $params = [], ?string $provider = null): array
 {
-    $url = add_query_arg($params, 'https://graph.instagram.com/v25.0/' . ltrim($path, '/'));
+    $provider ??= get_option('hp_ig_auth', [])['provider'] ?? 'instagram';
+    $base = $provider === 'unified' ? 'https://graph.facebook.com/v27.0/' : 'https://graph.instagram.com/v25.0/';
+    $url = add_query_arg($params, $base . ltrim($path, '/'));
     return response(wp_remote_get($url, ['timeout' => 20, 'redirection' => 0, 'headers' => ['Authorization' => 'Bearer ' . $token]]));
 }
 
@@ -156,14 +158,16 @@ function sync(): void
     if ($lock && $lock < time() - 900) { delete_option('hp_ig_sync_lock'); }
     if (!add_option('hp_ig_sync_lock', time(), '', false)) { return; }
     try {
-        if (time() - ($auth['refreshed'] ?? time()) > 7 * DAY_IN_SECONDS) {
+        if (!empty($auth['expires']) && $auth['expires'] <= time()) { throw new \RuntimeException('Instagram authorization expired. Reconnect your account.'); }
+        if (($auth['provider'] ?? 'instagram') !== 'unified' && time() - ($auth['refreshed'] ?? time()) > 7 * DAY_IN_SECONDS) {
             $r = response(wp_remote_get(add_query_arg(['grant_type' => 'ig_refresh_token', 'access_token' => $token], 'https://graph.instagram.com/refresh_access_token'), ['timeout' => 20, 'redirection' => 0]));
             if (empty($r['access_token']) || empty($r['expires_in'])) { throw new \RuntimeException('Instagram returned an incomplete token refresh. Reconnect the account.'); }
             $token = $r['access_token'];
             $auth = array_merge($auth, ['token' => seal($token), 'refreshed' => time(), 'expires' => time() + (int) $r['expires_in']]);
             update_option('hp_ig_auth', $auth, false);
         }
-        $r = api('me/media', $token, ['fields' => 'id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,like_count,comments_count', 'limit' => 50]);
+        $account = ($auth['provider'] ?? 'instagram') === 'unified' ? rawurlencode($auth['user_id']) : 'me';
+        $r = api($account . '/media', $token, ['fields' => 'id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,like_count,comments_count', 'limit' => 50]);
         if (!isset($r['data']) || !is_array($r['data'])) { throw new \RuntimeException('Instagram returned an incomplete feed. The previous feed has been kept.'); }
         $old = array_column((array) get_option('hp_ig_posts', []), null, 'id');
         $posts = [];

@@ -7,6 +7,14 @@ post dialogs, per-post visibility and an optional legacy shortcode replacement.
 Videos and albums show their cover image; the original post opens on Instagram.
 No publishing, messaging, likes/comments management or third-party widget service.
 
+The carousel displays one Instagram-style post at a time, fits its parent container
+(up to 540px), and slides with a 620ms eased animation. It advances every six seconds,
+pausing on hover, keyboard focus, an open dialog, or a hidden/offscreen page. Users can
+pause it, select a dot, swipe, or use arrow keys on the post track. Reduced-motion users
+start with autoplay disabled and get immediate transitions. Desktop columns apply only
+to the optional grid. Heart/comment/share/save icons link to the original Instagram post;
+the widget never fabricates counts or pretends to perform social actions locally.
+
 ## Setup
 
 1. Activate **Honey Pearls Instagram**, then open **Settings → Honey Pearls Instagram**.

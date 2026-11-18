@@ -133,7 +133,7 @@ function admin_page(): void
                 <label>Instagram username<input name="username" value="<?php echo esc_attr($s['username']); ?>" required pattern="[A-Za-z0-9_.]+"></label>
                 <label>Heading<input name="title" value="<?php echo esc_attr($s['title']); ?>"></label>
                 <label>Layout<select name="layout"><option value="carousel" <?php selected($s['layout'], 'carousel'); ?>>Carousel</option><option value="grid" <?php selected($s['layout'], 'grid'); ?>>Grid</option></select></label>
-                <label>Desktop columns<input type="number" name="columns" value="<?php echo (int) $s['columns']; ?>" min="2" max="6"></label>
+                <label>Grid columns (carousel shows one post)<input type="number" name="columns" value="<?php echo (int) $s['columns']; ?>" min="2" max="6"></label>
                 <label>Number of posts<input type="number" name="limit" value="<?php echo (int) $s['limit']; ?>" min="1" max="50"></label>
                 <label>Accent colour<input type="color" name="accent" value="<?php echo esc_attr($s['accent']); ?>"></label>
             </div>

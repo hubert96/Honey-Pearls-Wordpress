@@ -23,6 +23,7 @@ function shortcode_atts($defaults, $values) { return array_merge($defaults, $val
 function wp_unique_id($prefix) { static $i = 0; return $prefix . ++$i; }
 function wp_trim_words($value, $count) { return implode(' ', array_slice(explode(' ', $value), 0, $count)); }
 function wp_date($format, $timestamp) { return date($format, $timestamp); }
+function plugins_url($path, $file) { return 'assets/' . basename($path); }
 function current_user_can($cap) { return false; }
 function add_query_arg($args, $url) { return $url . '?' . http_build_query($args); }
 function is_wp_error($value) { return $value instanceof Exception; }

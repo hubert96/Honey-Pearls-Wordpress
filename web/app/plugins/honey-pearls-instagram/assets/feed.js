@@ -15,6 +15,7 @@
         let index = 0, frame = 0, paused = reduced.matches, hovered = false, focused = false;
         let lastMove = Date.now();
         const slideWidth = () => track.getBoundingClientRect().width;
+        const fitHeight = i => { track.style.height = `${cards[i].getBoundingClientRect().height}px`; };
         const reflectPlay = () => {
           play.textContent = paused ? '▶' : 'Ⅱ';
           play.setAttribute('aria-label', paused ? 'Play automatic slideshow' : 'Pause automatic slideshow');
@@ -23,11 +24,13 @@
         const update = () => {
           index = Math.round(track.scrollLeft / Math.max(1, slideWidth()));
           dots.forEach((dot, i) => { if (i === index) dot.setAttribute('aria-current', 'true'); else dot.removeAttribute('aria-current'); });
+          if (!frame) fitHeight(index);
         };
         const cancel = () => { cancelAnimationFrame(frame); frame = 0; track.style.scrollSnapType = ''; lastMove = Date.now(); };
         const go = (target, manual = true) => {
           cancel();
           target = (target + cards.length) % cards.length;
+          fitHeight(target);
           const from = track.scrollLeft, to = cards[target].offsetLeft - cards[0].offsetLeft;
           const started = performance.now();
           track.style.scrollSnapType = 'none';
@@ -68,6 +71,7 @@
           update();
         });
         observer.observe(track);
+        cards.forEach(card => observer.observe(card));
         update();
       }
       const dialog = feed.querySelector('dialog');

@@ -15,6 +15,29 @@ start with autoplay disabled and get immediate transitions. Desktop columns appl
 to the optional grid. Heart/comment/share/save icons link to the original Instagram post;
 the widget never fabricates counts or pretends to perform social actions locally.
 
+### Visual reference (2026-11-18)
+
+Measured against the rendered mobile web post https://www.instagram.com/p/Dd8rdepIS3X/
+in Chrome on Windows at a 524.8px content width. Matching values: the system font stack
+(`-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif`),
+14px/18px body text, 600-weight username, 12px/16px location/date, #0c1014 primary text,
+#6a717a secondary text, 32px avatar, 70px profile row, 16px content inset, and 24px icons
+inside 40px targets with 8px padding. Action SVG geometry follows the rendered reference.
+Photos keep their original aspect ratio; carousel height follows the active post.
+
+`assets/instagram-logo.svg` is the unmodified black glyph from Meta's official
+`IG_brand_asset_pack_2023.zip`, downloaded from
+https://www.meta.com/brand/resources/instagram/instagram-brand/ after the site owner's
+explicit acceptance of its usage terms. The Instagram mark belongs to Meta; its brand
+terms apply separately from this plugin's code license. The adjacent Instagram text is
+ordinary interface text, not an imitation of the Instagram wordmark. `assets/profile.jpg`
+is the Honey Pearls account's profile image captured for this site.
+
+The branded widget header and carousel controls are additions outside the measured post.
+Owner-only promotion tools, social counts and Instagram's global app navigation are not
+replicated. Language, OS font rendering and Instagram UI experiments can alter appearance;
+this is a comparison with the observed web version, not a claim of universal pixel identity.
+
 ## Setup
 
 1. Activate **Honey Pearls Instagram**, then open **Settings → Honey Pearls Instagram**.

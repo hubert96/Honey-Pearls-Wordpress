@@ -34,7 +34,7 @@ function wp_remote_get($url, $args) {
 }
 function wp_remote_retrieve_response_code($r) { return $r['status']; }
 function wp_remote_retrieve_body($r) { return json_encode($r['body']); }
-require __DIR__ . '/../web/app/plugins/honey-pearls-instagram/honey-pearls-instagram.php';
+require __DIR__ . '/../web/app/plugins/honey-pearls-social/modules/instagram/honey-pearls-instagram.php';
 use function HoneyPearls\Instagram\{seal, unseal, normalize, image_host_allowed, instagram_link, sync, render};
 function check($condition, $message) { if (!$condition) throw new RuntimeException($message); echo "PASS $message\n"; }
 

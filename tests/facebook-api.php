@@ -1,8 +1,8 @@
 <?php
 define('ABSPATH', __DIR__);
 function add_action(...$args){} function add_filter(...$args){} function wp_salt($scheme){return 'test-only-secret';}
-require __DIR__.'/../web/app/plugins/honey-pearls-facebook/includes.php';
-require __DIR__.'/../web/app/plugins/honey-pearls-facebook/api.php';
+require __DIR__.'/../web/app/plugins/honey-pearls-social/modules/facebook/includes.php';
+require __DIR__.'/../web/app/plugins/honey-pearls-social/modules/facebook/api.php';
 use function HoneyPearls\Facebook\normalize_post;
 use function HoneyPearls\Facebook\seal_token;
 use function HoneyPearls\Facebook\unseal_token;

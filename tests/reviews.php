@@ -7,7 +7,7 @@ function wp_strip_all_tags($s) { return strip_tags($s); }
 function esc_attr($s) { return htmlspecialchars((string)$s,ENT_QUOTES); }
 function esc_url($s) { return esc_attr($s); }
 function plugins_url($s,...$a) { return '/plugin/'.$s; }
-require __DIR__.'/../web/app/plugins/honey-pearls-reviews/honey-pearls-reviews.php';
+require __DIR__.'/../web/app/plugins/honey-pearls-social/modules/reviews/honey-pearls-reviews.php';
 function check($value,$message) { if (!$value) throw new Exception($message); echo "PASS $message\n"; }
 class Connector {
  function __construct(public string $id,public bool $exists=true) {}

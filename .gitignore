@@ -38,3 +38,5 @@ wp-cli.local.yml
 /vendor/
 /web/app/uploads/
 /.env
+
+!web/app/plugins/honey-pearls-social/

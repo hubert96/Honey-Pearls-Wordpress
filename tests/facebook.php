@@ -1,6 +1,6 @@
 <?php
 const ABSPATH=__DIR__;
-require __DIR__.'/../web/app/plugins/honey-pearls-facebook/includes.php';
+require __DIR__.'/../web/app/plugins/honey-pearls-social/modules/facebook/includes.php';
 use function HoneyPearls\Facebook\post_url;
 use function HoneyPearls\Facebook\embed_url;
 function check($ok,$label){if(!$ok)throw new Exception($label);echo "PASS $label\n";}

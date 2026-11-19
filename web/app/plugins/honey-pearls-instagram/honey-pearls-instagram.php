@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Honey Pearls Instagram
  * Description: Instagram feed with local image caching, automatic updates and an accessible gallery.
- * Version: 1.4.3
+ * Version: 1.4.4
  * Requires PHP: 8.1
  * License: GPL-2.0-or-later
  * Author: Honey Pearls
@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
 require_once __DIR__ . '/includes/feed.php';
 require_once __DIR__ . '/includes/admin.php';
 
-const VERSION = '1.4.3';
+const VERSION = '1.4.4';
 const FILE = __FILE__;
 const CRON = 'hp_instagram_sync';
 

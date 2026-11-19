@@ -97,7 +97,7 @@
 .hp-ig .hp-ig__photo img{width:100%;height:100%;object-fit:cover!important;object-position:center}
 
 /* Homepage: match the reviews shell, including its 650px overall height. */
-.elementor-6541 .elementor-element.elementor-element-0c16795:has(.hp-ig){padding:40px;background:#f3f8fb;border-radius:24px}
+.elementor-6541 .elementor-element.elementor-element-0c16795:has(.hp-ig){padding:40px;background:#f3f8fb!important;border-radius:24px}
 .elementor-6541 .elementor-element-0c16795 .hp-ig--carousel{max-width:none;--hp-ig-height:570px}
 @media(min-width:768px) and (max-width:1024px){
  .elementor-6541 .elementor-element.elementor-element-0c16795:has(.hp-ig){padding:32px}

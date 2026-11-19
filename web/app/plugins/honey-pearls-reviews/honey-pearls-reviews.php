@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Honey Pearls Reviews
  * Description: Accessible vertical carousel of Google and Tripadvisor reviews.
- * Version: 1.1.1
+ * Version: 1.1.2
  * Requires PHP: 8.1
  * Author: Honey Pearls
  * License: GPL-2.0-or-later
  */
 namespace HoneyPearls\Reviews;
 defined('ABSPATH') || exit;
-const VERSION = '1.1.1';
+const VERSION = '1.1.2';
 require_once __DIR__ . '/sources.php';
 require_once __DIR__ . '/admin.php';
 add_shortcode('honey_pearls_reviews', __NAMESPACE__ . '\\render');

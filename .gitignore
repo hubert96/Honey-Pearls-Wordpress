@@ -6,6 +6,7 @@ web/app/plugins/*
 !web/app/plugins/social-photo-feed-widget
 !web/app/plugins/widgets-for-social-post-feed
 !web/app/plugins/honey-pearls-instagram/
+!web/app/plugins/honey-pearls-reviews/
 web/app/mu-plugins/*/
 web/app/themes/twentytwentyfive/
 web/app/upgrade

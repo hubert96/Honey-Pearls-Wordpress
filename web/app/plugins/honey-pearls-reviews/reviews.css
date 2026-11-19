@@ -11,3 +11,11 @@
 
 /* Keep automatic rotation, but omit the bottom navigation strip. */
 .hpr .hpr-footer{display:none}
+
+/* Small source photos belong to their own review, inside its scrollable body. */
+.hpr .hpr-photos{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0 12px}
+.hpr .hpr-photos a{display:block;width:128px;max-width:100%;aspect-ratio:4/3;border-radius:12px;overflow:hidden;background:#f3f8fb;flex-shrink:0}
+.hpr .hpr-photos img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .2s}
+.hpr .hpr-photos a:hover img{transform:scale(1.04)}
+.hpr .hpr-photos a[hidden]{display:none}
+@media(prefers-reduced-motion:reduce){.hpr .hpr-photos img{transition:none}}

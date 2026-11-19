@@ -41,3 +41,8 @@ check(substr_count($bubbles,'tripadvisor-f.svg')===4 && substr_count($bubbles,'t
 check(!str_contains($bubbles,'★'),'Tripadvisor does not use stars');
 $options['tripadvisor']=['id'=>'com.au|Restaurant_Review-g190932-d34459636-Reviews.html'];
 check(HoneyPearls\Reviews\sources()['tripadvisor']['url']==='https://www.tripadvisor.com.au/Restaurant_Review-g190932-d34459636-Reviews.html','Regional Tripadvisor source link');
+
+check(HoneyPearls\Reviews\review_photos('invalid', $trustindex_pm_google) === [], 'Malformed photos are omitted');
+$photos=HoneyPearls\Reviews\review_photos('["https://example.com/photo.jpg","javascript:alert(1)",null,"http://example.com/no.jpg"]', $trustindex_pm_google);
+check(count($photos) === 1 && $photos[0]['thumbnail'] === 'https://example.com/photo.jpg', 'Only valid HTTPS source photos are accepted');
+check(count(HoneyPearls\Reviews\review_photos(array_fill(0,5,'https://example.com/photo.jpg'), $trustindex_pm_google)) === 3, 'Photo count is bounded');

@@ -21,9 +21,27 @@ function sources(): array {
         foreach ($rows as $row) {
             if (!is_numeric($row['rating']) || $row['rating'] < 1 || $row['rating'] > 5) continue;
             $timestamp = strtotime($row['date'] ?? '');
-            $source['reviews'][] = ['author' => $row['user'], 'avatar' => $row['user_photo'] ?? '', 'rating' => (float) $row['rating'], 'date' => $timestamp ? gmdate('Y-m-d', $timestamp) : '', 'title' => '', 'text' => wp_strip_all_tags($connector->getReviewPlainText((object) $row)), 'url' => $url];
+            $source['reviews'][] = ['author' => $row['user'], 'avatar' => $row['user_photo'] ?? '', 'rating' => (float) $row['rating'], 'date' => $timestamp ? gmdate('Y-m-d', $timestamp) : '', 'photos' => review_photos($row['photos'] ?? null, $connector), 'title' => '', 'text' => wp_strip_all_tags($connector->getReviewPlainText((object) $row)), 'url' => $url];
         }
         if ($source['reviews']) $sources[$id] = $source;
     }
     return $sources;
+}
+
+/** Only real attached photos; missing or malformed source data stays empty. */
+function review_photos($raw, $connector): array {
+    $urls = is_string($raw) ? json_decode($raw, true) : $raw;
+    if (!is_array($urls)) return [];
+    $photos = [];
+    foreach ($urls as $url) {
+        if (!is_string($url) || !filter_var($url, FILTER_VALIDATE_URL) || parse_url($url, PHP_URL_SCHEME) !== 'https') continue;
+        $thumbnail = $url;
+        if (method_exists($connector, 'getAssetProxy')) {
+            $proxy = $connector->getAssetProxy();
+            if (method_exists($proxy, 'getSizedGoogleImageUrl')) $thumbnail = $proxy->getSizedGoogleImageUrl($url, 'thumbnail');
+        }
+        $photos[] = ['url' => $url, 'thumbnail' => $thumbnail];
+        if (count($photos) === 3) break;
+    }
+    return $photos;
 }

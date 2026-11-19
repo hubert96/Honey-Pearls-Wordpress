@@ -12,6 +12,11 @@
       image.addEventListener('error', fallback, {once:true});
       if (image.complete && !image.naturalWidth) fallback();
     });
+    root.querySelectorAll('.hpr-photos img').forEach(image => {
+      const hide = () => { image.closest('a').hidden = true; };
+      image.addEventListener('error', hide, {once:true});
+      if (image.complete && !image.naturalWidth) hide();
+    });
     const cards = [...root.querySelectorAll('.hpr-card')];
     if (!cards.length) return;
     const controls = root.querySelector('.hpr-controls');

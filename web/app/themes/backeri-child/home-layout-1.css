@@ -1,0 +1,53 @@
+/* Homepage only: stable content, shared gutters, responsive grids. */
+body.home #magic-cursor{display:none!important}
+.elementor-6541{--hp-gap:24px;--hp-panel-padding:clamp(28px,4vw,56px)}
+.elementor-6541>.e-con{padding-inline:20px!important;margin-block:0 24px!important}
+.elementor-6541>.e-con>.e-con-inner{max-width:1440px;width:100%;gap:24px}
+.elementor-6541 .e-con,.elementor-6541 .elementor-widget{min-width:0}
+.elementor-6541 .elementor-invisible{visibility:visible!important}
+.elementor-6541 .animated{animation:none!important}
+.elementor-6541 .at-image-animation img{clip-path:none!important}
+.elementor-6541 .at-heading-animation .elementor-heading-title{overflow-wrap:normal;word-break:normal}
+/* Equal hero columns; the opening-hours card has its own surface. */
+.elementor-6541 .elementor-element-771a654{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
+.elementor-6541 .elementor-element-771a654>.e-con{width:100%!important;max-width:100%;margin:0}
+.elementor-6541 .elementor-element-91332a4{padding:var(--hp-panel-padding)!important;justify-content:center}
+.elementor-6541 .elementor-element-5721202 h1{font-size:clamp(32px,3.2vw,48px);line-height:1.13}
+.elementor-6541 .elementor-element-0a11826{background:none!important;display:flex;gap:20px;min-height:0;border-radius:24px;overflow:hidden}
+.elementor-6541 .elementor-element-e88eaa5{width:100%!important;max-width:100%;margin:0;padding:28px!important;background:#f3f8fb!important;border-radius:24px;gap:20px}
+.elementor-6541 .elementor-element-e88eaa5:before{background:none!important}
+.elementor-6541 .elementor-element-3fd6bf0{flex:1;min-height:280px;width:100%;overflow:hidden;border-radius:24px}
+.elementor-6541 .elementor-element-3fd6bf0 img{display:block;width:100%;height:100%;position:absolute;inset:0;object-fit:cover;object-position:center}
+/* Keep both social cards useful at laptop widths instead of a squeezed sidebar. */
+.elementor-6541 .elementor-element-3d95ddc{display:grid!important;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:24px;align-items:stretch}
+.elementor-6541 .elementor-element-3d95ddc>.e-con{width:100%!important;max-width:100%;margin:0;flex:none!important}
+/* Inner section panels previously mixed 100px padding with empty containers. */
+.elementor-6541 :is(.elementor-element-57a2727,.elementor-element-8cf2181,.elementor-element-3290019,.elementor-element-57b0e11,.elementor-element-734b39f){padding:0!important}
+.elementor-6541 :is(.elementor-element-57a2727,.elementor-element-8cf2181,.elementor-element-3290019,.elementor-element-57b0e11,.elementor-element-734b39f)>.e-con-inner{padding:var(--hp-panel-padding)!important;width:100%;max-width:none;gap:32px}
+.elementor-6541 .elementor-element-755f2f1{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;align-items:stretch}
+.elementor-6541 .elementor-element-755f2f1>.e-con{width:100%!important;max-width:100%}
+.elementor-6541 .elementor-element-755f2f1 .elementskit-infobox{height:100%;padding:80px 24px 28px!important}
+.elementor-6541 .elementor-element-755f2f1 .box-body{display:flex;flex-direction:column;min-height:220px}
+.elementor-6541 .elementor-element-755f2f1 .box-footer{margin-top:auto;padding-top:20px}
+.elementor-6541 .elementor-element-755f2f1 .elementskit-info-box-title{margin-bottom:24px!important}
+.elementor-6541 .elementor-element-cd16daa,.elementor-6541>.elementor-element-f262e8d{display:none}
+@media(max-width:1024px){
+ .elementor-6541 .elementor-element-771a654{grid-template-columns:1fr}
+ .elementor-6541 .elementor-element-3fd6bf0{min-height:360px}
+ .elementor-6541 .elementor-element-755f2f1{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .elementor-6541 .elementor-element-3d95ddc{grid-template-columns:1fr}
+ .elementor-6541 .elementor-element-0c16795:has(.hp-ig){padding:32px!important}
+ .elementor-6541 .elementor-element-0c16795 .hp-ig--carousel{--hp-ig-height:586px}
+}
+@media(max-width:767px){
+ .elementor-6541{--hp-panel-padding:24px}
+ .elementor-6541>.e-con{padding-inline:20px!important;margin-bottom:20px!important}
+ .elementor-6541 .elementor-element-771a654,.elementor-6541 .elementor-element-3d95ddc{gap:20px}
+ .elementor-6541 .elementor-element-3fd6bf0{min-height:280px}
+ .elementor-6541 .elementor-element-e88eaa5{padding:24px!important}
+ .elementor-6541 .elementor-element-755f2f1{grid-template-columns:1fr;gap:20px}
+ .elementor-6541 .elementor-element-755f2f1 .box-body{min-height:150px}
+ .elementor-6541 .elementor-element-0c16795:has(.hp-ig){padding:20px!important}
+ .elementor-6541 .elementor-element-0c16795 .hp-ig--carousel{--hp-ig-height:610px}
+ .elementor-6541 .elementor-element-51b2dac{padding:0!important;gap:20px}
+}

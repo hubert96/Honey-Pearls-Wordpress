@@ -1,22 +1,13 @@
 # Honey Pearls Reviews
 
-Use `[honey_pearls_reviews height="650"]` in an Elementor Shortcode widget. The component stays within its parent, with 40px desktop / 20px mobile padding and the site's rounded pale-blue shell. CSS is scoped to `.hpr` and does not change Elementor or existing widgets.
+`[honey_pearls_reviews height="650"]` is a vertical carousel in a rounded site-style container, with scoped CSS and 40px desktop / 20px mobile padding. Version 1.1 replaces the unused Trustpilot adapter with Tripadvisor.
 
-## Sources
+Keep Widgets for Google Reviews and WP Tripadvisor Review Widgets active. Connect each business in its free widget configurator. This plugin reads their review tables without modifying native widgets or bypassing subscription/download restrictions. Their manual refresh steps and free-plan limits still apply. No paid account widget or direct Tripadvisor Content API is used.
 
-- Google: reads the existing **Widgets for Google Reviews** connector's database, including visibility choices and original review text. Keep that plugin active. Its download schedule / manual refresh rules still apply; this plugin does not bypass them. The connector currently stores only a subset of reviews, while the summary is the business's overall score and count. Links lead to the Google Maps business profile because the stored data does not provide reliable individual review URLs.
-- Trustpilot: optional Business Units API integration. Configure business unit ID and API key in Settings → Honey Pearls Reviews. API entitlement may require a Trustpilot plan. API keys are encrypted with the WordPress auth salt (AES-256-GCM), not exposed in HTML or JS. WP-Cron refreshes hourly when traffic runs cron. The first API page (up to 100 entries) is displayed, newest first; it is not a complete archive. Failed refreshes preserve the last successful result for up to seven days. Disconnect removes cached Trustpilot content. Changing WP salts requires entering the key again.
+The connectors retain their own caches and visibility settings. The carousel reads all visible reviews, including low ratings, alternates sources and preserves full text. Each source retains its overall score/count, separate from the stored subset. No blended score, mock reviews or invented verification badges. Source links lead to business profiles because stored rows lack reliable individual review URLs.
 
-Each platform retains its own score/count. Trustpilot's score is a TrustScore, not an arithmetic average. No blended rating or fabricated reviews are generated. Available sources alternate; there is no rating threshold. Empty/unconfigured sources are omitted. No mock reviews appear on the public site.
+Google uses yellow stars; Tripadvisor uses its green bubbles and official logo. These are custom cards, not pixel-identical platform interfaces. Logo: official brand guidelines, files.readme.io/9f59534-Vector_1.png. Bubble SVGs: Trustindex connector platform assets, cdn.trustindex.io/assets/platform/Tripadvisor/star/.
 
-The platform treatments use Google-style yellow stars and Trustpilot-style green star tiles, author, date, and source link. They are custom presentations, not official embedded widgets or pixel-identical platform UIs. Typography falls back to locally available sans-serif fonts.
+Eight-second vertical rotation; previous/next/pause. Hover, focus, touch, background tabs and offscreen placement pause rotation. Reduced-motion disables autoplay and animation. Long reviews scroll inside cards; without JavaScript all reviews remain readable.
 
-## Interaction
-
-Vertical slides every eight seconds; previous/next and pause buttons. Hover, keyboard focus, touch, hidden tabs and offscreen placement pause rotation. Reduced-motion preference disables autoplay and animated transitions. Long reviews scroll inside the card without clipping their text. Without JavaScript, all reviews are readable in a normal list. Multiple instances are isolated.
-
-## Checks
-
-`php tests/reviews.php` from the repository root. Run PHP lint and `node --check web/app/plugins/honey-pearls-reviews/reviews.js`.
-
-Official references: https://developers.trustpilot.com/business-units-api/ and https://developers.google.com/maps/documentation/places/web-service/policies
+Validation: php tests/reviews.php, PHP lint and node --check web/app/plugins/honey-pearls-reviews/reviews.js.

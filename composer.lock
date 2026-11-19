@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6e01f1ee426537549964ae05abf3dc16",
+    "content-hash": "89808fbd4122c44f65c3eab354dc807f",
     "packages": [
         {
             "name": "composer/installers",
@@ -1166,6 +1166,24 @@
             },
             "type": "wordpress-plugin",
             "homepage": "https://wordpress.org/plugins/one-click-demo-import/"
+        },
+        {
+            "name": "wpackagist-plugin/review-widgets-for-tripadvisor",
+            "version": "15.0",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/review-widgets-for-tripadvisor/",
+                "reference": "tags/15.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/review-widgets-for-tripadvisor.15.0.zip"
+            },
+            "require": {
+                "composer/installers": "^1.0 || ^2.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/review-widgets-for-tripadvisor/"
         },
         {
             "name": "wpackagist-plugin/woocommerce",

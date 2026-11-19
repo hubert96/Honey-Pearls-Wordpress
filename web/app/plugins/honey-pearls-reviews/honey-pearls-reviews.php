@@ -1,25 +1,30 @@
 <?php
 /**
  * Plugin Name: Honey Pearls Reviews
- * Description: Accessible vertical carousel of Google and Trustpilot reviews.
- * Version: 1.0.0
+ * Description: Accessible vertical carousel of Google and Tripadvisor reviews.
+ * Version: 1.1.0
  * Requires PHP: 8.1
  * Author: Honey Pearls
  * License: GPL-2.0-or-later
  */
 namespace HoneyPearls\Reviews;
 defined('ABSPATH') || exit;
-const VERSION = '1.0.0';
+const VERSION = '1.1.0';
 require_once __DIR__ . '/sources.php';
 require_once __DIR__ . '/admin.php';
 add_shortcode('honey_pearls_reviews', __NAMESPACE__ . '\\render');
-register_activation_hook(__FILE__, function () {
-    if (!wp_next_scheduled('hp_reviews_sync')) wp_schedule_event(time() + 60, 'hourly', 'hp_reviews_sync');
-});
-register_deactivation_hook(__FILE__, function () { wp_clear_scheduled_hook('hp_reviews_sync'); });
-add_action('hp_reviews_sync', __NAMESPACE__ . '\\sync_trustpilot');
+// Retire the unused Trustpilot job from version 1.0.
+add_action('init', function () { if (wp_next_scheduled('hp_reviews_sync')) wp_clear_scheduled_hook('hp_reviews_sync'); });
 
 function stars(float $rating, string $source): string {
+    if ($source === 'tripadvisor') {
+        $html = '<span class="hpr-bubbles" role="img" aria-label="' . esc_attr($rating . ' out of 5 bubbles') . '">';
+        for ($i = 1; $i <= 5; $i++) {
+            $fill = $rating >= $i - .25 ? 'f' : ($rating >= $i - .75 ? 'h' : 'e');
+            $html .= '<img src="' . esc_url(plugins_url('assets/tripadvisor-' . $fill . '.svg', __FILE__)) . '" width="18" height="18" alt="">';
+        }
+        return $html . '</span>';
+    }
     $html = '<span class="hpr-stars hpr-stars--' . esc_attr($source) . '" role="img" aria-label="' . esc_attr($rating . ' out of 5 stars') . '">';
     for ($i = 1; $i <= 5; $i++) $html .= '<span aria-hidden="true" class="' . ($i <= round($rating) ? 'is-filled' : '') . '">★</span>';
     return $html . '</span>';
@@ -37,7 +42,7 @@ function render($atts = []): string {
     <section class="hpr" aria-label="Customer reviews" aria-roledescription="carousel" style="--hpr-height:<?php echo $height; ?>px">
       <header class="hpr-header"><span class="hpr-eyebrow">Kind words from our customers</span><h2>Made with love.<br>Loved by you.</h2>
         <div class="hpr-sources"><?php foreach ($sources as $id => $source): if (!$source['reviews']) continue; ?>
-          <a class="hpr-source hpr-source--<?php echo esc_attr($id); ?>" href="<?php echo esc_url($source['url']); ?>" target="_blank" rel="noopener noreferrer"><b><?php echo esc_html($source['name']); ?></b><?php if ($source['rating'] !== null): ?><span><?php echo esc_html(number_format_i18n($source['rating'], 1)); ?> / 5</span><?php endif; ?><small><?php echo esc_html($source['count'] . ' reviews'); ?></small></a>
+          <a class="hpr-source hpr-source--<?php echo esc_attr($id); ?>" href="<?php echo esc_url($source['url']); ?>" target="_blank" rel="noopener noreferrer"><b><?php if ($id === 'tripadvisor'): ?><img class="hpr-brand" src="<?php echo esc_url(plugins_url('assets/tripadvisor-logo.png', __FILE__)); ?>" alt="Tripadvisor"><?php else: echo esc_html($source['name']); endif; ?></b><?php if ($source['rating'] !== null): ?><?php if ($id === 'tripadvisor'): echo stars($source['rating'], $id); else: ?><span><?php echo esc_html(number_format_i18n($source['rating'], 1)); ?> / 5</span><?php endif; ?><?php endif; ?><small><?php echo esc_html($source['count'] . ' reviews'); ?></small></a>
         <?php endforeach; ?></div>
       </header>
       <div class="hpr-viewport">

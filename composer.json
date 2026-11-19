@@ -50,7 +50,8 @@
     "wpackagist-plugin/one-click-demo-import": "3.4.1",
     "wpackagist-plugin/woocommerce": "11.3.0",
     "wpackagist-plugin/wp-reviews-plugin-for-google": "15.0",
-    "wpackagist-plugin/mcp-adapter": "0.7.1"
+    "wpackagist-plugin/mcp-adapter": "0.7.1",
+    "wpackagist-plugin/review-widgets-for-tripadvisor": "15.0"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",

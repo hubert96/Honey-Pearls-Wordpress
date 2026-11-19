@@ -11,3 +11,6 @@
 .hp-fb :focus-visible{outline:2px solid #1877f2;outline-offset:-3px}
 @media(max-width:1024px){.hp-fb{padding:32px}}
 @media(max-width:767px){.hp-fb{padding:20px;border-radius:20px}.hp-fb .hp-fb-slides{grid-auto-columns:100%;gap:20px}.hp-fb .hp-fb-slide:only-child{grid-column:auto}}
+
+.elementor .e-con:has(> .elementor-widget-shortcode .hp-fb){padding:0}
+@media(max-width:767px){.elementor .e-con-inner:has(.hp-fb){padding-inline:0!important}}

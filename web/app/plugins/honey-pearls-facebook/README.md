@@ -1,9 +1,9 @@
 # Honey Pearls Facebook
 
-Shortcode: `[honey_pearls_facebook]`. Settings → Honey Pearls Facebook accepts up to 12 public post permalinks and a viewport height. A `url` shortcode attribute embeds one post. Paste into an Elementor Shortcode widget.
+Use `[honey_pearls_facebook]` in Elementor. Two posts per desktop row, one per mobile scroll-snap viewport, no navigation bar. Cards have no outer padding; photographs fill their width with object-fit cover.
 
-The post itself is Meta's official Embedded Posts iframe. No recreated icons, fabricated counts, access tokens, scraping, or paid feed service. Appearance can differ from Facebook's app and varies with Meta and viewer locale/login. Only the surrounding pale-blue rounded container belongs to this plugin.
+The two configured posts use a saved public-data snapshot (`cards.json`, captured 19 November 2026), including actual Facebook comment excerpts. Counts are snapshots, not live API data. Like/Comment/Share links open Facebook and do not simulate reactions. Update snapshots in cards.json; new post links without a matching card use Meta's official embed fallback. Automatic discovery and refresh require a separate authorized Page API integration; the Instagram connection does not provide it.
 
-Posts are selected manually, not automatically discovered. Facebook's Page timeline embed was tested but failed to load its timeline; it is not used as a silent fallback. A future automatic feed requires a separate authorized Page API integration.
+Facebook reaction SVGs and comment/share sprites were observed on the live Facebook post UI. Profile image is site-owned. Post photographs reuse the matching local WordPress media already imported for Instagram. No private commenter images or Facebook credentials are stored.
 
-The carousel uses horizontal scrolling with no navigation bar: two posts side by side on desktop, one per viewport on mobile. It is keyboard focusable and respects narrow containers. Below Meta's 350px post width it scales the iframe without clipping horizontally. Tall posts may scroll inside the configured viewport. A permanent original-post link remains available if Meta is blocked or requires login/cookies. Facebook receives ordinary embed requests; the site does not store Facebook login credentials.
+Public source posts: the `url` fields in cards.json. The first post had no visible comments in the live Facebook dialog; the second displayed 21 reactions, 3 comments and 5 shares. Two public comment excerpts are displayed, not fabricated examples.

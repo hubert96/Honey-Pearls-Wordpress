@@ -6,7 +6,7 @@
   const height=Number(root.dataset.height)||740; let timer;
   function size() {
    slides.forEach(slide=>{
-    const stage=slide.querySelector('.hp-fb-stage'),frame=stage.querySelector('iframe');
+    const stage=slide.querySelector('.hp-fb-stage');if(!stage)return;const frame=stage.querySelector('iframe');
     const available=Math.floor(slide.clientWidth); if(available<1)return;
     const width=Math.max(350,Math.min(750,available)),scale=available/width;
     const frameHeight=Math.ceil(height/scale);

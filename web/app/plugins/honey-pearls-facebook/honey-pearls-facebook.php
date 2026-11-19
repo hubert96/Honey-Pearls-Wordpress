@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Honey Pearls Facebook
  * Description: Genuine Facebook post embeds in a responsive Honey Pearls carousel.
- * Version: 1.0.1
+ * Version: 1.0.2
  * Requires PHP: 8.1
  * Author: Honey Pearls
  * License: GPL-2.0-or-later
  */
 namespace HoneyPearls\Facebook;
 defined('ABSPATH') || exit;
-const VERSION = '1.0.1';
+const VERSION = '1.0.2';
 const FILE = __FILE__;
 require_once __DIR__ . '/includes.php';
 add_shortcode('honey_pearls_facebook', __NAMESPACE__ . '\\render');
@@ -18,8 +18,8 @@ add_action('admin_init', function () {
     register_setting('hp_facebook', 'hp_fb_settings', ['type'=>'array', 'sanitize_callback'=>__NAMESPACE__ . '\\sanitize_settings', 'default'=>[]]);
 });
 function assets(): void {
-    wp_enqueue_style('hp-facebook', plugins_url('facebook-2.css', FILE), [], VERSION);
-    wp_enqueue_script('hp-facebook', plugins_url('facebook-1.js', FILE), [], VERSION, true);
+    wp_enqueue_style('hp-facebook', plugins_url('facebook-3.css', FILE), [], VERSION);
+    wp_enqueue_script('hp-facebook', plugins_url('facebook-2.js', FILE), [], VERSION, true);
 }
 add_action('wp_enqueue_scripts', __NAMESPACE__ . '\\assets');
 add_action('admin_enqueue_scripts', function ($hook) { if ($hook === 'settings_page_hp-facebook') assets(); });
@@ -41,7 +41,7 @@ function render($atts=[]): string {
     if (!$posts) return current_user_can('manage_options') ? '<p>Honey Pearls Facebook: add public post links in Settings → Honey Pearls Facebook.</p>' : '';
     $height=max(400,min(1400,(int)$atts['height'])); assets(); ob_start(); ?>
     <section class="hp-fb" aria-label="Facebook posts" aria-roledescription="carousel" data-height="<?php echo $height; ?>">
-      <div class="hp-fb-slides">
+      <div class="hp-fb-slides" tabindex="0" aria-label="Facebook posts — scroll sideways for more">
       <?php foreach(array_values($posts) as $i=>$url): ?>
         <article class="hp-fb-slide" aria-roledescription="slide" aria-label="<?php echo ($i+1).' of '.count($posts); ?>">
           <div class="hp-fb-stage"><iframe data-post="<?php echo esc_url($url); ?>" src="<?php echo esc_url(embed_url($url,500,$height)); ?>" width="500" height="<?php echo $height; ?>" title="<?php echo esc_attr('Facebook post '.($i+1)); ?>" loading="lazy" allow="encrypted-media; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
@@ -49,7 +49,6 @@ function render($atts=[]): string {
         </article>
       <?php endforeach; ?>
       </div>
-      <?php if(count($posts)>1): ?><div class="hp-fb-nav" hidden><button type="button" data-step="-1" aria-label="Previous Facebook post">‹</button><span class="hp-fb-count" aria-live="polite" aria-atomic="true">1 / <?php echo count($posts); ?></span><button type="button" data-step="1" aria-label="Next Facebook post">›</button></div><?php endif; ?>
     </section>
     <?php return ob_get_clean();
 }

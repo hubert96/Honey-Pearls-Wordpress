@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Honey Pearls Reviews
  * Description: Accessible vertical carousel of Google and Tripadvisor reviews.
- * Version: 1.1.0
+ * Version: 1.1.1
  * Requires PHP: 8.1
  * Author: Honey Pearls
  * License: GPL-2.0-or-later
  */
 namespace HoneyPearls\Reviews;
 defined('ABSPATH') || exit;
-const VERSION = '1.1.0';
+const VERSION = '1.1.1';
 require_once __DIR__ . '/sources.php';
 require_once __DIR__ . '/admin.php';
 add_shortcode('honey_pearls_reviews', __NAMESPACE__ . '\\render');
@@ -48,7 +48,7 @@ function render($atts = []): string {
       <div class="hpr-viewport">
       <?php foreach ($reviews as $index => $review): $source = $sources[$review['source']]; ?>
         <article class="hpr-card hpr-card--<?php echo esc_attr($review['source']); ?>" aria-roledescription="slide" aria-label="<?php echo ($index + 1) . ' of ' . count($reviews); ?>">
-          <div class="hpr-author"><?php if ($review['avatar']): ?><img src="<?php echo esc_url($review['avatar']); ?>" alt="" width="40" height="40" loading="lazy" referrerpolicy="no-referrer"><?php else: ?><span class="hpr-avatar" aria-hidden="true"><?php echo esc_html(mb_substr($review['author'], 0, 1)); ?></span><?php endif; ?><div><b><?php echo esc_html($review['author']); ?></b><time datetime="<?php echo esc_attr($review['date']); ?>"><?php echo esc_html($review['date'] ? wp_date('j F Y', strtotime($review['date'])) : ''); ?></time></div><span class="hpr-platform"><?php echo esc_html($source['name']); ?></span></div>
+          <div class="hpr-author"><?php if ($review['avatar']): ?><img src="<?php echo esc_url($review['avatar']); ?>" alt="" width="40" height="40" loading="lazy" referrerpolicy="no-referrer"><span class="hpr-avatar" data-avatar-fallback hidden aria-hidden="true"><?php echo esc_html(mb_substr($review['author'], 0, 1)); ?></span><?php else: ?><span class="hpr-avatar" aria-hidden="true"><?php echo esc_html(mb_substr($review['author'], 0, 1)); ?></span><?php endif; ?><div><b><?php echo esc_html($review['author']); ?></b><time datetime="<?php echo esc_attr($review['date']); ?>"><?php echo esc_html($review['date'] ? wp_date('j F Y', strtotime($review['date'])) : ''); ?></time></div><span class="hpr-platform"><?php echo esc_html($source['name']); ?></span></div>
           <?php echo stars($review['rating'], $review['source']); ?>
           <?php if ($review['title']): ?><h3><?php echo esc_html($review['title']); ?></h3><?php endif; ?>
           <div class="hpr-text" tabindex="0" aria-label="Review text"><p><?php echo nl2br(esc_html($review['text'])); ?></p></div>

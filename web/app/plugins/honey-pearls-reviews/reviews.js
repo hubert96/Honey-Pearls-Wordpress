@@ -3,6 +3,15 @@
   function mount(root) {
     if (root.dataset.ready) return;
     root.dataset.ready = '1';
+    root.querySelectorAll('.hpr-author img').forEach(image => {
+      const fallback = () => {
+        image.hidden = true;
+        const initial = image.nextElementSibling;
+        if (initial?.hasAttribute('data-avatar-fallback')) initial.hidden = false;
+      };
+      image.addEventListener('error', fallback, {once:true});
+      if (image.complete && !image.naturalWidth) fallback();
+    });
     const cards = [...root.querySelectorAll('.hpr-card')];
     if (!cards.length) return;
     const controls = root.querySelector('.hpr-controls');

@@ -6,3 +6,5 @@
 @media(prefers-reduced-motion:reduce){.hpr.is-ready .hpr-card{transition:none}}
 
 .hpr .hpr-brand{display:block;height:20px;width:auto;max-width:125px;object-fit:contain}.hpr .hpr-bubbles{display:inline-flex;gap:2px;align-items:center;background:#fff;flex-shrink:0;margin-bottom:12px}.hpr .hpr-bubbles img{display:block;width:18px;height:18px;max-width:none;margin:0}.hpr .hpr-source .hpr-bubbles{margin-bottom:0}
+
+.hpr .hpr-author img[hidden],.hpr .hpr-avatar[hidden]{display:none}

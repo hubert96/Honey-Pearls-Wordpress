@@ -39,3 +39,5 @@ check(HoneyPearls\Reviews\interleave([])===[],'Empty sources do not invent revie
 $bubbles=HoneyPearls\Reviews\stars(4.5,'tripadvisor');
 check(substr_count($bubbles,'tripadvisor-f.svg')===4 && substr_count($bubbles,'tripadvisor-h.svg')===1,'Tripadvisor half-bubble rating');
 check(!str_contains($bubbles,'★'),'Tripadvisor does not use stars');
+$options['tripadvisor']=['id'=>'com.au|Restaurant_Review-g190932-d34459636-Reviews.html'];
+check(HoneyPearls\Reviews\sources()['tripadvisor']['url']==='https://www.tripadvisor.com.au/Restaurant_Review-g190932-d34459636-Reviews.html','Regional Tripadvisor source link');

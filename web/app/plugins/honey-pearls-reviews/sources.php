@@ -12,6 +12,11 @@ function sources(): array {
         if (empty($details['id'])) continue;
         $rows = $wpdb->get_results($wpdb->prepare('SELECT * FROM %i WHERE hidden = 0 ORDER BY date DESC, id DESC LIMIT 100', $connector->get_tablename('reviews')), ARRAY_A) ?: [];
         $url = $connector->getPageUrl();
+        // The Tripadvisor connector stores regional URLs as "com.au|Restaurant_Review-...".
+        if ($id === 'tripadvisor' && str_contains($details['id'], '|')) {
+            [$domain, $path] = explode('|', $details['id'], 2);
+            if (in_array($domain, ['com', 'co.uk', 'com.au'], true)) $url = 'https://www.tripadvisor.' . $domain . '/' . ltrim($path, '/');
+        }
         $source = ['name' => $id === 'google' ? 'Google Maps' : 'Tripadvisor', 'url' => $url, 'rating' => isset($details['rating_score']) ? (float) $details['rating_score'] : null, 'count' => (int) ($details['rating_number'] ?? count($rows)), 'reviews' => []];
         foreach ($rows as $row) {
             if (!is_numeric($row['rating']) || $row['rating'] < 1 || $row['rating'] > 5) continue;

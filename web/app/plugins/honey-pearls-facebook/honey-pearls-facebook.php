@@ -2,17 +2,19 @@
 /**
  * Plugin Name: Honey Pearls Facebook
  * Description: Facebook posts and comments in responsive Honey Pearls cards.
- * Version: 1.1.1
+ * Version: 1.2.0
  * Requires PHP: 8.1
  * Author: Honey Pearls
  * License: GPL-2.0-or-later
  */
 namespace HoneyPearls\Facebook;
 defined('ABSPATH') || exit;
-const VERSION = '1.1.1';
+const VERSION = '1.2.0';
 const FILE = __FILE__;
 require_once __DIR__ . '/includes.php';
 require_once __DIR__ . '/cards.php';
+require_once __DIR__ . '/api.php';
+register_deactivation_hook(FILE, function(){wp_clear_scheduled_hook('hp_fb_sync');});
 add_shortcode('honey_pearls_facebook', __NAMESPACE__ . '\\render');
 add_action('admin_menu', function () { add_options_page('Honey Pearls Facebook', 'Honey Pearls Facebook', 'manage_options', 'hp-facebook', __NAMESPACE__ . '\\admin_page'); });
 add_action('admin_init', function () {
@@ -39,6 +41,7 @@ function sanitize_settings($input): array {
 function render($atts=[]): string {
     $s=settings(); $atts=shortcode_atts(['url'=>'','height'=>$s['height']],$atts,'honey_pearls_facebook');
     $posts=$atts['url'] ? array_filter([post_url($atts['url'])]) : array_filter(array_map(__NAMESPACE__.'\\post_url',$s['posts']));
+    $data=card_data(); if(!$atts['url'] && ($data['source']??'')==='api')$posts=array_column($data['posts'],'url');
     if (!$posts) return current_user_can('manage_options') ? '<p>Honey Pearls Facebook: add public post links in Settings → Honey Pearls Facebook.</p>' : '';
     $height=max(400,min(1400,(int)$atts['height'])); $data=card_data(); $cards=[]; foreach(($data['posts'] ?? []) as $card) { $cards[$card['url'] ?? '']=$card; } assets(); ob_start(); ?>
     <section class="hp-fb" aria-label="Facebook posts" aria-roledescription="carousel" data-height="<?php echo $height; ?>">
@@ -56,9 +59,9 @@ function render($atts=[]): string {
 function admin_page(): void {
     if (!current_user_can('manage_options')) return;
     $s=settings(); ?>
-    <div class="wrap"><h1>Honey Pearls Facebook</h1>
-      <p>Facebook cards use saved public post data. New links without saved card data use the original Meta embed.</p>
-      <p>Counts and comment previews in custom cards are snapshots, not a live API feed. Like, Comment and Share open the original post. Last captured: 19 November 2026. Automatic updates require a separately authorized Facebook Page connection.</p>
+    <div class="wrap"><h1>Honey Pearls Facebook</h1><?php api_admin(); ?>
+      <p>When connected, the latest posts, reactions and comment previews are fetched from the Facebook Page every 15 minutes. New manual links without saved card data use the Meta embed.</p>
+      <p>Like, Comment and Share open the original post. Without a Facebook connection, manually captured previews remain visible. API failures preserve the last successful feed.</p>
       <?php settings_errors('hp_fb_settings'); ?>
       <form method="post" action="options.php"><?php settings_fields('hp_facebook'); ?>
       <table class="form-table"><tr><th><label for="hp-fb-posts">Public post links</label></th><td><textarea id="hp-fb-posts" name="hp_fb_settings[posts]" rows="9" class="large-text code"><?php echo esc_textarea(implode("\n",$s['posts'])); ?></textarea><p class="description">One permalink per line, up to 12 posts. Open the post's date on Facebook and copy its URL. Selected posts stay in this order; new posts are not imported automatically.</p></td></tr>

@@ -1,15 +1,15 @@
 <?php
 /**
  * Plugin Name: Honey Pearls Facebook
- * Description: Genuine Facebook post embeds in a responsive Honey Pearls carousel.
- * Version: 1.1.0
+ * Description: Facebook posts and comments in responsive Honey Pearls cards.
+ * Version: 1.1.1
  * Requires PHP: 8.1
  * Author: Honey Pearls
  * License: GPL-2.0-or-later
  */
 namespace HoneyPearls\Facebook;
 defined('ABSPATH') || exit;
-const VERSION = '1.1.0';
+const VERSION = '1.1.1';
 const FILE = __FILE__;
 require_once __DIR__ . '/includes.php';
 require_once __DIR__ . '/cards.php';
@@ -19,7 +19,7 @@ add_action('admin_init', function () {
     register_setting('hp_facebook', 'hp_fb_settings', ['type'=>'array', 'sanitize_callback'=>__NAMESPACE__ . '\\sanitize_settings', 'default'=>[]]);
 });
 function assets(): void {
-    wp_enqueue_style('hp-facebook', plugins_url('facebook-5.css', FILE), [], VERSION);
+    wp_enqueue_style('hp-facebook', plugins_url('facebook-6.css', FILE), [], VERSION);
     wp_enqueue_script('hp-facebook', plugins_url('facebook-3.js', FILE), [], VERSION, true);
 }
 add_action('wp_enqueue_scripts', __NAMESPACE__ . '\\assets');

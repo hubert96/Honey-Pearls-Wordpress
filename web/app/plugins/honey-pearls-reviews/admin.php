@@ -3,8 +3,8 @@ namespace HoneyPearls\Reviews;
 defined('ABSPATH') || exit;
 add_action('admin_enqueue_scripts', function ($hook) {
     if ($hook !== 'settings_page_hp-reviews') return;
-    wp_enqueue_style('hp-reviews', plugins_url('reviews.css', __FILE__), [], VERSION);
-    wp_enqueue_script('hp-reviews', plugins_url('reviews.js', __FILE__), [], VERSION, true);
+    wp_enqueue_style('hp-reviews', plugins_url('reviews-1.1.3.css', __FILE__), [], VERSION);
+    wp_enqueue_script('hp-reviews', plugins_url('reviews-1.1.3.js', __FILE__), [], VERSION, true);
     wp_add_inline_style('hp-reviews', '.wrap>.hpr{max-width:580px}');
 });
 add_action('admin_menu', function () { add_options_page('Honey Pearls Reviews', 'Honey Pearls Reviews', 'manage_options', 'hp-reviews', __NAMESPACE__ . '\\admin_page'); });

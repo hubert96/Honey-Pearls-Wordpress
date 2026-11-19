@@ -38,7 +38,7 @@ add_action('wp_enqueue_scripts', __NAMESPACE__ . '\\assets');
 
 function assets(): void
 {
-    wp_enqueue_style('hp-instagram', plugins_url('assets/feed.css', FILE), [], VERSION);
+    wp_enqueue_style('hp-instagram', plugins_url('assets/feed-1.4.4.css', FILE), [], VERSION);
     wp_enqueue_script('hp-instagram', plugins_url('assets/feed.js', FILE), [], VERSION, ['in_footer' => true, 'strategy' => 'defer']);
 }
 

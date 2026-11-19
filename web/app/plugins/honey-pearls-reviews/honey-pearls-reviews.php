@@ -36,8 +36,8 @@ function render($atts = []): string {
     $sources = sources();
     $reviews = interleave($sources);
     if (!$reviews) return current_user_can('manage_options') ? '<p>Honey Pearls Reviews: connect a review source in Settings → Honey Pearls Reviews.</p>' : '';
-    wp_enqueue_style('hp-reviews', plugins_url('reviews.css', __FILE__), [], VERSION);
-    wp_enqueue_script('hp-reviews', plugins_url('reviews.js', __FILE__), [], VERSION, true);
+    wp_enqueue_style('hp-reviews', plugins_url('reviews-1.1.3.css', __FILE__), [], VERSION);
+    wp_enqueue_script('hp-reviews', plugins_url('reviews-1.1.3.js', __FILE__), [], VERSION, true);
     ob_start(); ?>
     <section class="hpr" aria-label="Customer reviews" aria-roledescription="carousel" style="--hpr-height:<?php echo $height; ?>px">
       <header class="hpr-header"><span class="hpr-eyebrow">Kind words from our customers</span><h2>Made with love.<br>Loved by you.</h2>

@@ -51,3 +51,12 @@ body.home #magic-cursor{display:none!important}
  .elementor-6541 .elementor-element-0c16795 .hp-ig--carousel{--hp-ig-height:610px}
  .elementor-6541 .elementor-element-51b2dac{padding:0!important;gap:20px}
 }
+
+/* Grid gaps must not be added on top of two percentage-width columns. */
+.elementor-6541>.elementor-element-1343902{margin-top:24px!important}
+.elementor-6541 .elementor-element-8cf2181>.e-con-inner,.elementor-6541 .elementor-element-57b0e11>.e-con-inner{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center}
+.elementor-6541 .elementor-element-8cf2181>.e-con-inner>.e-con,.elementor-6541 .elementor-element-57b0e11>.e-con-inner>.e-con{width:100%!important;max-width:100%}
+.elementor-6541 .elementor-element-51b2dac{padding:0!important}
+@media(max-width:1024px){
+ .elementor-6541 .elementor-element-8cf2181>.e-con-inner,.elementor-6541 .elementor-element-57b0e11>.e-con-inner{grid-template-columns:1fr}
+}

@@ -4,6 +4,8 @@ COPY --from=composer:2.8 /usr/bin/composer /usr/local/bin/composer
 WORKDIR /var/www/honey-pearls-wordpress
 COPY . .
 RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader && mkdir -p web/app/uploads web/app/wflogs && chown -R www-data:www-data web/app/uploads web/app/wflogs
+# Square verifies Apple Pay against the public document root.
+RUN install -D -m 0644 web/app/plugins/woocommerce-square/apple-developer-merchantid-domain-association web/.well-known/apple-developer-merchantid-domain-association
 # The updater recreates upgrade/, stages rollback copies, and writes .maintenance.
 RUN mkdir -p web/app/upgrade web/app/upgrade-temp-backup/plugins web/app/upgrade-temp-backup/themes web/app/plugins web/app/languages \
     && chown www-data:www-data web/app web/wp \

@@ -34,3 +34,31 @@
 .wc-block-checkout .wc-block-components-express-payment--checkout .wc-block-components-express-payment__event-buttons {
 	grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
 }
+
+@media (max-width: 767px) {
+	.wc-block-cart .wp-block-woocommerce-cart-totals-block {
+		--hp-cart-inset: clamp(16px, 5vw, 24px);
+		background: var(--e-global-color-secondary, #f3f8fb);
+		border-radius: 20px;
+	}
+
+	.wc-block-cart .wp-block-woocommerce-cart-totals-block .wp-block-woocommerce-cart-order-summary-block {
+		padding: 20px var(--hp-cart-inset) 12px;
+	}
+
+	.wc-block-cart .wp-block-woocommerce-cart-totals-block .wc-block-cart__payment-options {
+		background: transparent;
+		border: 0;
+		margin: 0;
+		padding: 0 var(--hp-cart-inset);
+	}
+
+	.wc-block-cart .wp-block-woocommerce-cart-totals-block .wc-block-components-express-payment-continue-rule {
+		margin: 12px 0 0;
+	}
+
+	.wc-block-cart .wp-block-woocommerce-cart-totals-block .wp-block-woocommerce-proceed-to-checkout-block {
+		padding: 16px var(--hp-cart-inset) 20px;
+		margin-top: 0;
+	}
+}

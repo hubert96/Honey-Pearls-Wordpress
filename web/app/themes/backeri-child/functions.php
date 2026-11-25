@@ -10,7 +10,7 @@ add_action( 'wp_enqueue_scripts', 'backeri_child_theme_enqueue_styles', 999 );
 /** Homepage layout belongs to the child theme, not the social plugins. */
 add_action('wp_enqueue_scripts', function () {
     if (!is_front_page()) return;
-    wp_enqueue_style('hp-home-layout', get_stylesheet_directory_uri() . '/home-layout-2.css', ['backeri-child-style'], '1.0.2');
+    wp_enqueue_style('hp-home-layout', get_stylesheet_directory_uri() . '/home-layout-2.css', ['backeri-child-style'], '1.0.3');
     // Keep native scrolling and avoid character splitting/reveal masks on this page.
     wp_dequeue_script('lenis-theme');
     wp_dequeue_script('magiccursor-theme');

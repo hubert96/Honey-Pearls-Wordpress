@@ -62,13 +62,22 @@ body.home #magic-cursor{display:none!important}
 .elementor-6541 .elementor-element.elementor-element-dea15bd{position:static}
 .elementor-6541 .elementor-element.elementor-element-64c1be4 .elementskit-infobox{padding:24px 16px}
 .elementor-6541 .elementor-element.elementor-element-3ad412b{padding:0}
+.elementor-6541 .elementor-element-ae4e212 .offer-item{
+ display:grid;
+ grid-template-columns:clamp(80px,8vw,112px) minmax(0,1fr);
+ align-items:center;
+ gap:16px;
+}
+.elementor-6541 .elementor-element-ae4e212 .offer-item>.elementor-widget{
+ width:100%;
+ min-width:0;
+}
 .elementor-6541 .elementor-element-ae4e212 .offer-item>.elementor-widget-image{
- width:clamp(88px,8vw,112px);
- flex:0 0 auto;
  aspect-ratio:1;
  height:auto;
  overflow:hidden;
- border-radius:50%;
+ border-radius:20px;
+ mask-image:none;
 }
 .elementor-6541 .elementor-element-ae4e212 .offer-item>.elementor-widget-image img{
  display:block;

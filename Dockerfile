@@ -17,5 +17,6 @@ RUN runuser -u www-data -- sh -c 'test -w web/app && test -w web/wp && test -w w
 RUN sed -i 's!/var/www/html!/var/www/honey-pearls-wordpress/web!g' /etc/apache2/sites-available/000-default.conf && printf '<Directory /var/www/honey-pearls-wordpress/web>\nAllowOverride All\nFallbackResource /index.php\nRequire all granted\n</Directory>\n' > /etc/apache2/conf-available/bedrock.conf && a2enconf bedrock
 RUN printf 'memory_limit=512M\nupload_max_filesize=64M\npost_max_size=64M\nmax_execution_time=300\nopcache.enable=1\n' > /usr/local/etc/php/conf.d/bedrock.ini && printf 'ok\n' > web/healthz
 RUN printf '<IfModule mpm_prefork_module>\nStartServers 1\nMinSpareServers 1\nMaxSpareServers 2\nMaxRequestWorkers 5\nMaxConnectionsPerChild 500\n</IfModule>\n' > /etc/apache2/mods-available/mpm_prefork.conf
+RUN docker-php-ext-install -j2 soap && php --ri soap
 EXPOSE 80
 RUN printf 'KeepAlive Off\n' > /etc/apache2/conf-available/connection-policy.conf && a2enconf connection-policy

@@ -1,10 +1,10 @@
-.hp-privacy-policy {
+:is(.hp-privacy-policy, .hp-legal-document) {
     max-width: 760px;
     margin-inline: auto;
     overflow-wrap: anywhere;
 }
 
-.hp-privacy-policy h2 {
+:is(.hp-privacy-policy, .hp-legal-document) h2 {
     margin-block: 2rem 0.75rem;
     font-size: clamp(1.35rem, 3vw, 1.8rem);
 }
@@ -22,7 +22,25 @@
     margin-inline-start: 0;
 }
 
-.hp-privacy-policy a {
+:is(.hp-privacy-policy, .hp-legal-document, .hp-express-terms) a {
     text-decoration: underline;
     text-underline-offset: 0.12em;
+}
+
+.hp-cancellation-line {
+    max-width: 24rem;
+    margin: 0.5rem auto 1.25rem 0;
+    border: 0;
+    border-bottom: 1px solid currentColor;
+}
+
+.hp-express-terms {
+    font-size: 0.9rem;
+}
+
+@media (max-width: 767px) {
+    .wc-block-cart-totals-block .hp-express-terms,
+    .wp-block-woocommerce-cart-totals-block .hp-express-terms {
+        margin-inline: var(--hp-cart-inset, 16px);
+    }
 }

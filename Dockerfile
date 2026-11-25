@@ -6,6 +6,9 @@ COPY . .
 RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader && mkdir -p web/app/uploads web/app/wflogs && chown -R www-data:www-data web/app/uploads web/app/wflogs
 # Square verifies Apple Pay against the public document root.
 RUN install -D -m 0644 web/app/plugins/woocommerce-square/apple-developer-merchantid-domain-association web/.well-known/apple-developer-merchantid-domain-association
+RUN runuser -u www-data -- test -r web/.well-known/apple-developer-merchantid-domain-association \
+    && printf 'AliasMatch "^/\\.well-known/apple-developer-merchantid-domain-association$" "/var/www/honey-pearls-wordpress/web/.well-known/apple-developer-merchantid-domain-association"\n' > /etc/apache2/conf-available/square-apple-pay.conf \
+    && a2enconf square-apple-pay
 # The updater recreates upgrade/, stages rollback copies, and writes .maintenance.
 RUN mkdir -p web/app/upgrade web/app/upgrade-temp-backup/plugins web/app/upgrade-temp-backup/themes web/app/plugins web/app/languages \
     && chown www-data:www-data web/app web/wp \

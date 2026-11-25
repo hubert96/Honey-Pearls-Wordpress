@@ -1,0 +1,28 @@
+.hp-privacy-policy {
+    max-width: 760px;
+    margin-inline: auto;
+    overflow-wrap: anywhere;
+}
+
+.hp-privacy-policy h2 {
+    margin-block: 2rem 0.75rem;
+    font-size: clamp(1.35rem, 3vw, 1.8rem);
+}
+
+.hp-privacy-policy h3 {
+    margin-block: 1.25rem 0.5rem;
+    font-size: 1.1rem;
+}
+
+.hp-privacy-policy dt {
+    margin-top: 1rem;
+}
+
+.hp-privacy-policy dd {
+    margin-inline-start: 0;
+}
+
+.hp-privacy-policy a {
+    text-decoration: underline;
+    text-underline-offset: 0.12em;
+}

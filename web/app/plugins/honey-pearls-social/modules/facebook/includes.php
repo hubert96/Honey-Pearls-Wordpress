@@ -12,6 +12,3 @@ function post_url(string $raw): string {
     if (in_array($path,['/photo.php','/photo/'],true) && is_string($query['fbid'] ?? null) && ctype_digit($query['fbid'])) return 'https://www.facebook.com/photo.php?fbid='.$query['fbid'];
     return '';
 }
-function embed_url(string $url, int $width, int $height): string {
-    return 'https://www.facebook.com/plugins/post.php?'.http_build_query(['href'=>$url,'show_text'=>'true','width'=>max(350,min(500,$width)),'height'=>max(400,min(1400,$height))], '', '&', PHP_QUERY_RFC3986);
-}

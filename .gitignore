@@ -9,6 +9,7 @@ web/app/plugins/*
 !web/app/plugins/honey-pearls-reviews/
 !web/app/plugins/honey-pearls-facebook/
 web/app/mu-plugins/*/
+!web/app/mu-plugins/honey-pearls-privacy/
 web/app/themes/twentytwentyfive/
 web/app/upgrade
 web/app/uploads/*

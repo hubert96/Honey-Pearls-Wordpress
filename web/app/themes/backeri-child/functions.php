@@ -7,6 +7,14 @@ function backeri_child_theme_enqueue_styles() {
 }
 add_action( 'wp_enqueue_scripts', 'backeri_child_theme_enqueue_styles', 999 );
 
+add_action( 'wp_enqueue_scripts', function () {
+	if ( ! function_exists( 'is_checkout' ) || ! is_checkout() ) {
+		return;
+	}
+
+	wp_enqueue_style( 'hp-checkout', get_stylesheet_directory_uri() . '/checkout.css', array( 'backeri-child-style' ), '1.0.0' );
+}, 1000 );
+
 /** Homepage layout belongs to the child theme, not the social plugins. */
 add_action('wp_enqueue_scripts', function () {
     if (!is_front_page()) return;

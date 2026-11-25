@@ -12,7 +12,7 @@ add_action( 'wp_enqueue_scripts', function () {
 		return;
 	}
 
-	wp_enqueue_style( 'hp-checkout', get_stylesheet_directory_uri() . '/checkout.css', array( 'backeri-child-style' ), '1.0.2' );
+	wp_enqueue_style( 'hp-checkout', get_stylesheet_directory_uri() . '/checkout.css', array( 'backeri-child-style' ), '1.0.3' );
 }, 1000 );
 
 /** Homepage layout belongs to the child theme, not the social plugins. */

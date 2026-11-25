@@ -79,8 +79,8 @@
     <dd><code>woocommerce_cart_hash</code> and <code>woocommerce_items_in_cart</code> keep track of basket changes during your session. <code>wp_woocommerce_session_*</code> lets WooCommerce find your basket and lasts about 48 hours.</dd>
     <dt>WooCommerce browser storage</dt>
     <dd><code>storeApiCartData</code>, <code>storeApiCartHash</code> and <code>storeApiNonce</code> keep the basket consistent and support checkout requests. Basket data can include address information entered at checkout. These entries are stored locally until they are cleared or replaced.</dd>
-    <dt>Square checkout security</dt>
-    <dd>Square's payment interface can use Cloudflare's <code>__cf_bm</code> cookie on its payment domain to distinguish people from automated traffic. In our checkout test it lasted about 30 minutes. Digital wallets may use storage managed by the wallet provider.</dd>
+    <dt>Cookies from the Square payment interface</dt>
+    <dd>Square's payment interface can use Cloudflare's <code>__cf_bm</code> cookie on its payment domain to distinguish people from automated traffic. In our test it lasted about 30 minutes. At checkout, Square can also set <code>_savt</code> on <code>squareup.com</code>, a persistent identifier associated with the browser. Our Chrome test showed an expiry of about 400 days. Square requests a longer lifetime and the actual expiry depends on your browser. The <a href="https://squareup.com/gb/en/legal/general/privacy-no-account">Square buyer privacy notice</a> explains how Square uses device information and what choices it offers. Digital wallets may use storage managed by the wallet provider.</dd>
     <dt>WordPress sessions and preferences</dt>
     <dd>When you sign in, WordPress uses authentication and preference cookies for the session or until they expire. <code>wpEmojiSettingsSupports</code> remembers the browser's emoji display support for the session. A product review form can remember your details in this browser when you choose that option.</dd>
   </dl>

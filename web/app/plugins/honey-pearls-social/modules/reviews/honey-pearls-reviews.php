@@ -57,10 +57,30 @@ function render($atts = []): string {
     <?php return ob_get_clean();
 }
 
-/** Alternate sources; never average unrelated platform scores or filter by stars. */
+/** Prioritize review content and alternate sources within each priority. */
 function interleave(array $sources): array {
+    $groups = [2 => [], 1 => [], 0 => []];
+    foreach ($sources as $id => $source) {
+        foreach ($source['reviews'] as $review) {
+            $hasText = preg_match('/[^\s\p{Z}]/u', $review['text']) === 1;
+            $priority = 0;
+            if ($hasText) {
+                $priority = empty($review['photos']) ? 1 : 2;
+            }
+            $groups[$priority][$id][] = $review + ['source' => $id];
+        }
+    }
+
     $result = [];
-    $length = max(array_map(fn($s) => count($s['reviews']), $sources) ?: [0]);
-    for ($i = 0; $i < $length; $i++) foreach ($sources as $id => $source) if (isset($source['reviews'][$i])) $result[] = $source['reviews'][$i] + ['source' => $id];
+    foreach ($groups as $reviewsBySource) {
+        $length = max(array_map('count', $reviewsBySource) ?: [0]);
+        for ($i = 0; $i < $length; $i++) {
+            foreach ($reviewsBySource as $reviews) {
+                if (isset($reviews[$i])) {
+                    $result[] = $reviews[$i];
+                }
+            }
+        }
+    }
     return $result;
 }

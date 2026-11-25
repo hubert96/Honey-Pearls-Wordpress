@@ -46,3 +46,28 @@ check(HoneyPearls\Reviews\review_photos('invalid', $trustindex_pm_google) === []
 $photos=HoneyPearls\Reviews\review_photos('["https://example.com/photo.jpg","javascript:alert(1)",null,"http://example.com/no.jpg"]', $trustindex_pm_google);
 check(count($photos) === 1 && $photos[0]['thumbnail'] === 'https://example.com/photo.jpg', 'Only valid HTTPS source photos are accepted');
 check(count(HoneyPearls\Reviews\review_photos(array_fill(0,5,'https://example.com/photo.jpg'), $trustindex_pm_google)) === 3, 'Photo count is bounded');
+
+$rows = [
+    'google' => [
+        array_replace($row, ['user' => 'Avatar and text', 'user_photo' => 'https://example.com/avatar.jpg']),
+        array_replace($row, ['user' => 'Google photo and text', 'photos' => '["https://example.com/review.jpg"]']),
+        array_replace($row, ['user' => 'Older Google photo and text', 'photos' => '["https://example.com/older.jpg"]']),
+        array_replace($row, ['user' => 'Photo only', 'text' => "\u{00A0}", 'photos' => '["https://example.com/photo.jpg"]']),
+    ],
+    'tripadvisor' => [
+        array_replace($row, ['user' => 'Stars only', 'text' => '']),
+        array_replace($row, ['user' => 'Tripadvisor text', 'photos' => 'invalid']),
+        array_replace($row, ['user' => 'Tripadvisor photo and text', 'photos' => '["https://example.com/trip.jpg"]']),
+    ],
+];
+$trustindex_pm_google->exists = true;
+$sorted = HoneyPearls\Reviews\interleave(HoneyPearls\Reviews\sources());
+check(array_column($sorted, 'author') === [
+    'Google photo and text',
+    'Tripadvisor photo and text',
+    'Older Google photo and text',
+    'Avatar and text',
+    'Tripadvisor text',
+    'Photo only',
+    'Stars only',
+], 'Prioritize attached photos with text, then text, then reviews without text');

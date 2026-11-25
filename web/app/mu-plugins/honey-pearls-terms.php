@@ -28,7 +28,8 @@ function terms_page_id(): int
 }
 
 add_shortcode('honey_pearls_terms', function (): string {
-    return file_get_contents(document_path(CURRENT_VERSION));
+    $document = file_get_contents(document_path(CURRENT_VERSION));
+    return preg_match('~<body>\s*(.*?)\s*</body>~s', $document, $parts) ? $parts[1] : '';
 });
 
 add_action('wp_enqueue_scripts', function (): void {

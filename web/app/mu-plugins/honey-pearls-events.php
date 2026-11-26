@@ -25,9 +25,10 @@ function local_date(string $value): ?\DateTimeImmutable
     return $date && $date->format('Y-m-d\TH:i') === $value ? $date : null;
 }
 
-function display_date(array $event): string
+function display_date(array $event, bool $compact = false): string
 {
-    return local_date($event['start'] ?? '')?->format('l j F Y, H:i T') ?? '';
+    $format = $compact ? 'D j M Y · g:ia' : 'l j F Y \a\t g:ia';
+    return local_date($event['start'] ?? '')?->format($format) ?? '';
 }
 
 function open_for_booking($product, array $event): bool

@@ -90,7 +90,7 @@ add_filter('the_content', function ($content) {
         '<aside class="hp-next-event" aria-label="Upcoming event">%s<div><span>Next event</span><h2>%s</h2><p>%s%s</p></div><a href="%s">View event <span aria-hidden="true">→</span></a></aside>',
         event_image($product, 'medium'),
         esc_html($product->get_name()),
-        esc_html(local_date($event['start'])->format('D j M Y · H:i T')),
+        esc_html(display_date($event, true)),
         esc_html($status),
         esc_url(event_url($product->get_id())),
     );

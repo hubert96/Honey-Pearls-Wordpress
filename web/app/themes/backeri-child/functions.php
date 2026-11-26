@@ -3,9 +3,16 @@
 defined( 'ABSPATH' ) || exit;
 
 function backeri_child_theme_enqueue_styles() {
-	wp_enqueue_style( 'backeri-child-style', get_stylesheet_directory_uri() . '/style.css', array( 'backeri-style' ), BACKERI_THEME_VERSION ); 
+	wp_enqueue_style( 'backeri-child-style', get_stylesheet_directory_uri() . '/style.css', array( 'backeri-style' ), filemtime( get_stylesheet_directory() . '/style.css' ) );
 }
 add_action( 'wp_enqueue_scripts', 'backeri_child_theme_enqueue_styles', 999 );
+
+add_action('elementor/frontend/container/before_render', function ($container) {
+    // The header template reserves this column for the site identity.
+    if ($container->get_id() === 'aa746ef') {
+        printf('<a class="hp-mobile-brand" href="%s">%s</a>', esc_url(home_url('/')), esc_html(get_bloginfo('name')));
+    }
+});
 
 add_action( 'wp_enqueue_scripts', function () {
 	if ( ! function_exists( 'is_checkout' ) || ( ! is_checkout() && ! is_cart() ) ) {

@@ -6,6 +6,7 @@ defined('ABSPATH') || exit;
 require_once __DIR__ . '/guests.php';
 
 const CAP = 'manage_woocommerce';
+const RESTAURANT_ADDRESS = '73 Park View, Whitley Bay NE26 3RL, United Kingdom';
 
 function admin_link(array $args = []): string
 {
@@ -61,6 +62,10 @@ function edit_screen(int $id = 0): void
 {
     $p = $id ? wc_get_product($id) : null;
     $event = details($id);
+    $venue = $event['venue'] ?? '';
+    if ($venue === '' && (!$id || $p?->get_status() === 'draft')) {
+        $venue = RESTAURANT_ADDRESS;
+    }
     if ($id && (!$p || !$event)) {
         wp_die('Event not found.');
     }
@@ -78,7 +83,7 @@ function edit_screen(int $id = 0): void
     wp_nonce_field('hp_event_version_' . md5(serialize($event)), 'hp_event_version', false);
     printf('<input type="hidden" name="action" value="hp_event_save"><input type="hidden" name="id" value="%d">', $id);
     foreach (['title' => ['Event name','text',$p?->get_name()], 'start' => ['Starts (UK local time)','datetime-local',$event['start'] ?? ''],
-        'close' => ['Close bookings (defaults to start time)','datetime-local',$event['close'] ?? ''], 'venue' => ['Venue and address','text',$event['venue'] ?? ''],
+        'close' => ['Close bookings (defaults to start time)','datetime-local',$event['close'] ?? ''], 'venue' => ['Venue and address','text',$venue],
         'price' => ['Price per guest (' . get_woocommerce_currency() . ')','number',$p?->get_regular_price()], 'capacity' => ['Total seats','number',$event['capacity'] ?? '']] as $key => $field) {
         printf(
             '<p><label for="hp-%1$s">%2$s</label><br><input id="hp-%1$s" class="regular-text" name="%1$s" type="%3$s" value="%4$s" %5$s></p>',

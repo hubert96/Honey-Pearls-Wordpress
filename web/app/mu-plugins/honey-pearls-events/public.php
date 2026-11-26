@@ -54,9 +54,45 @@ function event_image($product, string $size = 'large'): string
     return $id ? wp_get_attachment_image($id, $size, false, ['class' => 'hp-event-photo']) : '';
 }
 
-function upcoming(): array
+function upcoming(int $limit = -1): array
 {
-    return get_posts(['post_type' => 'product', 'post_status' => 'publish', 'posts_per_page' => -1,
+    return get_posts(['post_type' => 'product', 'post_status' => 'publish', 'posts_per_page' => $limit,
         'meta_key' => '_hp_event_start', 'meta_value' => time(), 'meta_compare' => '>', 'meta_type' => 'NUMERIC',
         'orderby' => 'meta_value_num', 'order' => 'ASC']);
 }
+
+add_action('wp_enqueue_scripts', function () {
+    if (is_front_page()) {
+        wp_enqueue_style('hp-next-event', plugins_url('next-event.css', __FILE__), [], '1.0.0');
+    }
+});
+
+add_filter('the_content', function ($content) {
+    if (!is_front_page() || !in_the_loop() || !is_main_query() || get_the_ID() !== get_queried_object_id()) {
+        return $content;
+    }
+    $next = upcoming(1);
+    if (!$next) {
+        return $content;
+    }
+    $product = wc_get_product($next[0]);
+    $event = details($next[0]->ID);
+    if (!$product || !$event) {
+        return $content;
+    }
+    $status = '';
+    if (!open_for_booking($product, $event)) {
+        $status = ' · Bookings closed';
+    } elseif (!available($product)) {
+        $status = ' · Sold out';
+    }
+    $widget = sprintf(
+        '<aside class="hp-next-event" aria-label="Upcoming event">%s<div><span>Next event</span><h2>%s</h2><p>%s%s</p></div><a href="%s">View event <span aria-hidden="true">→</span></a></aside>',
+        event_image($product, 'thumbnail'),
+        esc_html($product->get_name()),
+        esc_html(display_date($event)),
+        esc_html($status),
+        esc_url(event_url($product->get_id())),
+    );
+    return $widget . $content;
+}, 99);

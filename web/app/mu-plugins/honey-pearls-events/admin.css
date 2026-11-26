@@ -1,0 +1,48 @@
+#hp-event-editor [aria-invalid="true"] {
+    border-color: #b32d2e;
+    box-shadow: 0 0 0 1px #b32d2e;
+}
+.hp-event-error:not(:empty), #hp-event-message:not(:empty) {
+    display: block;
+    margin-top: 4px;
+    color: #a22424;
+}
+.hp-event-name small { color: #50575e; }
+.hp-event-actions .button { margin: 2px; }
+
+@media (max-width: 782px) {
+    table.hp-event-list, .hp-event-list tbody { display: block; }
+    table.hp-event-list { border: 0; box-shadow: none; background: transparent; }
+    .hp-event-list thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+    }
+    table.hp-event-list tbody tr {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin: 12px 0;
+        padding: 16px;
+        background: white;
+        border: 1px solid #c3c4c7;
+        border-radius: 8px;
+    }
+    .hp-event-list td { padding: 0; overflow-wrap: anywhere; }
+    .hp-event-name, .hp-event-date, .hp-event-actions { grid-column: 1 / -1; }
+    .hp-event-name a { font-size: 18px; font-weight: 600; }
+    .hp-event-name small { margin-left: 4px; }
+    .hp-event-list td[data-label] { display: flex; flex-direction: column; font-weight: 600; }
+    .hp-event-list td[data-label]::before {
+        content: attr(data-label);
+        flex: 1;
+        font-size: 13px;
+        font-weight: normal;
+        color: #50575e;
+    }
+    .hp-event-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .hp-event-actions .button { margin: 0; }
+    #hp-event-editor .regular-text, #hp-event-editor textarea { width: 100%; max-width: 100%; }
+}

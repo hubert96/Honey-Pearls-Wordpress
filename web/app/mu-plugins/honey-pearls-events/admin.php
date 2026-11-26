@@ -16,8 +16,14 @@ function admin_link(array $args = []): string
 add_action('admin_menu', function () {
     add_menu_page('Events', 'Events', CAP, 'hp-events', __NAMESPACE__ . '\admin_screen', 'dashicons-tickets-alt', 56);
     add_submenu_page('hp-events', 'Add event', 'Add event', CAP, 'hp-event-new', static function (): void {
-        edit_screen(0);
+        edit_screen(0, absint($_GET['copy'] ?? 0));
     });
+});
+
+add_action('admin_enqueue_scripts', function ($hook) {
+    if (in_array($hook, ['toplevel_page_hp-events', 'events_page_hp-event-new'], true)) {
+        wp_enqueue_style('hp-events-admin', plugins_url('admin.css', __FILE__), [], '1.0.0');
+    }
 });
 
 function admin_screen(): void
@@ -31,7 +37,7 @@ function admin_screen(): void
         return;
     }
     $posts = get_posts(['post_type' => 'product','post_status' => ['publish','draft'],'meta_key' => KEY,'posts_per_page' => -1]);
-    echo '<div class="wrap"><h1>Events <a class="page-title-action" href="' . esc_url(admin_url('admin.php?page=hp-event-new')) . '">Add event</a></h1><table class="widefat striped"><thead><tr><th>Event</th><th>Date (UK)</th><th>Confirmed</th><th>Awaiting payment</th><th>Available</th><th>Guests</th></tr></thead><tbody>';
+    echo '<div class="wrap"><h1>Events <a class="page-title-action" href="' . esc_url(admin_url('admin.php?page=hp-event-new')) . '">Add event</a></h1><table class="widefat striped hp-event-list"><thead><tr><th>Event</th><th>Date (UK)</th><th>Confirmed</th><th>Awaiting payment</th><th>Available</th><th>Actions</th></tr></thead><tbody>';
     foreach ($posts as $post) {
         $p = wc_get_product($post);
         $pending = (int) wc_get_held_stock_quantity($p);
@@ -44,33 +50,40 @@ function admin_screen(): void
             }
         }
         printf(
-            '<tr><td><a href="%s">%s</a> (%s)</td><td>%s</td><td>%d</td><td>%d</td><td>%d</td><td><a href="%s">Guest list</a></td></tr>',
+            '<tr><td class="hp-event-name"><a href="%s">%s</a> <small>%s</small></td><td class="hp-event-date">%s</td><td data-label="Confirmed">%d</td><td data-label="Awaiting payment">%d</td><td data-label="Available">%d</td><td class="hp-event-actions"><a class="button" href="%s">Guest list</a> <a class="button" href="%s">Copy event</a></td></tr>',
             esc_url(admin_link(['edit' => $post->ID])),
             esc_html($p->get_name()),
-            esc_html($p->get_status()),
+            esc_html(get_post_status_object($p->get_status())->label),
             esc_html(display_date(details($post->ID))),
             $confirmed,
             $pending,
             available($p),
             esc_url(admin_link(['guests' => $post->ID])),
+            esc_url(add_query_arg(['page' => 'hp-event-new', 'copy' => $post->ID], admin_url('admin.php'))),
         );
     }
     echo '</tbody></table></div>';
 }
 
-function edit_screen(int $id = 0): void
+function edit_screen(int $id = 0, int $copy = 0): void
 {
-    $p = $id ? wc_get_product($id) : null;
-    $event = details($id);
+    $source = $id ?: $copy;
+    $p = $source ? wc_get_product($source) : null;
+    $event = details($source);
+    if ($source && (!$p || !$event || !current_user_can('edit_post', $source))) {
+        wp_die('Event unavailable.');
+    }
+    if ($copy) {
+        $event['start'] = '';
+        $event['close'] = '';
+    }
     $venue = $event['venue'] ?? '';
     if ($venue === '' && (!$id || $p?->get_status() === 'draft')) {
         $venue = RESTAURANT_ADDRESS;
     }
-    if ($id && (!$p || !$event)) {
-        wp_die('Event not found.');
-    }
     wp_enqueue_media();
-    echo '<div class="wrap"><h1>' . ($id ? 'Edit event' : 'Add event') . '</h1>';
+    wp_enqueue_script('hp-event-validation', plugins_url('validation.js', __FILE__), [], '1.0.0', true);
+    echo '<div class="wrap"><h1>' . ($copy ? 'Copy event' : ($id ? 'Edit event' : 'Add event')) . '</h1>';
     if (isset($_GET['saved'])) {
         echo '<div class="notice notice-success"><p>Event saved.</p></div>';
     }
@@ -78,9 +91,15 @@ function edit_screen(int $id = 0): void
         $url = $p->get_status() === 'publish' ? event_url($id) : get_preview_post_link($id);
         echo '<p><a href="' . esc_url($url) . '">View event</a> &nbsp; <a href="' . esc_url(admin_link(['guests' => $id])) . '">Guest list</a></p>';
     }
-    echo '<form action="' . esc_url(admin_url('admin-post.php')) . '" method="post">';
+    printf(
+        '<form id="hp-event-editor" action="%s" method="post" data-min-seats="%d" data-stock-ready="%d">',
+        esc_url(admin_url('admin-post.php')),
+        $id && $p->get_meta('_hp_opened') ? $event['capacity'] : 0,
+        stock_ready(),
+    );
+    echo '<div id="hp-event-message" role="alert"></div>';
     wp_nonce_field('hp_event_save_' . $id);
-    wp_nonce_field('hp_event_version_' . md5(serialize($event)), 'hp_event_version', false);
+    wp_nonce_field('hp_event_version_' . md5(serialize($copy ? [] : $event)), 'hp_event_version', false);
     printf('<input type="hidden" name="action" value="hp_event_save"><input type="hidden" name="id" value="%d">', $id);
     foreach (['title' => ['Event name','text',$p?->get_name()], 'start' => ['Starts (UK local time)','datetime-local',$event['start'] ?? ''],
         'close' => ['Close bookings (defaults to start time)','datetime-local',$event['close'] ?? ''], 'venue' => ['Venue and address','text',$venue],
@@ -108,7 +127,7 @@ function edit_screen(int $id = 0): void
             const img = new Image(100); img.src = photo.url; document.querySelector('#hp-photo').replaceChildren(img);
         }); picker.open();
     };</script>
-    <p><button class="button button-primary" name="status" value="publish"><?= $p?->get_status() === 'publish' ? 'Update event' : 'Publish event' ?></button>
+    <p><button class="button button-primary" name="status" value="publish"><?= $id && $p->get_status() === 'publish' ? 'Update event' : 'Publish event' ?></button>
     <button class="button" name="status" value="draft">Save draft</button></p></form></div>
     <?php
 }
@@ -116,6 +135,21 @@ function edit_screen(int $id = 0): void
 function field(string $key): string
 {
     return isset($_POST[$key]) && is_string($_POST[$key]) ? trim(wp_unslash($_POST[$key])) : '';
+}
+
+function stock_ready(): bool
+{
+    return get_option('woocommerce_manage_stock') === 'yes' && (int) get_option('woocommerce_hold_stock_minutes', 60) > 0;
+}
+
+function editor_error(string $message, string $key = ''): void
+{
+    global $wpdb;
+    $wpdb->query('ROLLBACK');
+    if (field('inline_validation') === '1') {
+        wp_send_json_error(['message' => $message, 'field' => $key], 422);
+    }
+    wp_die(esc_html($message), '', ['back_link' => true]);
 }
 
 add_action('admin_post_hp_event_save', function () {
@@ -135,7 +169,7 @@ add_action('admin_post_hp_event_save', function () {
     $p = $id ? wc_get_product($id) : new \WC_Product_Simple();
     $old = details($id);
     if (!wp_verify_nonce(field('hp_event_version'), 'hp_event_version_' . md5(serialize($old)))) {
-        wp_die('This event was edited elsewhere. Reload it before saving.', '', ['back_link' => true]);
+        editor_error('This event was edited elsewhere. Reload it before saving.');
     }
     $capacity = filter_var(field('capacity') ?: '0', FILTER_VALIDATE_INT);
     $price = field('price');
@@ -144,17 +178,34 @@ add_action('admin_post_hp_event_save', function () {
     $start = local_date($event['start']);
     $close = local_date($event['close']);
     $name = sanitize_text_field(field('title'));
-    if (!$name || $capacity === false || $capacity < 0 || ($price !== '' && !preg_match('/^\d+(?:\.\d{1,2})?$/D', $price))
-        || ($event['start'] && !$start) || ($event['close'] && (!$close || !$start || $close > $start))) {
-        wp_die('Check the name, price, seat count and booking dates.', '', ['back_link' => true]);
+    if ($name === '') {
+        editor_error('Enter the event name.', 'title');
     }
-    if ($status === 'publish' && (!$capacity || $price === '' || !$start || !$event['venue'] || !$event['menu'] || !$event['allergens']
-        || get_option('woocommerce_manage_stock') !== 'yes' || (int) get_option('woocommerce_hold_stock_minutes', 60) < 1)) {
-        wp_die('Publishing requires a date, venue, menu, allergen information, price, seats and active WooCommerce stock holds.', '', ['back_link' => true]);
+    if ($capacity === false || $capacity < 0 || ($status === 'publish' && !$capacity)) {
+        editor_error('Enter a whole number of seats. At least one seat is required to publish.', 'capacity');
+    }
+    if (($price !== '' && !preg_match('/^\d+(?:\.\d{1,2})?$/D', $price)) || ($status === 'publish' && $price === '')) {
+        editor_error('Enter a non-negative price with up to two decimal places.', 'price');
+    }
+    if (($event['start'] !== '' || $status === 'publish') && !$start) {
+        editor_error('Enter a valid UK start date and time.', 'start');
+    }
+    if ($event['close'] !== '' && (!$close || !$start || $close > $start)) {
+        editor_error('Choose a valid UK closing time at or before the event starts.', 'close');
+    }
+    if ($status === 'publish') {
+        foreach (['venue' => 'Enter the venue and address.', 'menu' => 'Enter the event menu.', 'allergens' => 'Enter the allergen information.'] as $key => $message) {
+            if ($event[$key] === '') {
+                editor_error($message, $key);
+            }
+        }
+        if (!stock_ready()) {
+            editor_error('Enable stock management and a positive stock hold time in WooCommerce before publishing.');
+        }
     }
     // Once sales have opened, lowering capacity can race a concurrent checkout reservation.
     if ($id && $p->get_meta('_hp_opened') && $capacity < $old['capacity']) {
-        wp_die('To stop new reservations, change the booking closing time.', '', ['back_link' => true]);
+        editor_error('Once bookings open, you can only increase the seat limit.', 'capacity');
     }
     $p->set_name($name);
     $p->set_status($status);
@@ -180,6 +231,9 @@ add_action('admin_post_hp_event_save', function () {
         wc_update_product_stock($p, abs($delta), $delta > 0 ? 'increase' : 'decrease');
     }
     $wpdb->query('COMMIT');
+    if (field('inline_validation') === '1') {
+        wp_send_json_success(['redirect' => admin_link(['edit' => $p->get_id(), 'saved' => 1])]);
+    }
     wp_safe_redirect(admin_link(['edit' => $p->get_id(),'saved' => 1]));
     exit;
 });

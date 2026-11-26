@@ -14,7 +14,9 @@ function admin_link(array $args = []): string
 
 add_action('admin_menu', function () {
     add_menu_page('Events', 'Events', CAP, 'hp-events', __NAMESPACE__ . '\admin_screen', 'dashicons-tickets-alt', 56);
-    add_submenu_page('hp-events', 'Add event', 'Add event', CAP, 'hp-event-new', __NAMESPACE__ . '\edit_screen');
+    add_submenu_page('hp-events', 'Add event', 'Add event', CAP, 'hp-event-new', static function (): void {
+        edit_screen(0);
+    });
 });
 
 function admin_screen(): void

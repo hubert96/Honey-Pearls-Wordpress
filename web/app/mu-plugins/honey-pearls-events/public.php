@@ -63,7 +63,7 @@ function upcoming(int $limit = -1): array
 
 add_action('wp_enqueue_scripts', function () {
     if (is_front_page()) {
-        wp_enqueue_style('hp-next-event', plugins_url('next-event.css', __FILE__), [], '1.1.0');
+        wp_enqueue_style('hp-next-event', plugins_url('next-event.css', __FILE__), [], '1.2.0');
     }
 });
 
